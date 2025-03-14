@@ -2,7 +2,8 @@ package kg.attractor.jobsearch.modal;
 
 import lombok.Data;
 
-import java.sql.Timestamp;
+import java.time.LocalDate;
+
 @Data
 public class Resumes {
     private int id;
@@ -11,6 +12,6 @@ public class Resumes {
     private int categoryId;
     private double salary;
     private boolean isActive;
-    private Timestamp createdDate;
-    private Timestamp updateTime;
+    private LocalDate createdDate;
+    private LocalDate updateTime;
 }

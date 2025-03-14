@@ -3,6 +3,8 @@ package kg.attractor.jobsearch.modal;
 import lombok.Data;
 
 import java.security.Timestamp;
+import java.time.LocalDate;
+
 @Data
 public class Vacancies {
     private int id;
@@ -13,8 +15,8 @@ public class Vacancies {
     private int expTo;
     private boolean isActive;
     private int authorId;
-    private Timestamp createdDate;
-    private Timestamp updatedTime;
+    private LocalDate createdDate;
+    private LocalDate updatedTime;
 
 
 }
