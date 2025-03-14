@@ -1,7 +1,9 @@
 package kg.attractor.jobsearch.modal;
 
-import java.security.Timestamp;
+import lombok.Data;
 
+import java.security.Timestamp;
+@Data
 public class Vacancies {
     private int id;
     private String description;

@@ -1,5 +1,8 @@
 package kg.attractor.jobsearch.modal;
 
+import lombok.Data;
+
+@Data
 public class WorkExperienceInfo {
     private int id;
     private int resumeId;

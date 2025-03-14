@@ -1,7 +1,9 @@
 package kg.attractor.jobsearch.modal;
 
-import java.sql.Timestamp;
+import lombok.Data;
 
+import java.sql.Timestamp;
+@Data
 public class Resumes {
     private int id;
     private int applicantId;
