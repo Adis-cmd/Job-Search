@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface UserService {
-    List<User> searchSuccessfulApplicants(Vacancy vacancies, User user);
+    List<User> searchSuccessfulApplicants(Vacancy vacancies);
 
     void findUser(Integer userId, User user);
 

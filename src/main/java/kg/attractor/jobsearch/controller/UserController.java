@@ -1,5 +1,6 @@
 package kg.attractor.jobsearch.controller;
 
+import kg.attractor.jobsearch.modal.Vacancy;
 import kg.attractor.jobsearch.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.apache.catalina.User;
@@ -35,5 +36,12 @@ public class UserController {
     @PostMapping("photos")
     public String uploadImage(MultipartFile file) {
         return userService.uploadingPhotos(file);
+    }
+
+
+    @GetMapping("search")
+    public HttpStatus searchVacancies(Vacancy vacancies) {
+        userService.searchSuccessfulApplicants(vacancies);
+        return HttpStatus.OK;
     }
 }

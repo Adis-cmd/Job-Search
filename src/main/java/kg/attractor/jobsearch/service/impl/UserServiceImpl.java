@@ -20,7 +20,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public List<User> searchSuccessfulApplicants(Vacancy vacancies, User user) {
+    public List<User> searchSuccessfulApplicants(Vacancy vacancies) {
         //TODO логика для поиска откликнувшихся соискателей на вакансию
         return List.of();
     }

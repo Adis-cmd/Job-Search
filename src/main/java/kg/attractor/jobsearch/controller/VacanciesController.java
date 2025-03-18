@@ -26,12 +26,6 @@ public class VacanciesController {
         return HttpStatus.OK;
     }
 
-    @GetMapping("search")
-    public HttpStatus searchVacancies(Vacancy vacancies, User user) {
-        vacanciesService.searchSuccessfulApplicants(vacancies, user);
-        return HttpStatus.OK;
-    }
-
     @PostMapping("response/{vacanciesId}")
     public HttpStatus responseVacancies(@PathVariable("vacanciesId") Integer vacanciesId, User user) {
         vacanciesService.responseVacancies(vacanciesId, user);
