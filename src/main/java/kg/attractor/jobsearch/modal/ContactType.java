@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class ContactType {
-    private int id;
+    private Integer id;
     private String type;
 }

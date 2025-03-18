@@ -1,7 +1,7 @@
 package kg.attractor.jobsearch.controller;
 
 import kg.attractor.jobsearch.dto.VacanciesDto;
-import kg.attractor.jobsearch.modal.Vacancies;
+import kg.attractor.jobsearch.modal.Vacancy;
 import kg.attractor.jobsearch.service.VacanciesService;
 import lombok.RequiredArgsConstructor;
 import org.apache.catalina.User;
@@ -27,7 +27,7 @@ public class VacanciesController {
     }
 
     @GetMapping("search")
-    public HttpStatus searchVacancies(Vacancies vacancies, User user) {
+    public HttpStatus searchVacancies(Vacancy vacancies, User user) {
         vacanciesService.searchSuccessfulApplicants(vacancies, user);
         return HttpStatus.OK;
     }
@@ -39,19 +39,19 @@ public class VacanciesController {
     }
 
     @DeleteMapping("delete/{vacanciesId}")
-    public HttpStatus deleteVacancies(@PathVariable("vacanciesId") Integer vacancyId, Vacancies vacancies) {
+    public HttpStatus deleteVacancies(@PathVariable("vacanciesId") Integer vacancyId, Vacancy vacancies) {
         vacanciesService.deleteVacancies(vacancyId, vacancies);
         return HttpStatus.OK;
     }
 
     @GetMapping("search/category/{categoryId}")
-    public HttpStatus allVacanciesCategory(@PathVariable("categoryId") Integer categoryId, Vacancies vacancies) {
+    public HttpStatus allVacanciesCategory(@PathVariable("categoryId") Integer categoryId, Vacancy vacancies) {
         vacanciesService.getAllVacanciesCategory(categoryId, vacancies);
         return HttpStatus.OK;
     }
 
     @GetMapping("isActive")
-    public HttpStatus allIsActiveVacancies(Vacancies vacancies) {
+    public HttpStatus allIsActiveVacancies(Vacancy vacancies) {
         vacanciesService.getAllVacanciesIsActive(vacancies);
         return HttpStatus.OK;
     }
