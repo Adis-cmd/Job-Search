@@ -1,8 +1,7 @@
 package kg.attractor.jobsearch.service.impl;
 
 import kg.attractor.jobsearch.dto.ResumesDto;
-import kg.attractor.jobsearch.dto.UserDto;
-import kg.attractor.jobsearch.modal.Resumes;
+import kg.attractor.jobsearch.modal.Resume;
 import kg.attractor.jobsearch.service.ResumesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,17 +13,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ResumesServiceImpl implements ResumesService {
 
-    private List<Resumes> resumes;
+    private List<Resume> resumes;
 
 
     @Override
-    public List<Resumes> getAllResumes() {
+    public List<Resume> getAllResumes() {
         //TODO логика для поиска резюме
         return List.of();
     }
 
     @Override
-    public Resumes searchResumesCategoryId(ResumesDto resumes, int categoryId) {
+    public Resume searchResumesCategoryId(ResumesDto resumes, int categoryId) {
         //TODO логика для поиска резюме по его id
         return null;
     }
@@ -32,8 +31,8 @@ public class ResumesServiceImpl implements ResumesService {
 
 
     @Override
-    public Resumes createResumes(ResumesDto resumesDto) {
-        Resumes newResume = Resumes.builder()
+    public Resume createResumes(ResumesDto resumesDto) {
+        Resume newResume = Resume.builder()
                 .id(resumes.size() + 1)
                 .applicantId(resumesDto.getApplicantId())
                 .name(resumesDto.getName())
@@ -48,8 +47,8 @@ public class ResumesServiceImpl implements ResumesService {
     }
 
     @Override
-    public Resumes editResumes(ResumesDto resumesDto, int resumeId) {
-        Resumes updateResumes = resumes.stream()
+    public Resume editResumes(ResumesDto resumesDto, int resumeId) {
+        Resume updateResumes = resumes.stream()
                 .filter(resume -> resume.getId() == resumeId)
                 .findAny()
                 .orElseThrow(() -> new RuntimeException("resume not found"));
@@ -64,7 +63,7 @@ public class ResumesServiceImpl implements ResumesService {
 
     @Override
     public void deleteResumes(int resumeId) {
-        Resumes deleteResumes = resumes
+        Resume deleteResumes = resumes
                 .stream()
                 .filter(resumesDelete -> resumesDelete.getId() == resumeId)
                 .findAny()
