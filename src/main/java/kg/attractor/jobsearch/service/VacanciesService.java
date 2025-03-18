@@ -11,8 +11,6 @@ public interface VacanciesService {
 
     void createVacancies(VacanciesDto vacanciesDto);
 
-    List<User> searchSuccessfulApplicants(Vacancy vacancies, User user);
-
     void responseVacancies(Integer vacanciesId, User user);
 
     void deleteVacancies(Integer vacancyId, Vacancy vacancies);
