@@ -1,8 +1,8 @@
 package kg.attractor.jobsearch.controller;
 
-import kg.attractor.jobsearch.dto.ResumesDto;
+import kg.attractor.jobsearch.dto.ResumeDto;
 import kg.attractor.jobsearch.modal.Resume;
-import kg.attractor.jobsearch.service.ResumesService;
+import kg.attractor.jobsearch.service.ResumeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -12,27 +12,22 @@ import java.util.List;
 @RestController
 @RequestMapping("resumes")
 @RequiredArgsConstructor
-public class ResumesController {
+public class ResumeController {
 
-    private final ResumesService resumesService;
+    private final ResumeService resumesService;
 
     @GetMapping("search")
     public List<Resume> search() {
         return resumesService.getAllResumes();
     }
 
-    @GetMapping("search/{categoryId}")
-    public Resume searchCategory(@PathVariable("categoryId") ResumesDto resumes, int categoryId) {
-        return resumesService.searchResumesCategoryId(resumes, categoryId);
-    }
-
     @PostMapping("add")
-    public Resume addResumes(@RequestBody ResumesDto resumesDto) {
+    public Resume addResumes(@RequestBody ResumeDto resumesDto) {
         return resumesService.createResumes(resumesDto);
     }
 
     @PutMapping("update/{resumeId}")
-    public Resume updateResumes(@PathVariable("resumeId") @RequestBody ResumesDto resumesDto, int resumeId) {
+    public Resume updateResumes(@PathVariable("resumeId") @RequestBody ResumeDto resumesDto, int resumeId) {
         return resumesService.editResumes(resumesDto, resumeId);
     }
 
@@ -40,6 +35,16 @@ public class ResumesController {
     public HttpStatus deleteResumes(@PathVariable("resumeId") int resumeId) {
         resumesService.deleteResumes(resumeId);
         return HttpStatus.OK;
+    }
+
+    @GetMapping("search/{categoryId}")
+    public List<ResumeDto> searchResumesCategory(@PathVariable Long categoryId) {
+        return resumesService.getResumeCategory(categoryId);
+    }
+
+    @GetMapping("user/{userId}")
+    public List<ResumeDto>  getAllResumesByUserId(@PathVariable Long userId) {
+        return resumesService.getResumeByUserid(userId);
     }
 
 }
