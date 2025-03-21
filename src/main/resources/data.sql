@@ -27,14 +27,16 @@ create table if not exists category
 );
 
 INSERT INTO category (name, parentId)
-VALUES ('Бэкенд-разработчик', NULL),
-       ('Фронтенд-разработчик', NULL);
+VALUES
+    ('Бэкенд-разработчик', (SELECT id FROM category WHERE name = 'Бэкенд-разработчик' LIMIT 1)),
+    ('Фронтенд-разработчик', (SELECT id FROM category WHERE name = 'Фронтенд-разработчик' LIMIT 1));
 
 INSERT INTO category (name, parentId)
-VALUES ('Старший Бэкенд-разработчик', (SELECT id FROM category WHERE name = 'Бэкенд-разработчик' LIMIT 1)),
-       ('Младший Бэкенд-разработчик', (SELECT id FROM category WHERE name = 'Бэкенд-разработчик' LIMIT 1)),
-       ('Старший Фронтенд-разработчик', (SELECT id FROM category WHERE name = 'Фронтенд-разработчик' LIMIT 1)),
-       ('Младший Фронтенд-разработчик', (SELECT id FROM category WHERE name = 'Фронтенд-разработчик' LIMIT 1));
+VALUES
+    ('Старший Бэкенд-разработчик', (SELECT id FROM category WHERE name = 'Бэкенд-разработчик' LIMIT 1)),
+    ('Младший Бэкенд-разработчик', (SELECT id FROM category WHERE name = 'Бэкенд-разработчик' LIMIT 1)),
+    ('Старший Фронтенд-разработчик', (SELECT id FROM category WHERE name = 'Фронтенд-разработчик' LIMIT 1)),
+    ('Младший Фронтенд-разработчик', (SELECT id FROM category WHERE name = 'Фронтенд-разработчик' LIMIT 1));
 
 create table if not exists vacancy
 (

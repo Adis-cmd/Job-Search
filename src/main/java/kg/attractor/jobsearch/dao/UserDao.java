@@ -49,15 +49,12 @@ public class UserDao {
 
     public List<User> getUserByResponse() {
         String sql = """
-                SELECT u.*,\
-                 r.*,\
-                 a.*,\
-                 v.*
-                from users u
-                left join resume r ON r.applicantId = u.id
-                left join responded_applicant a ON r.id = a.resumeId
-                left join vacancy v ON a.vacancyId = v.id
-                where a.confirmation = true;
+                SELECT u.*, r.*, a.*, v.*
+                FROM users u
+                LEFT JOIN resume r ON r.applicantId = u.id
+                LEFT JOIN responded_applicant a ON r.id = a.resumeId
+                LEFT JOIN vacancy v ON a.vacancyId = v.id
+                WHERE a.confirmation = TRUE;
                 """;
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
     }
