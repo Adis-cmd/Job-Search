@@ -1,18 +1,20 @@
 package kg.attractor.jobsearch.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @Builder
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
 public class UserDto {
-    private Integer id;
+    private Long id;
     private String name;
+    private String surname;
+    private Integer age;
     private String email;
     private String password;
-    private String type;
+    private String phoneNumber;
+    private String avatar;
+    private String accountType;
 }

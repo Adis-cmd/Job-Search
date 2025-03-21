@@ -1,25 +1,24 @@
 package kg.attractor.jobsearch.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 @Builder
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
-public class VacanciesDto {
-    private int id;
+public class VacancyDto {
+    private Long id;
+    private  String name;
     private String description;
-    private Integer categoryId;
+    private Long categoryId;
     private Double salary;
     private Integer expFrom;
     private Integer expTo;
-    private boolean isActive;
-    private Integer authorId;
+    private Boolean isActive;
+    private Long authorId;
     private LocalDateTime createdDate;
     private LocalDateTime updatedTime;
 }
