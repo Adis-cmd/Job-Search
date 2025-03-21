@@ -1,12 +1,16 @@
 package kg.attractor.jobsearch.modal;
 
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class Message {
-    private Integer id;
+    private Long id;
     private Integer respondedApplicants;
     private String content;
     private LocalDateTime timestamp;

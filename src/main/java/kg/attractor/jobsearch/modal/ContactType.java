@@ -1,9 +1,12 @@
 package kg.attractor.jobsearch.modal;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter @Setter
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class ContactType {
-    private Integer id;
+    private Long id;
     private String type;
 }

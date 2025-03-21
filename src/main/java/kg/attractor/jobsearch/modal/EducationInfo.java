@@ -1,12 +1,16 @@
 package kg.attractor.jobsearch.modal;
 
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDate;
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class EducationInfo {
-    private Integer id;
-    private Integer resumeId;
+    private Long id;
+    private Long resumeId;
     private String institution;
     private String program;
     private LocalDate startDate;
