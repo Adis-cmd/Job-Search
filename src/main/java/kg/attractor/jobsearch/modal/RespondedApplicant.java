@@ -1,11 +1,15 @@
 package kg.attractor.jobsearch.modal;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class RespondedApplicant {
-    private Integer id;
-    private Integer resumeId;
-    private Integer vacancyId;
-    private boolean confirmation;
+    private Long id;
+    private Long resumeId;
+    private Long vacancyId;
+    private Boolean confirmation;
 }
