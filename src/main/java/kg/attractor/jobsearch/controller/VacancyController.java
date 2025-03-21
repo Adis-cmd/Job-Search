@@ -1,34 +1,29 @@
 package kg.attractor.jobsearch.controller;
 
-import kg.attractor.jobsearch.dto.VacanciesDto;
+import kg.attractor.jobsearch.dto.VacancyDto;
 import kg.attractor.jobsearch.modal.Vacancy;
-import kg.attractor.jobsearch.service.VacanciesService;
+import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("vacancies")
 @RequiredArgsConstructor
-public class VacanciesController {
-    private final VacanciesService vacanciesService;
+public class VacancyController {
+    private final VacancyService vacanciesService;
 
     @PostMapping("add")
-    public HttpStatus createVacancies(@RequestBody VacanciesDto vacanciesDto) {
+    public HttpStatus createVacancies(@RequestBody VacancyDto vacanciesDto) {
         vacanciesService.createVacancies(vacanciesDto);
         return HttpStatus.CREATED;
     }
 
     @PutMapping("update/{vacancyId}")
-    public HttpStatus editVacancies(@PathVariable("vacancyId") VacanciesDto vacanciesDto, int vacancyId) {
+    public HttpStatus editVacancies(@PathVariable("vacancyId") VacancyDto vacanciesDto, int vacancyId) {
         vacanciesService.editVacancies(vacanciesDto, vacancyId);
-        return HttpStatus.OK;
-    }
-
-    @PostMapping("response/{vacanciesId}")
-    public HttpStatus responseVacancies(@PathVariable("vacanciesId") Integer vacanciesId, User user) {
-        vacanciesService.responseVacancies(vacanciesId, user);
         return HttpStatus.OK;
     }
 
@@ -38,10 +33,14 @@ public class VacanciesController {
         return HttpStatus.OK;
     }
 
+    @GetMapping
+    public List<VacancyDto> getVacancies() {
+        return vacanciesService.getVacancies();
+    }
+
     @GetMapping("search/category/{categoryId}")
-    public HttpStatus allVacanciesCategory(@PathVariable("categoryId") Integer categoryId, Vacancy vacancies) {
-        vacanciesService.getAllVacanciesCategory(categoryId, vacancies);
-        return HttpStatus.OK;
+    public List<VacancyDto> allVacanciesCategory(@PathVariable("categoryId") Long categoryId) {
+        return vacanciesService.getAllVacanciesCategory(categoryId);
     }
 
     @GetMapping("isActive")
@@ -49,4 +48,11 @@ public class VacanciesController {
         vacanciesService.getAllVacanciesIsActive(vacancies);
         return HttpStatus.OK;
     }
+
+    @GetMapping("response")
+    public List<VacancyDto> allVacanciesByResponse() {
+       return vacanciesService.getAllVacancyByResponded();
+    }
+
+
 }
