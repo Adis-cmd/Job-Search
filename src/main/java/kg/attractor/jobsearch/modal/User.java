@@ -1,16 +1,14 @@
 package kg.attractor.jobsearch.modal;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
-@Builder
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class User {
-    private Integer id;
+    private Long id;
     private String name;
     private String surname;
     private Integer age;

@@ -1,23 +1,21 @@
 package kg.attractor.jobsearch.modal;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Data
-@Builder
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class Resume {
-    private int id;
-    private Integer applicantId;
+    private Long id;
+    private Long applicantId;
     private String name;
-    private Integer categoryId;
+    private Long categoryId;
     private Double salary;
-    private boolean isActive;
+    private Boolean isActive;
     private LocalDateTime createdDate;
     private LocalDateTime updateTime;
 }

@@ -1,19 +1,24 @@
 package kg.attractor.jobsearch.modal;
 
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class Vacancy {
-    private Integer id;
+    private Long id;
+    private String name;
     private String description;
-    private Integer categoryId;
+    private Long categoryId;
     private Double salary;
     private Integer expFrom;
     private Integer expTo;
-    private boolean isActive;
-    private Integer authorId;
+    private Boolean isActive;
+    private Long authorId;
     private LocalDateTime createdDate;
     private LocalDateTime updatedTime;
 
