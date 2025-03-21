@@ -1,8 +1,9 @@
 package kg.attractor.jobsearch.service;
 
+import kg.attractor.jobsearch.dto.ResumeDto;
 import kg.attractor.jobsearch.dto.UserDto;
+import kg.attractor.jobsearch.modal.User;
 import kg.attractor.jobsearch.modal.Vacancy;
-import org.apache.catalina.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,4 +23,14 @@ public interface UserService {
     ResponseEntity<?> findByName(String imageName);
 
     void createUser(UserDto userDto);
+
+    List<UserDto> getUsers(String name);
+
+    UserDto getUserEmail(String email);
+
+    UserDto getUserPhone(String phone);
+
+    Boolean userExists(String email);
+
+    List<UserDto> getUserByResponse();
 }
