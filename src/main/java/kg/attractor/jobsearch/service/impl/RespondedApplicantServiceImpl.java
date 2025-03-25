@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RespondedApplicantServiceImpl implements RespondedApplicantService {
     @Override
-    public void responseVacancies(Integer vacancyId , User user) {
+    public void responseVacancies(Long vacancyId , User user) {
         //TODO логика для отклика вакансии
     }
 }
