@@ -1,8 +1,11 @@
 package kg.attractor.jobsearch.modal;
 
+import kg.attractor.jobsearch.dto.EducationInfoDto;
+import kg.attractor.jobsearch.dto.WorkExperienceInfoDto;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,4 +21,6 @@ public class Resume {
     private Boolean isActive;
     private LocalDateTime createdDate;
     private LocalDateTime updateTime;
+    private List<WorkExperienceInfo> workExperiences;
+    private List<EducationInfo> educationInfos;
 }
