@@ -6,13 +6,15 @@ import kg.attractor.jobsearch.modal.Resume;
 import java.util.List;
 
 public interface ResumeService {
-    List<Resume> getAllResumes();
+    List<ResumeDto> getAllResumes();
 
-    Resume createResumes(ResumeDto resumesDto);
+    void createResumes(ResumeDto resumesDto, Long userId);
 
-    Resume editResumes(ResumeDto resumesDto, int resumeId);
+    void deleteResumes(Long resumeId);
 
-    void deleteResumes(int resumeId);
+    List<ResumeDto> getResumeById(Long resumeId);
+
+    void editResume(ResumeDto resumesDto, Long resumeId);
 
     List<ResumeDto> getResumeCategory(Long categoryId);
 
