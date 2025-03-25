@@ -58,4 +58,21 @@ public class UserDao {
                 """;
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
     }
+    public void editProfile(User user, Long userId) {
+        String sql = "update users set" +
+                " name = ?, surname = ?, age = ?, email = ?, password = ?, phoneNumber = ?, accountType = ?" +
+                " where id = ?";
+
+        jdbcTemplate.update(
+                sql,
+                user.getName(),
+                user.getSurname(),
+                user.getAge(),
+                user.getEmail(),
+                user.getPassword(),
+                user.getPhoneNumber(),
+                user.getAccountType(),
+                userId
+        );
+    }
 }

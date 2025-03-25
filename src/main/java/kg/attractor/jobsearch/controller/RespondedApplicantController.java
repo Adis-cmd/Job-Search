@@ -17,7 +17,7 @@ public class RespondedApplicantController {
     private final RespondedApplicantService respondedApplicantService;
 
     @PostMapping("{vacancyId}")
-    public HttpStatus respondedApplicantService(@PathVariable("vacancyId") Integer vacancyId, User user) {
+    public HttpStatus respondedApplicantService(@PathVariable("vacancyId") Long vacancyId, User user) {
         respondedApplicantService.responseVacancies(vacancyId, user);
         return HttpStatus.OK;
     }

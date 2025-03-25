@@ -17,13 +17,31 @@ public class VacancyServiceImpl implements VacancyService {
     private final VacancyDao vacancyDao;
 
     @Override
-    public void editVacancies(VacancyDto vacanciesDto, int vacancyId) {
+    public void editVacancies(VacancyDto vacanciesDto, Long vacancyId) {
+
+        Vacancy v = auxiliaryMethod(vacanciesDto);
+
+        vacancyDao.editVacancy(v, vacancyId);
         //TODO логика для редактирование вакансии
     }
 
     @Override
-    public void createVacancies(VacancyDto vacanciesDto) {
+    public void createVacancies(VacancyDto vacanciesDto, Long authorId) {
+        Vacancy v = auxiliaryMethod(vacanciesDto);
+        vacancyDao.createVacancy(v, authorId);
         //TODO логика для создании вакансии
+    }
+
+    private Vacancy auxiliaryMethod(VacancyDto vacanciesDto) {
+        Vacancy v = new Vacancy();
+        v.setName(vacanciesDto.getName());
+        v.setDescription(vacanciesDto.getDescription());
+        v.setCategoryId(vacanciesDto.getCategoryId());
+        v.setSalary(vacanciesDto.getSalary());
+        v.setExpFrom(vacanciesDto.getExpFrom());
+        v.setExpTo(vacanciesDto.getExpTo());
+        v.setIsActive(vacanciesDto.getIsActive());
+        return v;
     }
 
 
@@ -35,7 +53,8 @@ public class VacancyServiceImpl implements VacancyService {
 
 
     @Override
-    public void deleteVacancies(Integer vacancyId, Vacancy vacancies) {
+    public void deleteVacancies(Long vacancyId) {
+        vacancyDao.deleteVacancy(vacancyId);
         //TODO логика для удаление вакансии по id
     }
 
@@ -80,8 +99,9 @@ public class VacancyServiceImpl implements VacancyService {
 
 
     @Override
-    public List<Vacancy> getAllVacanciesIsActive(Vacancy vacancies) {
+    public List<VacancyDto> getAllVacanciesIsActive() {
+        List<Vacancy> v = vacancyDao.getAllVacancyIsActive();
+        return getVacancyDto(v);
         //TODO логика для поиска всех активных вакансий
-        return List.of();
     }
 }

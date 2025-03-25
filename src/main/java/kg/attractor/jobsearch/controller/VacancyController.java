@@ -16,20 +16,20 @@ public class VacancyController {
     private final VacancyService vacanciesService;
 
     @PostMapping("add")
-    public HttpStatus createVacancies(@RequestBody VacancyDto vacanciesDto) {
-        vacanciesService.createVacancies(vacanciesDto);
+    public HttpStatus createVacancies(@RequestBody VacancyDto vacanciesDto, @RequestParam(name = "authorId")  Long authorId) {
+        vacanciesService.createVacancies(vacanciesDto,  authorId);
         return HttpStatus.CREATED;
     }
 
     @PutMapping("update/{vacancyId}")
-    public HttpStatus editVacancies(@PathVariable("vacancyId") VacancyDto vacanciesDto, int vacancyId) {
+    public HttpStatus editVacancies(@PathVariable("vacancyId") VacancyDto vacanciesDto, Long vacancyId) {
         vacanciesService.editVacancies(vacanciesDto, vacancyId);
         return HttpStatus.OK;
     }
 
     @DeleteMapping("delete/{vacanciesId}")
-    public HttpStatus deleteVacancies(@PathVariable("vacanciesId") Integer vacancyId, Vacancy vacancies) {
-        vacanciesService.deleteVacancies(vacancyId, vacancies);
+    public HttpStatus deleteVacancies(@PathVariable("vacanciesId") Long vacancyId) {
+        vacanciesService.deleteVacancies(vacancyId);
         return HttpStatus.OK;
     }
 
@@ -44,9 +44,8 @@ public class VacancyController {
     }
 
     @GetMapping("isActive")
-    public HttpStatus allIsActiveVacancies(Vacancy vacancies) {
-        vacanciesService.getAllVacanciesIsActive(vacancies);
-        return HttpStatus.OK;
+    public List<VacancyDto> allIsActiveVacancies() {
+        return vacanciesService.getAllVacanciesIsActive();
     }
 
     @GetMapping("response")
