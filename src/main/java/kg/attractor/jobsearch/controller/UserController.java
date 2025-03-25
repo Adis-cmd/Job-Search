@@ -1,8 +1,6 @@
 package kg.attractor.jobsearch.controller;
 
 import kg.attractor.jobsearch.dto.UserDto;
-import kg.attractor.jobsearch.modal.User;
-import kg.attractor.jobsearch.modal.Vacancy;
 import kg.attractor.jobsearch.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,15 +17,20 @@ public class UserController {
     private final UserService userService;
 
 
+    @PutMapping("edit")
+    public void editUser(@RequestBody UserDto userDto, @RequestParam(name = "id") Long id) {
+        userService.editUser(userDto, id);
+    }
+
     @GetMapping("applicant/{userId}")
-    public HttpStatus findUser(@PathVariable("userId") Integer userId, User user) {
-        userService.findUser(userId, user);
+    public HttpStatus findUser(@PathVariable("userId") Long userId) {
+        userService.findUser(userId);
         return HttpStatus.OK;
     }
 
     @GetMapping("employee/{emoloyeeId}")
-    public HttpStatus findEmployee(@PathVariable("emoloyeeId") Integer employeeId, User user) {
-        userService.findEmployee(employeeId, user);
+    public HttpStatus findEmployee(@PathVariable("emoloyeeId") Long employeeId) {
+        userService.findEmployee(employeeId);
         return HttpStatus.OK;
     }
 
@@ -42,10 +45,9 @@ public class UserController {
     }
 
 
-    @GetMapping("search")
-    public HttpStatus searchVacancies(Vacancy vacancies) {
-        userService.searchSuccessfulApplicants(vacancies);
-        return HttpStatus.OK;
+    @GetMapping("search/{vacancyId}")
+    public List<UserDto> searchVacancies(@PathVariable Long vacancyId) {
+       return userService.searchSuccessfulApplicants(vacancyId);
     }
 
     @GetMapping("name/{name}")
