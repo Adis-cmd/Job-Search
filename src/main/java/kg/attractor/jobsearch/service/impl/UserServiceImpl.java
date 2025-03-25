@@ -4,7 +4,6 @@ import kg.attractor.jobsearch.dao.UserDao;
 import kg.attractor.jobsearch.dto.UserDto;
 import kg.attractor.jobsearch.exception.UserServiceException;
 import kg.attractor.jobsearch.modal.User;
-import kg.attractor.jobsearch.modal.Vacancy;
 import kg.attractor.jobsearch.service.UserService;
 import kg.attractor.jobsearch.util.FileUtil;
 import lombok.RequiredArgsConstructor;
@@ -22,20 +21,19 @@ public class UserServiceImpl implements UserService {
     private final UserDao userDao;
 
     @Override
-    public List<User> searchSuccessfulApplicants(Vacancy vacancies) {
+    public List<UserDto> searchSuccessfulApplicants(Long vacancyId) {
         //TODO логика для поиска откликнувшихся соискателей на вакансию
         return List.of();
     }
 
-
     @Override
-    public void findUser(Integer userId, User user) {
+    public void findUser(Long userId) {
         //TODO логика для поиска заявителя
     }
 
 
     @Override
-    public void findEmployee(Integer employeeId, User user) {
+    public void findEmployee(Long employeeId) {
         //TODO логика для поиска компании
     }
 
@@ -63,11 +61,25 @@ public class UserServiceImpl implements UserService {
         //TODO логика для создание пользователя
     }
 
+    @Override
+    public void editUser(UserDto userDto, Long userId) {
+        User user = new User();
+        user.setName(userDto.getName());
+        user.setSurname(userDto.getSurname());
+        user.setAge(userDto.getAge());
+        user.setEmail(userDto.getEmail());
+        user.setPassword(userDto.getPassword());
+        user.setPhoneNumber(userDto.getPhoneNumber());
+        user.setAccountType(userDto.getAccountType());
+        userDao.editProfile(user, userId);
+    }
+
 
     @Override
     public List<UserDto> getUsers(String name) {
         List<User> user = userDao.getAllUserName(name);
         return userDto(user);
+        //TODO логика для поиска пользователя по его имени
     }
 
 
@@ -76,6 +88,7 @@ public class UserServiceImpl implements UserService {
         User user = userDao.getUserEmail(email)
                 .orElseThrow(() -> new UserServiceException("Не найден пользователь с такой почтой"));
         return userDtos(user);
+        //TODO Логика для поиска пользователя по его email
     }
 
     @Override
@@ -83,11 +96,13 @@ public class UserServiceImpl implements UserService {
         User user = userDao.getUserPhone(phone)
                 .orElseThrow(() -> new UserServiceException("Не найден пользователь с таким номером"));
         return userDtos(user);
+        //TODO Логика для поиска пользователя по его телефону
     }
 
     @Override
     public Boolean userExists(String email) {
         return userDao.userExists(email);
+        //TODO Логика что выводит существует ли такоей то пользователь по его id
     }
 
     @Override

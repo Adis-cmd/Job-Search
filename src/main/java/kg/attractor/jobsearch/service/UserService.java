@@ -10,11 +10,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface UserService {
-    List<User> searchSuccessfulApplicants(Vacancy vacancies);
+    List<UserDto> searchSuccessfulApplicants(Long vacancyId);
 
-    void findUser(Integer userId, User user);
+    void findUser(Long userId);
 
-    void findEmployee(Integer employeeId, User user);
+    void findEmployee(Long employeeId);
 
     ResponseEntity<UserDto> author(UserDto userDto);
 
@@ -23,6 +23,8 @@ public interface UserService {
     ResponseEntity<?> findByName(String imageName);
 
     void createUser(UserDto userDto);
+
+    void editUser(UserDto userDto, Long userId);
 
     List<UserDto> getUsers(String name);
 
