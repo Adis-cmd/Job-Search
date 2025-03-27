@@ -11,14 +11,14 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping("user")
+@RequestMapping("users")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
 
 
-    @PutMapping("edit")
-    public void editUser(@RequestBody UserDto userDto, @RequestParam(name = "id") Long id) {
+    @PutMapping("{id}")
+    public void editUser(@RequestBody UserDto userDto, @PathVariable Long id) {
         userService.editUser(userDto, id);
     }
 
@@ -29,9 +29,9 @@ public class UserController {
     }
 
     @GetMapping("employee/{emoloyeeId}")
-    public HttpStatus findEmployee(@PathVariable("emoloyeeId") Long employeeId) {
-        userService.findEmployee(employeeId);
-        return HttpStatus.OK;
+    public ResponseEntity<UserDto> findEmployee(@PathVariable Long employeeId) {
+        UserDto employee = userService.findEmployee(employeeId);
+        return new ResponseEntity<>(employee, HttpStatus.OK);
     }
 
     @GetMapping("photos/{imageName}")
@@ -46,32 +46,38 @@ public class UserController {
 
 
     @GetMapping("search/{vacancyId}")
-    public List<UserDto> searchVacancies(@PathVariable Long vacancyId) {
-       return userService.searchSuccessfulApplicants(vacancyId);
+    public ResponseEntity<List<UserDto>> searchVacancies(@PathVariable Long vacancyId) {
+        List<UserDto> applicants = userService.searchSuccessfulApplicants(vacancyId);
+        return new ResponseEntity<>(applicants, HttpStatus.OK);
     }
 
     @GetMapping("name/{name}")
-    public List<UserDto> getUser(@PathVariable String name) {
-        return userService.getUsers(name);
+    public ResponseEntity<List<UserDto>> getUserByName(@PathVariable String name) {
+        List<UserDto> users = userService.getUsers(name);
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @GetMapping("email/{email}")
-    public UserDto getUserEmail(@PathVariable String email) {
-        return userService.getUserEmail(email);
+    public ResponseEntity<UserDto> getUserByEmail(@PathVariable String email) {
+        UserDto user = userService.getUserEmail(email);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping("phone/{phone}")
-    public UserDto getUserPhone(@PathVariable String phone) {
-        return userService.getUserPhone(phone);
+    public ResponseEntity<UserDto> getUserByPhone(@PathVariable String phone) {
+        UserDto user = userService.getUserPhone(phone);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @GetMapping("search/{email}")
-    public Boolean searchUser(@PathVariable String email) {
-        return userService.userExists(email);
+    @GetMapping("/exist/{email}")
+    public ResponseEntity<Boolean> searchUser(@PathVariable String email) {
+        Boolean exists = userService.userExists(email);
+        return new ResponseEntity<>(exists, HttpStatus.OK);
     }
 
-    @GetMapping("response")
-    public List<UserDto> getAllUsers() {
-        return userService.getUserByResponse();
+    @GetMapping("/responses")
+    public ResponseEntity<List<UserDto>> getAllUsers() {
+        List<UserDto> users = userService.getUserByResponse();
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 }
