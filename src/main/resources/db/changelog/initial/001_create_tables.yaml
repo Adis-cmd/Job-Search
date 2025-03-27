@@ -27,7 +27,7 @@ databaseChangeLog:
                   type: varchar(125)
               - column:
                   name: password
-                  type: varchar(255)
+                  type: varchar(120)
               - column:
                   name: phoneNumber
                   type: varchar(50)
