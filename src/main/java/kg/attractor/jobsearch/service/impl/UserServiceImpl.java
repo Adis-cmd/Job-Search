@@ -33,8 +33,9 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public void findEmployee(Long employeeId) {
+    public UserDto findEmployee(Long employeeId) {
         //TODO логика для поиска компании
+        return null;
     }
 
     @Override
