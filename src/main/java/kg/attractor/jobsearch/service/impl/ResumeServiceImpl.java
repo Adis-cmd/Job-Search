@@ -4,6 +4,7 @@ import kg.attractor.jobsearch.dao.EducationInfoDao;
 import kg.attractor.jobsearch.dao.ResumeDao;
 import kg.attractor.jobsearch.dao.WorkExperienceInfoDao;
 import kg.attractor.jobsearch.dto.ResumeDto;
+import kg.attractor.jobsearch.exception.ResumeServiceException;
 import kg.attractor.jobsearch.modal.EducationInfo;
 import kg.attractor.jobsearch.modal.Resume;
 import kg.attractor.jobsearch.modal.WorkExperienceInfo;
@@ -20,8 +21,6 @@ import java.util.List;
 public class ResumeServiceImpl implements ResumeService {
 
     private final ResumeDao resumeDao;
-    private final WorkExperienceInfoService workExperienceInfoService;
-    private final EducationInfoService  educationInfoService;
     private final EducationInfoDao educationInfoDao;
     private final WorkExperienceInfoDao workExperienceInfoDao;
 
@@ -40,12 +39,12 @@ public class ResumeServiceImpl implements ResumeService {
         resume.setSalary(resumesDto.getSalary());
         resume.setIsActive(resumesDto.getIsActive());
 
-        resumeDao.createResumes(resume, userId);
+        Long resumeId =  resumeDao.createResumes(resume, userId);
 
         if (resumesDto.getEducationInfos() != null) {
             resumesDto.getEducationInfos().forEach(educationInfoDto -> {
                 EducationInfo edu = new EducationInfo();
-                edu.setResumeId(resume.getId());
+                edu.setResumeId(resumeId);
                 edu.setInstitution(educationInfoDto.getInstitution());
                 edu.setProgram(educationInfoDto.getProgram());
                 edu.setStartDate(educationInfoDto.getStartDate());
@@ -79,8 +78,8 @@ public class ResumeServiceImpl implements ResumeService {
 
 
     @Override
-    public List<ResumeDto> getResumeById(Long resumeId) {
-        List<Resume> resumes = resumeDao.getResumeById(resumeId);
+    public ResumeDto getResumeById(Long resumeId) {
+        Resume resumes = resumeDao.getResumeById(resumeId).orElseThrow(() -> new ResumeServiceException("Не найденно резюме с таким id"));
         return resumeDtos(resumes);
         //TODO метод для поиска резюме по его id
     }
@@ -110,6 +109,20 @@ public class ResumeServiceImpl implements ResumeService {
         List<Resume> resume = resumeDao.getResumeByUser(userid);
         return resumeDtos(resume);
         //TODO логика для поиска резюме по id пользователя
+    }
+
+
+    private ResumeDto resumeDtos(Resume resume) {
+        return ResumeDto.builder()
+                .id(resume.getId())
+                .applicantId(resume.getApplicantId())
+                .name(resume.getName())
+                .categoryId(resume.getCategoryId())
+                .salary(resume.getSalary())
+                .isActive(resume.getIsActive())
+                .createdDate(resume.getCreatedDate())
+                .updateTime(resume.getUpdateTime())
+                .build();
     }
 
     private List<ResumeDto> resumeDtos(List<Resume> resume) {
