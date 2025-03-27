@@ -19,10 +19,10 @@ INSERT INTO vacancy (name, description, categoryId, salary, expFrom, expTo, isAc
                      updatedTime)
 VALUES ('Старший Бэкенд-разработчик', 'Разработка серверной логики и API',
         (SELECT id FROM category WHERE name = 'Старший Бэкенд-разработчик' LIMIT 1), 60000.00, 5, 10, TRUE,
-        (SELECT id FROM users WHERE name = 'Мария' LIMIT 1), NOW(), NOW()),
+        (SELECT id FROM users WHERE email = 'maria.petrova@employer.com' LIMIT 1), NOW(), NOW()),
        ('Младший Фронтенд-разработчик', 'Разработка клиентской части приложений',
         (SELECT id FROM category WHERE name = 'Младший Фронтенд-разработчик' LIMIT 1), 55000.00, 2, 5, TRUE,
-        (SELECT id FROM users WHERE name = 'Мария' LIMIT 1), NOW(), NOW());
+        (SELECT id FROM users WHERE email = 'maria.petrova@employer.com' LIMIT 1), NOW(), NOW());
 
 
 INSERT INTO contact_type (type)
