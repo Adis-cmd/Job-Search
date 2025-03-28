@@ -1,9 +1,9 @@
 package kg.attractor.jobsearch.dao;
 
+import kg.attractor.jobsearch.exception.CategoryServiceException;
 import kg.attractor.jobsearch.exception.ResumeServiceException;
 import kg.attractor.jobsearch.exception.UserServiceException;
 import kg.attractor.jobsearch.modal.Resume;
-import kg.attractor.jobsearch.modal.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -38,7 +38,7 @@ public class ResumeDao {
         Integer userCount = jdbcTemplate.queryForObject(sqlCheck, Integer.class, categoryId);
 
         if (userCount == 0 || userCount == null) {
-            throw new UserServiceException("Категория с таким Id не найден");
+            throw new CategoryServiceException("Категория с таким Id не найден");
         }
 
         String sql = "select * from resume where categoryId = ?";

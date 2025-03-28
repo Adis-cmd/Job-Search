@@ -8,9 +8,7 @@ import kg.attractor.jobsearch.exception.ResumeServiceException;
 import kg.attractor.jobsearch.modal.EducationInfo;
 import kg.attractor.jobsearch.modal.Resume;
 import kg.attractor.jobsearch.modal.WorkExperienceInfo;
-import kg.attractor.jobsearch.service.EducationInfoService;
 import kg.attractor.jobsearch.service.ResumeService;
-import kg.attractor.jobsearch.service.WorkExperienceInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
