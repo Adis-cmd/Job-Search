@@ -18,6 +18,13 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
     private final VacancyDao vacancyDao;
 
     @Override
+    public VacancyDto getVacancyById(String vacancyId) {
+        Long parceLong = parseId(vacancyId);
+        Vacancy vacancy = getEntityOrThrow(vacancyDao.getVacancyById(parceLong), new VacancyNotFoundException());
+        return vacancyDtos(vacancy);
+    }
+
+    @Override
     public void editVacancies(VacancyDto vacanciesDto, String vacancyId) {
         Long parceLong = parseId(vacancyId);
 
