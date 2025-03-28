@@ -20,34 +20,16 @@ public class WorkExperienceInfoServiceIml implements WorkExperienceInfoService {
     public WorkExperienceInfoDto getWorkExperienceInfoById(Long workId) {
         WorkExperienceInfo work = workExperienceInfoDao.getWorkExperienceInfoById(workId)
                 .orElseThrow(WorkExperienceInfoException::new);
-
-
-        return WorkExperienceInfoDto.builder()
-                .id(work.getId())
-                .resumeId(work.getResumeId())
-                .years(work.getYears())
-                .companyName(work.getCompanyName())
-                .position(work.getPosition())
-                .responsibilities(work.getResponsibilities())
-                .build();
+        return workDto(work);
     }
 
     @Override
     public List<WorkExperienceInfoDto> getAllWorkExperienceInfo() {
         List<WorkExperienceInfo> weid = workExperienceInfoDao.getAllWorkExperienceInfo();
 
-        return weid.stream()
-                .map(w -> WorkExperienceInfoDto.builder()
-                        .id(w.getId())
-                        .resumeId(w.getResumeId())
-                        .years(w.getYears())
-                        .companyName(w.getCompanyName())
-                        .position(w.getPosition())
-                        .responsibilities(w.getResponsibilities())
-                        .build())
-                .filter(Objects::nonNull)
-                .toList();
+        return workListToDto(weid);
     }
+
 
     @Override
     public void createWorkExperienceInfo(WorkExperienceInfoDto wDto) {
@@ -59,5 +41,30 @@ public class WorkExperienceInfoServiceIml implements WorkExperienceInfoService {
         w.setResponsibilities(wDto.getResponsibilities());
 
         workExperienceInfoDao.createWorkExperienceInfo(w);
+    }
+
+    private WorkExperienceInfoDto workDto(WorkExperienceInfo work) {
+        return WorkExperienceInfoDto.builder()
+                .id(work.getId())
+                .resumeId(work.getResumeId())
+                .years(work.getYears())
+                .companyName(work.getCompanyName())
+                .position(work.getPosition())
+                .responsibilities(work.getResponsibilities())
+                .build();
+    }
+
+    private List<WorkExperienceInfoDto> workListToDto(List<WorkExperienceInfo> list) {
+        return list.stream()
+                .map(w -> WorkExperienceInfoDto.builder()
+                        .id(w.getId())
+                        .resumeId(w.getResumeId())
+                        .years(w.getYears())
+                        .companyName(w.getCompanyName())
+                        .position(w.getPosition())
+                        .responsibilities(w.getResponsibilities())
+                        .build())
+                .filter(Objects::nonNull)
+                .toList();
     }
 }

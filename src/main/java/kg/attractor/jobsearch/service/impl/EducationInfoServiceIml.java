@@ -19,7 +19,33 @@ public class EducationInfoServiceIml implements EducationInfoService {
     @Override
     public List<EducationInfoDto> getAllEducationInfo() {
         List<EducationInfo> ed = educationInfoDao.getAllEducationInfo();
-        return ed.stream()
+        return eduDtoList(ed);
+    }
+
+    @Override
+    public EducationInfoDto getEducationInfoById(Long educationInfoId) {
+        EducationInfo educationInfo = educationInfoDao.getEducationInfoById(educationInfoId)
+                .orElseThrow(EducationInfoException::new);
+
+        return eduDto(educationInfo);
+    }
+
+
+    @Override
+    public void createEducationInfo(EducationInfoDto educationInfoDto) {
+        EducationInfo educationInfo = new EducationInfo();
+        educationInfo.setResumeId(educationInfoDto.getResumeId());
+        educationInfo.setInstitution(educationInfoDto.getInstitution());
+        educationInfo.setProgram(educationInfoDto.getProgram());
+        educationInfo.setStartDate(educationInfoDto.getStartDate());
+        educationInfo.setEndDate(educationInfoDto.getEndDate());
+        educationInfo.setDegree(educationInfoDto.getDegree());
+
+        educationInfoDao.createEducationInfo(educationInfo);
+    }
+
+    private List<EducationInfoDto> eduDtoList(List<EducationInfo> educationInfo) {
+        return educationInfo.stream()
                 .map(e -> EducationInfoDto.builder()
                         .id(e.getId())
                         .resumeId(e.getResumeId())
@@ -33,11 +59,7 @@ public class EducationInfoServiceIml implements EducationInfoService {
                 .toList();
     }
 
-    @Override
-    public EducationInfoDto getEducationInfoById(Long educationInfoId) {
-        EducationInfo educationInfo = educationInfoDao.getEducationInfoById(educationInfoId)
-                .orElseThrow(EducationInfoException::new);
-
+    private EducationInfoDto eduDto(EducationInfo educationInfo) {
         return EducationInfoDto.builder()
                 .id(educationInfo.getId())
                 .resumeId(educationInfo.getResumeId())
@@ -47,18 +69,5 @@ public class EducationInfoServiceIml implements EducationInfoService {
                 .endDate(educationInfo.getEndDate())
                 .degree(educationInfo.getDegree())
                 .build();
-    }
-
-    @Override
-    public void createEducationInfo(EducationInfoDto educationInfoDto) {
-        EducationInfo educationInfo = new EducationInfo();
-        educationInfo.setResumeId(educationInfoDto.getResumeId());
-        educationInfo.setInstitution(educationInfoDto.getInstitution());
-        educationInfo.setProgram(educationInfoDto.getProgram());
-        educationInfo.setStartDate(educationInfoDto.getStartDate());
-        educationInfo.setEndDate(educationInfoDto.getEndDate());
-        educationInfo.setDegree(educationInfoDto.getDegree());
-
-        educationInfoDao.createEducationInfo(educationInfo);
     }
 }
