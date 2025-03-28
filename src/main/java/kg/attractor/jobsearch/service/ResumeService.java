@@ -12,7 +12,7 @@ public interface ResumeService {
 
     void deleteResumes(Long resumeId);
 
-    List<ResumeDto> getResumeById(Long resumeId);
+    ResumeDto getResumeById(Long resumeId);
 
     void editResume(ResumeDto resumesDto, Long resumeId);
 
