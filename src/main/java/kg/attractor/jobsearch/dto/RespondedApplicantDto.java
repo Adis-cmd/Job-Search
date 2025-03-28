@@ -1,5 +1,6 @@
 package kg.attractor.jobsearch.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
@@ -9,7 +10,10 @@ import lombok.*;
 @NoArgsConstructor
 public class RespondedApplicantDto {
     private Long id;
+    @NotNull(message = "ID резюме обязательна")
     private Long resumeId;
+    @NotNull(message = "ID вакансии обязательна")
     private Long vacancyId;
+    @NotNull(message = "Статус подтверждения должен быть указан")
     private Boolean confirmation;
 }
