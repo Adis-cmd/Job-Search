@@ -13,7 +13,7 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
-public class EducationInfoServiceIml implements EducationInfoService {
+public class EducationInfoServiceIml extends MethodClass implements EducationInfoService {
     private final EducationInfoDao educationInfoDao;
 
     @Override
@@ -23,9 +23,10 @@ public class EducationInfoServiceIml implements EducationInfoService {
     }
 
     @Override
-    public EducationInfoDto getEducationInfoById(Long educationInfoId) {
-        EducationInfo educationInfo = educationInfoDao.getEducationInfoById(educationInfoId)
-                .orElseThrow(EducationInfoException::new);
+    public EducationInfoDto getEducationInfoById(String educationInfoId) {
+        Long parseId = parseId(educationInfoId);
+        EducationInfo educationInfo = getEntityOrThrow(educationInfoDao.getEducationInfoById(parseId),
+                new EducationInfoException());
 
         return eduDto(educationInfo);
     }
@@ -46,15 +47,7 @@ public class EducationInfoServiceIml implements EducationInfoService {
 
     private List<EducationInfoDto> eduDtoList(List<EducationInfo> educationInfo) {
         return educationInfo.stream()
-                .map(e -> EducationInfoDto.builder()
-                        .id(e.getId())
-                        .resumeId(e.getResumeId())
-                        .institution(e.getInstitution())
-                        .program(e.getProgram())
-                        .startDate(e.getStartDate())
-                        .endDate(e.getEndDate())
-                        .degree(e.getDegree())
-                        .build())
+                .map(this::eduDto)
                 .filter(Objects::nonNull)
                 .toList();
     }
