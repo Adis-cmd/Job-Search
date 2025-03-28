@@ -18,7 +18,7 @@ public class WorkExperienceInfoController {
 
 
     @GetMapping("{workId}")
-    public  WorkExperienceInfoDto getWorkExperienceInfoById(@PathVariable Long workId) {
+    public  WorkExperienceInfoDto getWorkExperienceInfoById(@PathVariable String workId) {
         return workExperienceInfoService.getWorkExperienceInfoById(workId);
     }
 

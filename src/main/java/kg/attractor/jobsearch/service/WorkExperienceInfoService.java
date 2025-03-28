@@ -5,7 +5,7 @@ import kg.attractor.jobsearch.dto.WorkExperienceInfoDto;
 import java.util.List;
 
 public interface WorkExperienceInfoService {
-    WorkExperienceInfoDto getWorkExperienceInfoById(Long workId);
+    WorkExperienceInfoDto getWorkExperienceInfoById(String workId);
 
     List<WorkExperienceInfoDto> getAllWorkExperienceInfo();
 
