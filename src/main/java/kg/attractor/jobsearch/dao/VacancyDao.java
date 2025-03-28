@@ -1,6 +1,7 @@
 package kg.attractor.jobsearch.dao;
 
-import kg.attractor.jobsearch.dto.VacancyDto;
+import kg.attractor.jobsearch.exception.CategoryServiceException;
+import kg.attractor.jobsearch.exception.UserServiceException;
 import kg.attractor.jobsearch.modal.Vacancy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.support.DataAccessUtils;
@@ -36,6 +37,13 @@ public class VacancyDao {
     }
 
     public List<Vacancy> getVacanciesByCategory(Long categoryId) {
+        String sqlCheck = "SELECT COUNT(*) FROM category WHERE id = ?";
+        Integer userCount = jdbcTemplate.queryForObject(sqlCheck, Integer.class, categoryId);
+
+        if (userCount == 0 || userCount == null) {
+            throw new CategoryServiceException("Категория с таким Id не найден");
+        }
+
         String sql = "select * from vacancy where categoryId = ?";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Vacancy.class), categoryId);
     }
@@ -49,6 +57,14 @@ public class VacancyDao {
 
 
     public void createVacancy(Vacancy vacancy, Long authorId) {
+        String sqlCheck = "SELECT COUNT(*) FROM users WHERE id = ?";
+
+        Integer userCount = jdbcTemplate.queryForObject(sqlCheck, Integer.class, authorId);
+
+        if (userCount == 0 || userCount == null) {
+            throw new UserServiceException("Пользователь с таким Id не найден");
+        }
+
         String sql = "insert into vacancy " +
                 "(name, description, categoryId, salary, expFrom, expTo, isActive, authorId, createdDate, updatedDate)" +
                 " values (:name, :description, :categoryId, :salary, :expFrom, :expTo, :isActive, :authorId, :createdDate, :updatedDate)";
@@ -89,7 +105,6 @@ public class VacancyDao {
 
     public  void deleteVacancy(Long vacancyId) {
         String sql = "delete from vacancy where id = ? Limit 1";
-
         jdbcTemplate.update(sql, vacancyId);
     }
 
