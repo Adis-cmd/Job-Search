@@ -7,7 +7,7 @@ import java.util.List;
 public interface EducationInfoService {
     List<EducationInfoDto> getAllEducationInfo();
 
-    EducationInfoDto getEducationInfoById(Long educationInfoId);
+    EducationInfoDto getEducationInfoById(String educationInfoId);
 
     void createEducationInfo(EducationInfoDto educationInfoDto);
 }

@@ -8,15 +8,15 @@ import java.util.List;
 public interface ResumeService {
     List<ResumeDto> getAllResumes();
 
-    void createResumes(ResumeDto resumesDto, Long userId);
+    void createResumes(ResumeDto resumesDto, String userId);
 
-    void deleteResumes(Long resumeId);
+    void deleteResumes(String resumeId);
 
-    ResumeDto getResumeById(Long resumeId);
+    ResumeDto getResumeById(String resumeId);
 
-    void editResume(ResumeDto resumesDto, Long resumeId);
+    void editResume(ResumeDto resumesDto, String resumeId);
 
-    List<ResumeDto> getResumeCategory(Long categoryId);
+    List<ResumeDto> getResumeCategory(String categoryId);
 
-    List<ResumeDto> getResumeByUserid(Long userid);
+    List<ResumeDto> getResumeByUserid(String userid);
 }

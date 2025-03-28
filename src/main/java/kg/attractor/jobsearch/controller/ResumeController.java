@@ -23,35 +23,35 @@ public class ResumeController {
     }
 
     @PostMapping("add")
-    public HttpStatus addResumes(@Valid @RequestBody ResumeDto resumesDto, @RequestParam(name = "userId")  Long userId) {
+    public HttpStatus addResumes(@Valid @RequestBody ResumeDto resumesDto, @RequestParam(name = "userId")  String userId) {
         resumesService.createResumes(resumesDto,  userId);
         return HttpStatus.CREATED;
     }
 
     @PutMapping("update/{resumeId}")
-    public HttpStatus updateResumes(@Valid @PathVariable("resumeId") Long resumeId, @RequestBody ResumeDto resumesDto) {
+    public HttpStatus updateResumes(@Valid @PathVariable("resumeId") String resumeId, @RequestBody ResumeDto resumesDto) {
         resumesService.editResume(resumesDto, resumeId);
         return HttpStatus.OK;
     }
 
     @DeleteMapping("delete/{resumeId}")
-    public HttpStatus deleteResumes(@PathVariable("resumeId") Long resumeId) {
+    public HttpStatus deleteResumes(@PathVariable("resumeId") String resumeId) {
         resumesService.deleteResumes(resumeId);
         return HttpStatus.OK;
     }
 
     @GetMapping("search/{categoryId}")
-    public List<ResumeDto> searchResumesCategory(@PathVariable Long categoryId) {
+    public List<ResumeDto> searchResumesCategory(@PathVariable String categoryId) {
         return resumesService.getResumeCategory(categoryId);
     }
 
     @GetMapping("user/{userId}")
-    public List<ResumeDto> getAllResumesByUserId(@PathVariable Long userId) {
+    public List<ResumeDto> getAllResumesByUserId(@PathVariable String userId) {
         return resumesService.getResumeByUserid(userId);
     }
 
     @GetMapping
-    public ResumeDto getResumesById(@RequestParam(name = "id") Long id) {
+    public ResumeDto getResumesById(@RequestParam(name = "id") String id) {
         return resumesService.getResumeById(id);
     }
 

@@ -23,13 +23,13 @@ public class UserController {
     }
 
     @GetMapping("applicant/{userId}")
-    public HttpStatus findUser(@PathVariable("userId") Long userId) {
+    public HttpStatus findUser(@PathVariable("userId") String userId) {
         userService.findUser(userId);
         return HttpStatus.OK;
     }
 
     @GetMapping("employee/{emoloyeeId}")
-    public ResponseEntity<UserDto> findEmployee(@PathVariable Long employeeId) {
+    public ResponseEntity<UserDto> findEmployee(@PathVariable String employeeId) {
         UserDto employee = userService.findEmployee(employeeId);
         return new ResponseEntity<>(employee, HttpStatus.OK);
     }

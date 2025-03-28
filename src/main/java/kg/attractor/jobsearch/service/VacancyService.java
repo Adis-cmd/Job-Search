@@ -6,15 +6,17 @@ import kg.attractor.jobsearch.modal.Vacancy;
 import java.util.List;
 
 public interface VacancyService {
-    void editVacancies(VacancyDto vacanciesDto, Long vacancyId);
+    VacancyDto getVacancyById(String vacancyId);
 
-    void createVacancies(VacancyDto vacanciesDto, Long authorId);
+    void editVacancies(VacancyDto vacanciesDto, String vacancyId);
+
+    void createVacancies(VacancyDto vacanciesDto, String authorId);
 
     List<VacancyDto> getVacancies();
 
-    void deleteVacancies(Long vacancyId);
+    void deleteVacancies(String vacancyId);
 
-    List<VacancyDto> getAllVacanciesCategory(Long categoryId);
+    List<VacancyDto> getAllVacanciesCategory(String categoryId);
 
     List<VacancyDto> getAllVacancyByResponded();
 

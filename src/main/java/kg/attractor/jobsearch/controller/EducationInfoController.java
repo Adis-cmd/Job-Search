@@ -18,7 +18,7 @@ public class EducationInfoController {
     private final EducationInfoService educationInfoService;
 
     @GetMapping("{educationInfoId}")
-    public EducationInfoDto getEducationIngoById(@PathVariable Long educationInfoId) {
+    public EducationInfoDto getEducationIngoById(@PathVariable String educationInfoId) {
         return  educationInfoService.getEducationInfoById(educationInfoId);
     }
     @GetMapping

@@ -15,20 +15,25 @@ import java.util.List;
 public class VacancyController {
     private final VacancyService vacanciesService;
 
+    @GetMapping("search/{vacancyId}")
+    public VacancyDto getVacancyById(@PathVariable String vacancyId) {
+        return vacanciesService.getVacancyById(vacancyId);
+    }
+
     @PostMapping("add")
-    public HttpStatus createVacancies(@Valid @RequestBody VacancyDto vacanciesDto, @RequestParam(name = "authorId")  Long authorId) {
-        vacanciesService.createVacancies(vacanciesDto,  authorId);
+    public HttpStatus createVacancies(@Valid @RequestBody VacancyDto vacanciesDto, @RequestParam(name = "authorId") String authorId) {
+        vacanciesService.createVacancies(vacanciesDto, authorId);
         return HttpStatus.CREATED;
     }
 
     @PutMapping("update/{vacancyId}")
-    public HttpStatus editVacancies(@Valid @PathVariable("vacancyId") VacancyDto vacanciesDto, Long vacancyId) {
+    public HttpStatus editVacancies(@Valid @PathVariable("vacancyId") VacancyDto vacanciesDto, String vacancyId) {
         vacanciesService.editVacancies(vacanciesDto, vacancyId);
         return HttpStatus.OK;
     }
 
     @DeleteMapping("delete/{vacanciesId}")
-    public HttpStatus deleteVacancies(@PathVariable("vacanciesId") Long vacancyId) {
+    public HttpStatus deleteVacancies(@PathVariable("vacanciesId") String vacancyId) {
         vacanciesService.deleteVacancies(vacancyId);
         return HttpStatus.OK;
     }
@@ -39,7 +44,7 @@ public class VacancyController {
     }
 
     @GetMapping("search/category/{categoryId}")
-    public List<VacancyDto> allVacanciesCategory(@PathVariable("categoryId") Long categoryId) {
+    public List<VacancyDto> allVacanciesCategory(@PathVariable("categoryId") String categoryId) {
         return vacanciesService.getAllVacanciesCategory(categoryId);
     }
 

@@ -9,9 +9,9 @@ import java.util.List;
 public interface UserService {
     List<UserDto> searchSuccessfulApplicants(Long vacancyId);
 
-    void findUser(Long userId);
+    UserDto findUser(String userId);
 
-    UserDto findEmployee(Long employeeId);
+    UserDto findEmployee(String employeeId);
 
     ResponseEntity<UserDto> author(UserDto userDto);
 
