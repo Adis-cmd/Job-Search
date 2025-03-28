@@ -1,6 +1,9 @@
 package kg.attractor.jobsearch.dao;
 
+import kg.attractor.jobsearch.exception.ResumeServiceException;
+import kg.attractor.jobsearch.exception.UserServiceException;
 import kg.attractor.jobsearch.modal.Resume;
+import kg.attractor.jobsearch.modal.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -31,12 +34,27 @@ public class ResumeDao {
     }
 
     public List<Resume> getResume(Long categoryId) {
+        String sqlCheck = "SELECT COUNT(*) FROM category WHERE id = ?";
+        Integer userCount = jdbcTemplate.queryForObject(sqlCheck, Integer.class, categoryId);
+
+        if (userCount == 0 || userCount == null) {
+            throw new UserServiceException("Категория с таким Id не найден");
+        }
+
         String sql = "select * from resume where categoryId = ?";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Resume.class), categoryId);
     }
 
 
     public List<Resume> getResumeByUser(Long userId) {
+        String sqlCount = "SELECT COUNT(*) FROM users WHERE id = ?";
+
+        Integer userCount = jdbcTemplate.queryForObject(sqlCount, Integer.class, userId);
+
+        if (userCount == 0 || userCount == null) {
+            throw new UserServiceException("Пользователь с таким Id не найден");
+        }
+
         String sql = "select * from resume where applicantId = ?";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Resume.class), userId);
     }
@@ -53,8 +71,13 @@ public class ResumeDao {
     }
 
     public void editResume(Resume resume, Long resumeId) {
+
         String sql = "update resume set name = ?, categoryId = ?, salary = ?, isActive = ?, updateTime = ? " +
                 "where id = ?";
+
+        if (resumeId == 0 || resumeId == null) {
+            throw new ResumeServiceException("Резюме с таким Id не найден");
+        }
 
         jdbcTemplate.update(sql,
                 resume.getName(),
@@ -74,22 +97,29 @@ public class ResumeDao {
 
 
     public Long createResumes(Resume resume, Long userId) {
+        String sqlCheck = "SELECT COUNT(*) FROM users WHERE id = ?";
+
+        Integer userCount = jdbcTemplate.queryForObject(sqlCheck, Integer.class, userId);
+
+        if (userCount == 0 || userCount == null) {
+            throw new UserServiceException("Пользователь с таким Id не найден");
+        }
+
         String sql = "insert into resume " +
-                "(applicantId, name, categoryId, salary, isActive , createdDate, updateTime)" +
+                "(applicantId, name, categoryId, salary, createdDate, updateTime)" +
                 " values (:applicantId, :name, :categoryId, :salary, :isActive, :createdDate, :updateTime)";
 
-         namedParameterJdbcTemplate.update(
+        namedParameterJdbcTemplate.update(
                 sql,
                 new MapSqlParameterSource()
                         .addValue("applicantId", userId)
                         .addValue("name", resume.getName())
                         .addValue("categoryId", resume.getCategoryId())
                         .addValue("salary", resume.getSalary())
-                        .addValue("isActive", resume.getIsActive())
                         .addValue("createdDate", LocalDateTime.now())
                         .addValue("updateTime", LocalDateTime.now()),
-                 keyHolder,
-                 new String[]{"id"}
+                keyHolder,
+                new String[]{"id"}
 
         );
         Long generatedId = Objects.requireNonNull(keyHolder.getKey()).longValue();

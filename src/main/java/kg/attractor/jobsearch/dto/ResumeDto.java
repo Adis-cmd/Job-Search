@@ -28,7 +28,7 @@ public class ResumeDto {
     @DecimalMax(value = "1000000000.0", message = "Максимальная зарплата: 1 000 000 000")
     private Double salary;
     @NotNull(message = "Статус активности должен быть указан")
-    private Boolean isActive;
+    private Boolean isActive = true;
     private LocalDateTime createdDate;
     private LocalDateTime updateTime;
     private List<WorkExperienceInfoDto> workExperiences;

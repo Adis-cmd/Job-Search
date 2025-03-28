@@ -39,9 +39,9 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
         resume.setName(resumesDto.getName());
         resume.setCategoryId(resumesDto.getCategoryId());
         resume.setSalary(resumesDto.getSalary());
-        resume.setIsActive(resumesDto.getIsActive());
 
         Long resumeId = resumeDao.createResumes(resume, userParse);
+
 
         if (resumesDto.getEducationInfos() != null) {
             resumesDto.getEducationInfos().forEach(educationInfoDto -> {
