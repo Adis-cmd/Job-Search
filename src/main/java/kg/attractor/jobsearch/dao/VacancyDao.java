@@ -3,6 +3,7 @@ package kg.attractor.jobsearch.dao;
 import kg.attractor.jobsearch.dto.VacancyDto;
 import kg.attractor.jobsearch.modal.Vacancy;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -18,6 +20,15 @@ public class VacancyDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    public Optional<Vacancy> getVacancyById(Long vacancyId) {
+        String sql = "select * from vacancy where id = ?";
+        return Optional.ofNullable(
+                DataAccessUtils.singleResult(
+                        jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Vacancy.class), vacancyId)
+                )
+        );
+    }
 
     public List<Vacancy> getAllVacancies() {
         String sql = "select * from vacancy";
