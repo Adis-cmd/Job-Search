@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +40,7 @@ public class ResumeServiceImpl implements ResumeService {
         resume.setSalary(resumesDto.getSalary());
         resume.setIsActive(resumesDto.getIsActive());
 
-        Long resumeId =  resumeDao.createResumes(resume, userId);
+        Long resumeId = resumeDao.createResumes(resume, userId);
 
         if (resumesDto.getEducationInfos() != null) {
             resumesDto.getEducationInfos().forEach(educationInfoDto -> {
@@ -55,7 +56,7 @@ public class ResumeServiceImpl implements ResumeService {
 
             if (resumesDto.getWorkExperiences() != null) {
                 resumesDto.getWorkExperiences().forEach(workExperienceInfoDto -> {
-                   WorkExperienceInfo work = new WorkExperienceInfo();
+                    WorkExperienceInfo work = new WorkExperienceInfo();
                     work.setResumeId(resume.getId());
                     work.setYears(workExperienceInfoDto.getYears());
                     work.setCompanyName(workExperienceInfoDto.getCompanyName());
@@ -138,6 +139,7 @@ public class ResumeServiceImpl implements ResumeService {
                         .updateTime(e.getUpdateTime())
                         .build()
                 )
+                .filter(Objects::nonNull)
                 .toList();
     }
 }

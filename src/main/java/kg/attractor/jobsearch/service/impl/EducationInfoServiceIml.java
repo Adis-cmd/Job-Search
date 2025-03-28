@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +29,7 @@ public class EducationInfoServiceIml implements EducationInfoService {
                         .endDate(e.getEndDate())
                         .degree(e.getDegree())
                         .build())
+                .filter(Objects::nonNull)
                 .toList();
     }
 

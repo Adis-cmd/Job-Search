@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -125,6 +126,7 @@ public class UserServiceImpl implements UserService {
                         .age(e.getAge())
                         .accountType(e.getAccountType())
                         .build())
+                .filter(Objects::nonNull)
                 .toList();
     }
 
