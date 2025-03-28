@@ -1,9 +1,6 @@
 package kg.attractor.jobsearch.service;
 
-import kg.attractor.jobsearch.dto.ResumeDto;
 import kg.attractor.jobsearch.dto.UserDto;
-import kg.attractor.jobsearch.modal.User;
-import kg.attractor.jobsearch.modal.Vacancy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,7 +11,7 @@ public interface UserService {
 
     void findUser(Long userId);
 
-    void findEmployee(Long employeeId);
+    UserDto findEmployee(Long employeeId);
 
     ResponseEntity<UserDto> author(UserDto userDto);
 
