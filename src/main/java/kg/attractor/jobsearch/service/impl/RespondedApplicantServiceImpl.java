@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class RespondedApplicantServiceImpl implements RespondedApplicantService {
+public class RespondedApplicantServiceImpl extends MethodClass implements RespondedApplicantService {
     @Override
     public void responseVacancies(Long vacancyId , User user) {
         //TODO логика для отклика вакансии
