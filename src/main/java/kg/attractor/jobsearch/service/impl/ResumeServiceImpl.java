@@ -19,7 +19,7 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
-public class ResumeServiceImpl implements ResumeService {
+public class ResumeServiceImpl extends MethodClass implements ResumeService {
 
     private final ResumeDao resumeDao;
     private final EducationInfoDao educationInfoDao;
@@ -33,14 +33,15 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public void createResumes(ResumeDto resumesDto, Long userId) {
+    public void createResumes(ResumeDto resumesDto, String userId) {
+        Long userParse = parseId(userId);
         Resume resume = new Resume();
         resume.setName(resumesDto.getName());
         resume.setCategoryId(resumesDto.getCategoryId());
         resume.setSalary(resumesDto.getSalary());
         resume.setIsActive(resumesDto.getIsActive());
 
-        Long resumeId = resumeDao.createResumes(resume, userId);
+        Long resumeId = resumeDao.createResumes(resume, userParse);
 
         if (resumesDto.getEducationInfos() != null) {
             resumesDto.getEducationInfos().forEach(educationInfoDto -> {
@@ -72,42 +73,48 @@ public class ResumeServiceImpl implements ResumeService {
 
 
     @Override
-    public void deleteResumes(Long resumeId) {
-        resumeDao.deleteResume(resumeId);
+    public void deleteResumes(String resumeId) {
+        Long parseResumeId = parseId(resumeId);
+        resumeDao.deleteResume(parseResumeId);
         //TODO логика для удаления резюме
     }
 
 
     @Override
-    public ResumeDto getResumeById(Long resumeId) {
-        Resume resumes = resumeDao.getResumeById(resumeId).orElseThrow(() -> new ResumeServiceException("Не найденно резюме с таким id"));
+    public ResumeDto getResumeById(String resumeId) {
+        Long parseResumeId = parseId(resumeId);
+        Resume resumes = getEntityOrThrow(resumeDao.getResumeById(parseResumeId),
+                new ResumeServiceException("Не найденно резюме с таким id"));
         return resumeDtos(resumes);
         //TODO метод для поиска резюме по его id
     }
 
     @Override
-    public void editResume(ResumeDto resumesDto, Long resumeId) {
+    public void editResume(ResumeDto resumesDto, String resumeId) {
+        Long parseResumeId = parseId(resumeId);
         Resume resume = new Resume();
         resume.setName(resumesDto.getName());
         resume.setCategoryId(resumesDto.getCategoryId());
         resume.setSalary(resumesDto.getSalary());
         resume.setIsActive(resumesDto.getIsActive());
-        resumeDao.editResume(resume, resumeId);
+        resumeDao.editResume(resume, parseResumeId);
         //TODO логика для редактирование резюме
     }
 
 
     @Override
-    public List<ResumeDto> getResumeCategory(Long categoryId) {
-        List<Resume> resume = resumeDao.getResume(categoryId);
+    public List<ResumeDto> getResumeCategory(String categoryId) {
+        Long parseCategoryId = parseId(categoryId);
+        List<Resume> resume = resumeDao.getResume(parseCategoryId);
         return resumeDtos(resume);
         //TODO логика для поиска резюме по категории
     }
 
 
     @Override
-    public List<ResumeDto> getResumeByUserid(Long userid) {
-        List<Resume> resume = resumeDao.getResumeByUser(userid);
+    public List<ResumeDto> getResumeByUserid(String userid) {
+        Long parseUserId = parseId(userid);
+        List<Resume> resume = resumeDao.getResumeByUser(parseUserId);
         return resumeDtos(resume);
         //TODO логика для поиска резюме по id пользователя
     }
@@ -128,17 +135,7 @@ public class ResumeServiceImpl implements ResumeService {
 
     private List<ResumeDto> resumeDtos(List<Resume> resume) {
         return resume.stream()
-                .map(e -> ResumeDto.builder()
-                        .id(e.getId())
-                        .applicantId(e.getApplicantId())
-                        .name(e.getName())
-                        .categoryId(e.getCategoryId())
-                        .salary(e.getSalary())
-                        .isActive(e.getIsActive())
-                        .createdDate(e.getCreatedDate())
-                        .updateTime(e.getUpdateTime())
-                        .build()
-                )
+                .map(this::resumeDtos)
                 .filter(Objects::nonNull)
                 .toList();
     }

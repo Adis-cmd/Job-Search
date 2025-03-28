@@ -2,6 +2,7 @@ package kg.attractor.jobsearch.service.impl;
 
 import kg.attractor.jobsearch.dao.VacancyDao;
 import kg.attractor.jobsearch.dto.VacancyDto;
+import kg.attractor.jobsearch.exception.VacancyNotFoundException;
 import kg.attractor.jobsearch.modal.Vacancy;
 import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
@@ -12,23 +13,25 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
-public class VacancyServiceImpl implements VacancyService {
+public class VacancyServiceImpl extends MethodClass implements VacancyService {
 
     private final VacancyDao vacancyDao;
 
     @Override
-    public void editVacancies(VacancyDto vacanciesDto, Long vacancyId) {
+    public void editVacancies(VacancyDto vacanciesDto, String vacancyId) {
+        Long parceLong = parseId(vacancyId);
 
         Vacancy v = auxiliaryMethod(vacanciesDto);
 
-        vacancyDao.editVacancy(v, vacancyId);
+        vacancyDao.editVacancy(v, parceLong);
         //TODO логика для редактирование вакансии
     }
 
     @Override
-    public void createVacancies(VacancyDto vacanciesDto, Long authorId) {
+    public void createVacancies(VacancyDto vacanciesDto, String authorId) {
+        Long parceLong = parseId(authorId);
         Vacancy v = auxiliaryMethod(vacanciesDto);
-        vacancyDao.createVacancy(v, authorId);
+        vacancyDao.createVacancy(v, parceLong);
         //TODO логика для создании вакансии
     }
 
@@ -53,14 +56,16 @@ public class VacancyServiceImpl implements VacancyService {
 
 
     @Override
-    public void deleteVacancies(Long vacancyId) {
-        vacancyDao.deleteVacancy(vacancyId);
+    public void deleteVacancies(String vacancyId) {
+        Long parceLong = parseId(vacancyId);
+        vacancyDao.deleteVacancy(parceLong);
         //TODO логика для удаление вакансии по id
     }
 
     @Override
-    public List<VacancyDto> getAllVacanciesCategory(Long categoryId) {
-        List<Vacancy> vacancies = vacancyDao.getVacanciesByCategory(categoryId);
+    public List<VacancyDto> getAllVacanciesCategory(String categoryId) {
+        Long parseCategoryId = parseId(categoryId);
+        List<Vacancy> vacancies = vacancyDao.getVacanciesByCategory(parseCategoryId);
         //TODO логика для поиска вакансии по категории
         return getVacancyDto(vacancies);
     }
@@ -73,26 +78,7 @@ public class VacancyServiceImpl implements VacancyService {
 
     private List<VacancyDto> getVacancyDto(List<Vacancy> vacancies) {
         return vacancies.stream()
-                .map(v -> {
-                    try {
-                        return VacancyDto.builder()
-                                .id(v.getId())
-                                .name(v.getName())
-                                .description(v.getDescription())
-                                .categoryId(v.getCategoryId())
-                                .salary(v.getSalary())
-                                .expFrom(v.getExpFrom())
-                                .expTo(v.getExpTo())
-                                .isActive(v.getIsActive())
-                                .authorId(v.getAuthorId())
-                                .createdDate(v.getCreatedDate())
-                                .updatedTime(v.getUpdatedTime())
-                                .build();
-                    } catch (IllegalArgumentException e) {
-                        System.err.println("Validation error for Vacancy: " + e.getMessage());
-                        return null;
-                    }
-                })
+                .map(this::vacancyDtos)
                 .filter(Objects::nonNull)
                 .toList();
     }
@@ -104,4 +90,21 @@ public class VacancyServiceImpl implements VacancyService {
         return getVacancyDto(v);
         //TODO логика для поиска всех активных вакансий
     }
+
+    private VacancyDto vacancyDtos(Vacancy v) {
+        return VacancyDto.builder()
+                .id(v.getId())
+                .name(v.getName())
+                .description(v.getDescription())
+                .categoryId(v.getCategoryId())
+                .salary(v.getSalary())
+                .expFrom(v.getExpFrom())
+                .expTo(v.getExpTo())
+                .isActive(v.getIsActive())
+                .authorId(v.getAuthorId())
+                .createdDate(v.getCreatedDate())
+                .updatedTime(v.getUpdatedTime())
+                .build();
+    }
+
 }

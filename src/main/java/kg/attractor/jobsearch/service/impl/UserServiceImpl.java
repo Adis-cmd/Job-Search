@@ -17,7 +17,7 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl extends MethodClass implements UserService {
 
     private final UserDao userDao;
 
@@ -28,13 +28,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void findUser(Long userId) {
+    public UserDto findUser(String userId) {
+        Long parse = parseId(userId);
         //TODO логика для поиска заявителя
+        return null;
     }
 
 
     @Override
-    public UserDto findEmployee(Long employeeId) {
+    public UserDto findEmployee(String employeeId) {
+        Long parse = parseId(employeeId);
         //TODO логика для поиска компании
         return null;
     }
@@ -87,16 +90,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserEmail(String email) {
-        User user = userDao.getUserEmail(email)
-                .orElseThrow(() -> new UserServiceException("Не найден пользователь с такой почтой"));
+        User user = getEntityOrThrow(userDao.getUserEmail(email),
+                new UserServiceException("Не найден пользователь с такой почтой"));
         return userDtos(user);
         //TODO Логика для поиска пользователя по его email
     }
 
     @Override
     public UserDto getUserPhone(String phone) {
-        User user = userDao.getUserPhone(phone)
-                .orElseThrow(() -> new UserServiceException("Не найден пользователь с таким номером"));
+        User user = getEntityOrThrow(userDao.getUserPhone(phone),
+                new UserServiceException("Не найден пользователь с таким номером"));
         return userDtos(user);
         //TODO Логика для поиска пользователя по его телефону
     }
@@ -115,17 +118,7 @@ public class UserServiceImpl implements UserService {
 
     private List<UserDto> userDto(List<User> user) {
         return user.stream()
-                .map(e -> UserDto.builder()
-                        .id(e.getId())
-                        .name(e.getName())
-                        .surname(e.getSurname())
-                        .email(e.getEmail())
-                        .avatar(e.getAvatar())
-                        .password(e.getPassword())
-                        .phoneNumber(e.getPhoneNumber())
-                        .age(e.getAge())
-                        .accountType(e.getAccountType())
-                        .build())
+                .map(this::userDtos)
                 .filter(Objects::nonNull)
                 .toList();
     }

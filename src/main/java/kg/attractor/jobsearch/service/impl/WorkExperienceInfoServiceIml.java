@@ -13,13 +13,15 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
-public class WorkExperienceInfoServiceIml implements WorkExperienceInfoService {
+public class WorkExperienceInfoServiceIml extends MethodClass implements WorkExperienceInfoService {
     private final WorkExperienceInfoDao workExperienceInfoDao;
 
     @Override
-    public WorkExperienceInfoDto getWorkExperienceInfoById(Long workId) {
-        WorkExperienceInfo work = workExperienceInfoDao.getWorkExperienceInfoById(workId)
-                .orElseThrow(WorkExperienceInfoException::new);
+    public WorkExperienceInfoDto getWorkExperienceInfoById(String workId) {
+        Long parse = parseId(workId);
+        WorkExperienceInfo work =
+                getEntityOrThrow(workExperienceInfoDao.getWorkExperienceInfoById(parse),
+                        new WorkExperienceInfoException());
         return workDto(work);
     }
 
@@ -56,14 +58,7 @@ public class WorkExperienceInfoServiceIml implements WorkExperienceInfoService {
 
     private List<WorkExperienceInfoDto> workListToDto(List<WorkExperienceInfo> list) {
         return list.stream()
-                .map(w -> WorkExperienceInfoDto.builder()
-                        .id(w.getId())
-                        .resumeId(w.getResumeId())
-                        .years(w.getYears())
-                        .companyName(w.getCompanyName())
-                        .position(w.getPosition())
-                        .responsibilities(w.getResponsibilities())
-                        .build())
+                .map(this::workDto)
                 .filter(Objects::nonNull)
                 .toList();
     }
