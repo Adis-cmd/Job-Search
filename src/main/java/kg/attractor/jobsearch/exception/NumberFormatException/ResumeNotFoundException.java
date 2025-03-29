@@ -1,4 +1,4 @@
-package kg.attractor.jobsearch.exception;
+package kg.attractor.jobsearch.exception.NumberFormatException;
 
 import java.util.NoSuchElementException;
 

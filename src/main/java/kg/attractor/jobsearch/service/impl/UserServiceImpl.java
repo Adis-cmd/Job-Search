@@ -2,7 +2,7 @@ package kg.attractor.jobsearch.service.impl;
 
 import kg.attractor.jobsearch.dao.UserDao;
 import kg.attractor.jobsearch.dto.UserDto;
-import kg.attractor.jobsearch.exception.UserServiceException;
+import kg.attractor.jobsearch.exception.NumberFormatException.UserServiceException;
 import kg.attractor.jobsearch.modal.User;
 import kg.attractor.jobsearch.service.UserService;
 import kg.attractor.jobsearch.util.FileUtil;

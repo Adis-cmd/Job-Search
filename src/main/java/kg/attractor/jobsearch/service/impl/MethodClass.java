@@ -1,6 +1,6 @@
 package kg.attractor.jobsearch.service.impl;
 
-import kg.attractor.jobsearch.exception.IdFormatCheckException;
+import kg.attractor.jobsearch.exception.NumberFormatException.IdFormatCheckException;
 
 import java.util.Optional;
 

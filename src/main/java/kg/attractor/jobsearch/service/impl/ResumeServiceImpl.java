@@ -4,7 +4,7 @@ import kg.attractor.jobsearch.dao.EducationInfoDao;
 import kg.attractor.jobsearch.dao.ResumeDao;
 import kg.attractor.jobsearch.dao.WorkExperienceInfoDao;
 import kg.attractor.jobsearch.dto.ResumeDto;
-import kg.attractor.jobsearch.exception.ResumeServiceException;
+import kg.attractor.jobsearch.exception.NumberFormatException.ResumeServiceException;
 import kg.attractor.jobsearch.modal.EducationInfo;
 import kg.attractor.jobsearch.modal.Resume;
 import kg.attractor.jobsearch.modal.WorkExperienceInfo;

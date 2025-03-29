@@ -1,8 +1,8 @@
 package kg.attractor.jobsearch.dao;
 
-import kg.attractor.jobsearch.exception.CategoryServiceException;
-import kg.attractor.jobsearch.exception.ResumeServiceException;
-import kg.attractor.jobsearch.exception.UserServiceException;
+import kg.attractor.jobsearch.exception.NumberFormatException.CategoryServiceException;
+import kg.attractor.jobsearch.exception.NumberFormatException.ResumeServiceException;
+import kg.attractor.jobsearch.exception.NumberFormatException.UserServiceException;
 import kg.attractor.jobsearch.modal.Resume;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.support.DataAccessUtils;

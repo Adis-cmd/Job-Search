@@ -2,7 +2,7 @@ package kg.attractor.jobsearch.service.impl;
 
 import kg.attractor.jobsearch.dao.EducationInfoDao;
 import kg.attractor.jobsearch.dto.EducationInfoDto;
-import kg.attractor.jobsearch.exception.EducationInfoException;
+import kg.attractor.jobsearch.exception.NoSuchElementException.EducationInfoException;
 import kg.attractor.jobsearch.modal.EducationInfo;
 import kg.attractor.jobsearch.service.EducationInfoService;
 import lombok.RequiredArgsConstructor;

@@ -2,7 +2,7 @@ package kg.attractor.jobsearch.service.impl;
 
 import kg.attractor.jobsearch.dao.VacancyDao;
 import kg.attractor.jobsearch.dto.VacancyDto;
-import kg.attractor.jobsearch.exception.VacancyNotFoundException;
+import kg.attractor.jobsearch.exception.NoSuchElementException.VacancyNotFoundException;
 import kg.attractor.jobsearch.modal.Vacancy;
 import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
