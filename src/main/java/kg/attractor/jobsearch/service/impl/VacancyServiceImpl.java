@@ -3,6 +3,7 @@ package kg.attractor.jobsearch.service.impl;
 import kg.attractor.jobsearch.dao.VacancyDao;
 import kg.attractor.jobsearch.dto.VacancyDto;
 import kg.attractor.jobsearch.exception.NoSuchElementException.VacancyNotFoundException;
+import kg.attractor.jobsearch.exception.NumberFormatException.VacancyServiceException;
 import kg.attractor.jobsearch.modal.Vacancy;
 import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
@@ -48,9 +49,11 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
         v.setDescription(vacanciesDto.getDescription());
         v.setCategoryId(vacanciesDto.getCategoryId());
         v.setSalary(vacanciesDto.getSalary());
+        if (vacanciesDto.getExpFrom() > vacanciesDto.getExpTo()) {
+            throw new VacancyServiceException("Начало опыта работы не может быть больше конца.");
+        }
         v.setExpFrom(vacanciesDto.getExpFrom());
         v.setExpTo(vacanciesDto.getExpTo());
-        v.setIsActive(vacanciesDto.getIsActive());
         return v;
     }
 

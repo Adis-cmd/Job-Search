@@ -40,8 +40,7 @@ public class VacancyDto {
     @Min(value = 0, message = "Опыт не может быть отрицательным")
     @Max(value = 50, message = "Максимальный опыт не может превышать 50 лет")
     private Integer expTo;
-    @NotNull(message = "Статус активности должен быть указан")
-    private Boolean isActive;
+    Boolean isActive = true;
     private Long authorId;
     private LocalDateTime createdDate;
     private LocalDateTime updatedTime;
