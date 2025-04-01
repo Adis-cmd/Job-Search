@@ -3,16 +3,20 @@ package kg.attractor.jobsearch.service.impl;
 import kg.attractor.jobsearch.dao.UserDao;
 import kg.attractor.jobsearch.dto.UserDto;
 import kg.attractor.jobsearch.exception.NumberFormatException.UserServiceException;
+import kg.attractor.jobsearch.exception.UnknownUserException;
 import kg.attractor.jobsearch.modal.User;
 import kg.attractor.jobsearch.service.UserService;
 import kg.attractor.jobsearch.util.FileUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -20,6 +24,9 @@ import java.util.Objects;
 public class UserServiceImpl extends MethodClass implements UserService {
 
     private final UserDao userDao;
+    private final PasswordEncoder passwordEncoder;
+    private static final Map<String, Long> ACCOUNTTYPEMAP = new HashMap<>();
+
 
     @Override
     public List<UserDto> searchSuccessfulApplicants(Long vacancyId) {
@@ -28,23 +35,29 @@ public class UserServiceImpl extends MethodClass implements UserService {
     }
 
     @Override
-    public UserDto findUser(String userId) {
-        Long parse = parseId(userId);
+    public List<UserDto> findUser(String name) {
+        if (name == null || name.isEmpty()) {
+            throw new UserServiceException("Имя не может быть пустым");
+        }
+        List<User> users = userDao.findApplicant(name);
         //TODO логика для поиска заявителя
-        return null;
+        return userDto(users);
     }
 
 
     @Override
-    public UserDto findEmployee(String employeeId) {
-        Long parse = parseId(employeeId);
+    public List<UserDto> findEmployee(String name) {
+
+        if (name == null || name.isEmpty()) {
+            throw new UserServiceException("Имя не может быть пустым");
+        }
+        List<User> user =  userDao.findEmployeeBy(name);
         //TODO логика для поиска компании
-        return null;
+        return userDto(user);
     }
 
     @Override
     public ResponseEntity<UserDto> author(UserDto userDto) {
-
         //TODO логика для определения типа соискатель/работадатель
         return ResponseEntity.ok(userDto);
     }
@@ -61,22 +74,39 @@ public class UserServiceImpl extends MethodClass implements UserService {
         return FileUtil.getOutputFile(imageName, "images/", MediaType.IMAGE_JPEG);
     }
 
-    @Override
-    public void createUser(UserDto userDto) {
-        //TODO логика для создание пользователя
-    }
 
     @Override
     public void editUser(UserDto userDto, Long userId) {
+        User user = createUserFromDto(userDto);
+        userDao.editProfile(user, userId);
+    }
+
+    @Override
+    public void registerUser(UserDto userDto) {
+        User user = createUserFromDto(userDto);
+        userDao.registerUser(user);
+    }
+
+    private User createUserFromDto(UserDto userDto) {
         User user = new User();
         user.setName(userDto.getName());
         user.setSurname(userDto.getSurname());
         user.setAge(userDto.getAge());
         user.setEmail(userDto.getEmail());
-        user.setPassword(userDto.getPassword());
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setPhoneNumber(userDto.getPhoneNumber());
         user.setAccountType(userDto.getAccountType());
-        userDao.editProfile(user, userId);
+//        String accountTypeStr = String.valueOf(userDto.getAccountType());
+//        try {
+//            Long accountType = Long.parseLong(accountTypeStr);
+//            if (ACCOUNTTYPEMAP.get(accountType) == null) {
+//                throw new UnknownUserException("Тип аккаунта не найден");
+//            }
+//            user.setAccountType(accountType);
+//        } catch (IllegalArgumentException e) {
+//            throw new UnknownUserException("Тип аккаунта должен быть числом. Получено: " + accountTypeStr);
+//        }
+        return user;
     }
 
 
@@ -135,6 +165,10 @@ public class UserServiceImpl extends MethodClass implements UserService {
                 .age(user.getAge())
                 .accountType(user.getAccountType())
                 .build();
+    }
+    static {
+        ACCOUNTTYPEMAP.put("Работадатель", 1L);
+        ACCOUNTTYPEMAP.put("Соискатель", 2L);
     }
 
 }

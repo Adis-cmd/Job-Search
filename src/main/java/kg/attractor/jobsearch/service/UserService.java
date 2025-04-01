@@ -9,9 +9,9 @@ import java.util.List;
 public interface UserService {
     List<UserDto> searchSuccessfulApplicants(Long vacancyId);
 
-    UserDto findUser(String userId);
+    List<UserDto> findUser(String userId);
 
-    UserDto findEmployee(String employeeId);
+    List<UserDto> findEmployee(String employeeId);
 
     ResponseEntity<UserDto> author(UserDto userDto);
 
@@ -19,9 +19,9 @@ public interface UserService {
 
     ResponseEntity<?> findByName(String imageName);
 
-    void createUser(UserDto userDto);
-
     void editUser(UserDto userDto, Long userId);
+
+    void registerUser(UserDto userDto);
 
     List<UserDto> getUsers(String name);
 

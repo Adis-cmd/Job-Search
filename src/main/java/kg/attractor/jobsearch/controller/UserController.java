@@ -22,15 +22,14 @@ public class UserController {
         userService.editUser(userDto, id);
     }
 
-    @GetMapping("applicant/{userId}")
-    public HttpStatus findUser(@PathVariable("userId") String userId) {
-        userService.findUser(userId);
-        return HttpStatus.OK;
+    @GetMapping("applicant/{name}")
+    public List<UserDto> findUser(@PathVariable("name") String name) {
+       return userService.findUser(name);
     }
 
-    @GetMapping("employee/{emoloyeeId}")
-    public ResponseEntity<UserDto> findEmployee(@PathVariable String employeeId) {
-        UserDto employee = userService.findEmployee(employeeId);
+    @GetMapping("employee/{name}")
+    public ResponseEntity<List<UserDto>> findEmployee(@PathVariable String name) {
+       List<UserDto> employee = userService.findEmployee(name);
         return new ResponseEntity<>(employee, HttpStatus.OK);
     }
 
