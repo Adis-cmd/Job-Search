@@ -2,6 +2,7 @@ package kg.attractor.jobsearch.dao;
 
 import kg.attractor.jobsearch.exception.NumberFormatException.CategoryServiceException;
 import kg.attractor.jobsearch.exception.NumberFormatException.UserServiceException;
+import kg.attractor.jobsearch.exception.NumberFormatException.VacancyServiceException;
 import kg.attractor.jobsearch.modal.Vacancy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.support.DataAccessUtils;
@@ -65,6 +66,14 @@ public class VacancyDao {
             throw new UserServiceException("Пользователь с таким Id не найден");
         }
 
+        String sqlCheckCategory = "SELECT COUNT(*) FROM category WHERE id = ?";
+        Integer categoryCount = jdbcTemplate.queryForObject(sqlCheckCategory, Integer.class, vacancy.getCategoryId());
+
+        if (categoryCount == null || categoryCount == 0) {
+            throw new VacancyServiceException("Категория с таким ID не существует.");
+        }
+
+
         String sql = "insert into vacancy " +
                 "(name, description, categoryId, salary, expFrom, expTo, isActive, authorId, createdDate, updatedTime)" +
                 " values (:name, :description, :categoryId, :salary, :expFrom, :expTo, :isActive, :authorId, :createdDate, :updatedTime)";
@@ -86,6 +95,13 @@ public class VacancyDao {
     }
 
     public void editVacancy(Vacancy vacancy, Long vacancyId) {
+        String sqlCheckCategory = "SELECT COUNT(*) FROM category WHERE id = ?";
+        Integer categoryCount = jdbcTemplate.queryForObject(sqlCheckCategory, Integer.class, vacancy.getCategoryId());
+
+        if (categoryCount == null || categoryCount == 0) {
+            throw new VacancyServiceException("Категория с таким ID не существует.");
+        }
+
         String sql = "update resume set" +
                 " name = ?, description = ?, categoryId = ?, salary = ?, expFrom = ?, expTo = ?, isActive = ?, updatedTime = ?" +
                 " where id = ?";

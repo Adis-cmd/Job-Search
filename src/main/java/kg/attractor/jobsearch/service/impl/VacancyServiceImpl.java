@@ -57,6 +57,17 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
         v.setDescription(vacanciesDto.getDescription());
         v.setCategoryId(vacanciesDto.getCategoryId());
         v.setSalary(vacanciesDto.getSalary());
+
+        if (vacanciesDto.getExpFrom() == null || vacanciesDto.getExpFrom() < 0) {
+            log.error("Ошибка: Начальный опыт работы не может быть отрицательным. ExpFrom: {}", vacanciesDto.getExpFrom());
+            throw new VacancyServiceException("Начальный опыт работы не может быть отрицательным.");
+        }
+
+        if (vacanciesDto.getExpTo() == null || vacanciesDto.getExpTo() < 0) {
+            log.error("Ошибка: Конечный опыт работы не может быть отрицательным. ExpTo: {}", vacanciesDto.getExpTo());
+            throw new VacancyServiceException("Конечный опыт работы не может быть отрицательным.");
+        }
+
         if (vacanciesDto.getExpFrom() > vacanciesDto.getExpTo()) {
             log.error("Ошибка: Начало опыта работы не может быть больше конца. ExpFrom: {}, ExpTo: {}", vacanciesDto.getExpFrom(), vacanciesDto.getExpTo());
             throw new VacancyServiceException("Начало опыта работы не может быть больше конца.");

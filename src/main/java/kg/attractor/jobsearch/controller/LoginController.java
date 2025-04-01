@@ -18,11 +18,6 @@ public class LoginController {
 
     private final UserService userService;
 
-    @PostMapping
-    public ResponseEntity<UserDto> login(@RequestBody UserDto userDto) {
-        return userService.author(userDto);
-    }
-
     @PostMapping("register")
     public HttpStatus register(@RequestBody @Valid UserDto userDto) {
         userService.registerUser(userDto);
