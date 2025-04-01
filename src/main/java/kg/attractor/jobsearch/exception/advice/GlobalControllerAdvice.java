@@ -15,6 +15,11 @@ import java.util.NoSuchElementException;
 public class GlobalControllerAdvice {
     private final ErrorService errorService;
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    private ErrorResponseBody  illegalArgumentExceptionHandler(IllegalArgumentException e) {
+        return errorService.makeResponse(e);
+    }
+
     @ExceptionHandler(NoSuchElementException.class)
     private ErrorResponseBody noSuchElementException(NoSuchElementException ex) {
         return errorService.makeResponse(ex);

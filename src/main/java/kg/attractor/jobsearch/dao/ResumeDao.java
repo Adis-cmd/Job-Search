@@ -106,8 +106,8 @@ public class ResumeDao {
         }
 
         String sql = "insert into resume " +
-                "(applicantId, name, categoryId, salary, createdDate, updateTime)" +
-                " values (:applicantId, :name, :categoryId, :salary, :isActive, :createdDate, :updateTime)";
+                "(applicantId, name, categoryId, salary, createdDate, updateTime, ISACTIVE)" +
+                " values (:applicantId, :name, :categoryId, :salary, :createdDate, :updateTime, :isActive)";
 
         namedParameterJdbcTemplate.update(
                 sql,
@@ -117,7 +117,9 @@ public class ResumeDao {
                         .addValue("categoryId", resume.getCategoryId())
                         .addValue("salary", resume.getSalary())
                         .addValue("createdDate", LocalDateTime.now())
-                        .addValue("updateTime", LocalDateTime.now()),
+                        .addValue("updateTime", LocalDateTime.now())
+                        .addValue("isActive", true),
+
                 keyHolder,
                 new String[]{"id"}
 
