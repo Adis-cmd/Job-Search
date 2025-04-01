@@ -10,11 +10,13 @@ import kg.attractor.jobsearch.modal.Resume;
 import kg.attractor.jobsearch.modal.WorkExperienceInfo;
 import kg.attractor.jobsearch.service.ResumeService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ResumeServiceImpl extends MethodClass implements ResumeService {
@@ -25,6 +27,7 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
 
     @Override
     public List<ResumeDto> getAllResumes() {
+        log.info("Запрос всех резюме");
         List<Resume> resumes = resumeDao.getAllResumes();
         return resumeDtos(resumes);
         //TODO логика для поиска всех резюме
@@ -32,6 +35,7 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
 
     @Override
     public void createResumes(ResumeDto resumesDto, String userId) {
+        log.info("Создание резюме для пользователя с ID: {}", userId);
         Long userParse = parseId(userId);
         Resume resume = new Resume();
         resume.setName(resumesDto.getName());
@@ -39,6 +43,7 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
         resume.setSalary(resumesDto.getSalary());
 
         Long resumeId = resumeDao.createResumes(resume, userParse);
+        log.info("Резюме успешно создано с ID: {}", resumeId);
 
 
         if (resumesDto.getEducationInfos() != null) {
@@ -50,6 +55,7 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
                 edu.setStartDate(educationInfoDto.getStartDate());
                 edu.setEndDate(educationInfoDto.getEndDate());
                 edu.setDegree(educationInfoDto.getDegree());
+                log.debug("Добавлена информация об образовании: {}", edu);
                 educationInfoDao.createEducationInfo(edu);
             });
 
@@ -61,6 +67,7 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
                     work.setCompanyName(workExperienceInfoDto.getCompanyName());
                     work.setPosition(workExperienceInfoDto.getPosition());
                     work.setResponsibilities(workExperienceInfoDto.getResponsibilities());
+                    log.debug("Добавлен опыт работы: {}", work);
                     workExperienceInfoDao.createWorkExperienceInfo(work);
                 });
             }
@@ -73,6 +80,7 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
     @Override
     public void deleteResumes(String resumeId) {
         Long parseResumeId = parseId(resumeId);
+        log.info("Удаление резюме с ID: {}", parseResumeId);
         resumeDao.deleteResume(parseResumeId);
         //TODO логика для удаления резюме
     }
@@ -81,6 +89,7 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
     @Override
     public ResumeDto getResumeById(String resumeId) {
         Long parseResumeId = parseId(resumeId);
+        log.info("Поиск резюме с ID: {}", parseResumeId);
         Resume resumes = getEntityOrThrow(resumeDao.getResumeById(parseResumeId),
                 new ResumeServiceException("Не найденно резюме с таким id"));
         return resumeDtos(resumes);
@@ -90,12 +99,14 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
     @Override
     public void editResume(ResumeDto resumesDto, String resumeId) {
         Long parseResumeId = parseId(resumeId);
+        log.info("Редактирование резюме с ID: {}", parseResumeId);
         Resume resume = new Resume();
         resume.setName(resumesDto.getName());
         resume.setCategoryId(resumesDto.getCategoryId());
         resume.setSalary(resumesDto.getSalary());
         resume.setIsActive(resumesDto.getIsActive());
         resumeDao.editResume(resume, parseResumeId);
+        log.info("Резюме с ID: {} успешно обновлено", parseResumeId);
         //TODO логика для редактирование резюме
     }
 
@@ -103,6 +114,7 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
     @Override
     public List<ResumeDto> getResumeCategory(String categoryId) {
         Long parseCategoryId = parseId(categoryId);
+        log.info("Поиск резюме по категории с ID: {}", parseCategoryId);
         List<Resume> resume = resumeDao.getResume(parseCategoryId);
         return resumeDtos(resume);
         //TODO логика для поиска резюме по категории
@@ -112,6 +124,7 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
     @Override
     public List<ResumeDto> getResumeByUserid(String userid) {
         Long parseUserId = parseId(userid);
+        log.info("Поиск резюме для пользователя с ID: {}", parseUserId);
         List<Resume> resume = resumeDao.getResumeByUser(parseUserId);
         return resumeDtos(resume);
         //TODO логика для поиска резюме по id пользователя

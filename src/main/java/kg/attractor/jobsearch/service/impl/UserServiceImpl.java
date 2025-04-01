@@ -8,6 +8,7 @@ import kg.attractor.jobsearch.modal.User;
 import kg.attractor.jobsearch.service.UserService;
 import kg.attractor.jobsearch.util.FileUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl extends MethodClass implements UserService {
@@ -30,6 +32,7 @@ public class UserServiceImpl extends MethodClass implements UserService {
 
     @Override
     public List<UserDto> searchSuccessfulApplicants(Long vacancyId) {
+        log.info("Поиск успешных кандидатов для вакансии с ID: {}", vacancyId);
         List<User> users = userDao.getApplicantsWhoRespondedToVacancy(vacancyId);
         //TODO логика для поиска откликнувшихся соискателей на вакансию
         return userDto(users);
@@ -38,8 +41,10 @@ public class UserServiceImpl extends MethodClass implements UserService {
     @Override
     public List<UserDto> findUser(String name) {
         if (name == null || name.isEmpty()) {
+            log.error("Попытка поиска пользователя с пустым именем");
             throw new UserServiceException("Имя не может быть пустым");
         }
+        log.info("Поиск пользователя по имени: {}", name);
         List<User> users = userDao.findApplicant(name);
         //TODO логика для поиска заявителя
         return userDto(users);
@@ -50,8 +55,10 @@ public class UserServiceImpl extends MethodClass implements UserService {
     public List<UserDto> findEmployee(String name) {
 
         if (name == null || name.isEmpty()) {
+            log.error("Попытка поиска сотрудника с пустым именем");
             throw new UserServiceException("Имя не может быть пустым");
         }
+        log.info("Поиск сотрудника по имени: {}", name);
         List<User> user =  userDao.findEmployeeBy(name);
         //TODO логика для поиска компании
         return userDto(user);
@@ -61,23 +68,27 @@ public class UserServiceImpl extends MethodClass implements UserService {
     @Override
     public String uploadingPhotos(MultipartFile file) {
         //TODO логика для загрузки аватарки
+        log.info("Загрузка аватарки пользователя");
         return FileUtil.saveUploadFile(file, "images/");
     }
 
     @Override
     public ResponseEntity<?> findByName(String imageName) {
+        log.info("Получение файла изображения с именем: {}", imageName);
         return FileUtil.getOutputFile(imageName, "images/", MediaType.IMAGE_JPEG);
     }
 
 
     @Override
     public void editUser(UserDto userDto, Long userId) {
+        log.info("Редактирование профиля пользователя с ID: {}", userId);
         User user = createUserFromDto(userDto);
         userDao.editProfile(user, userId);
     }
 
     @Override
     public void registerUser(UserDto userDto) {
+        log.info("Регистрация нового пользователя с email: {}", userDto.getEmail());
         User user = createUserFromDto(userDto);
         userDao.registerUser(user);
     }
@@ -101,12 +112,14 @@ public class UserServiceImpl extends MethodClass implements UserService {
 //        } catch (IllegalArgumentException e) {
 //            throw new UnknownUserException("Тип аккаунта должен быть числом. Получено: " + accountTypeStr);
 //        }
+        log.debug("Создание объекта User из DTO для пользователя с email: {}", userDto.getEmail());
         return user;
     }
 
 
     @Override
     public List<UserDto> getUsers(String name) {
+        log.info("Поиск всех пользователей с именем: {}", name);
         List<User> user = userDao.getAllUserName(name);
         return userDto(user);
         //TODO логика для поиска пользователя по его имени
@@ -115,6 +128,7 @@ public class UserServiceImpl extends MethodClass implements UserService {
 
     @Override
     public UserDto getUserEmail(String email) {
+        log.info("Поиск пользователя с email: {}", email);
         User user = getEntityOrThrow(userDao.getUserEmail(email),
                 new UserServiceException("Не найден пользователь с такой почтой"));
         return userDtos(user);
@@ -123,6 +137,7 @@ public class UserServiceImpl extends MethodClass implements UserService {
 
     @Override
     public UserDto getUserPhone(String phone) {
+        log.info("Поиск пользователя с номером телефона: {}", phone);
         User user = getEntityOrThrow(userDao.getUserPhone(phone),
                 new UserServiceException("Не найден пользователь с таким номером"));
         return userDtos(user);
@@ -131,6 +146,7 @@ public class UserServiceImpl extends MethodClass implements UserService {
 
     @Override
     public Boolean userExists(String email) {
+        log.info("Проверка существования пользователя с email: {}", email);
         return userDao.userExists(email);
         //TODO Логика что выводит существует ли такоей то пользователь по его id
     }
