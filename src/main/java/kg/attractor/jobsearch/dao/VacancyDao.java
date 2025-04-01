@@ -66,8 +66,8 @@ public class VacancyDao {
         }
 
         String sql = "insert into vacancy " +
-                "(name, description, categoryId, salary, expFrom, expTo, isActive, authorId, createdDate, updatedDate)" +
-                " values (:name, :description, :categoryId, :salary, :expFrom, :expTo, :isActive, :authorId, :createdDate, :updatedDate)";
+                "(name, description, categoryId, salary, expFrom, expTo, isActive, authorId, createdDate, updatedTime)" +
+                " values (:name, :description, :categoryId, :salary, :expFrom, :expTo, :isActive, :authorId, :createdDate, :updatedTime)";
 
         namedParameterJdbcTemplate.update(
                 sql,
@@ -78,10 +78,10 @@ public class VacancyDao {
                         .addValue("salary", vacancy.getSalary())
                         .addValue("expFrom",vacancy.getExpFrom())
                         .addValue("expTo", vacancy.getExpTo())
-                        .addValue("isActive", vacancy.getIsActive())
+                        .addValue("isActive", true)
                         .addValue("authorId", authorId)
                         .addValue("createdDate", LocalDateTime.now())
-                        .addValue("updatedDate",  LocalDateTime.now())
+                        .addValue("updatedTime",  LocalDateTime.now())
         );
     }
 

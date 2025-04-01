@@ -21,13 +21,13 @@ public class VacancyController {
     }
 
     @PostMapping("add")
-    public HttpStatus createVacancies(@Valid @RequestBody VacancyDto vacanciesDto, @RequestParam(name = "authorId") String authorId) {
+    public HttpStatus createVacancies(@RequestBody @Valid  VacancyDto vacanciesDto, @RequestParam(name = "authorId") String authorId) {
         vacanciesService.createVacancies(vacanciesDto, authorId);
         return HttpStatus.CREATED;
     }
 
     @PutMapping("update/{vacancyId}")
-    public HttpStatus editVacancies(@Valid @PathVariable("vacancyId") VacancyDto vacanciesDto, String vacancyId) {
+    public HttpStatus editVacancies(@RequestBody @Valid @PathVariable("vacancyId") VacancyDto vacanciesDto, String vacancyId) {
         vacanciesService.editVacancies(vacanciesDto, vacancyId);
         return HttpStatus.OK;
     }
