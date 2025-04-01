@@ -13,8 +13,6 @@ public interface UserService {
 
     List<UserDto> findEmployee(String employeeId);
 
-    ResponseEntity<UserDto> author(UserDto userDto);
-
     String uploadingPhotos(MultipartFile file);
 
     ResponseEntity<?> findByName(String imageName);

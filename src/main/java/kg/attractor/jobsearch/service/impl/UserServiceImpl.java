@@ -30,8 +30,9 @@ public class UserServiceImpl extends MethodClass implements UserService {
 
     @Override
     public List<UserDto> searchSuccessfulApplicants(Long vacancyId) {
+        List<User> users = userDao.getApplicantsWhoRespondedToVacancy(vacancyId);
         //TODO логика для поиска откликнувшихся соискателей на вакансию
-        return List.of();
+        return userDto(users);
     }
 
     @Override
@@ -54,12 +55,6 @@ public class UserServiceImpl extends MethodClass implements UserService {
         List<User> user =  userDao.findEmployeeBy(name);
         //TODO логика для поиска компании
         return userDto(user);
-    }
-
-    @Override
-    public ResponseEntity<UserDto> author(UserDto userDto) {
-        //TODO логика для определения типа соискатель/работадатель
-        return ResponseEntity.ok(userDto);
     }
 
 
@@ -164,6 +159,7 @@ public class UserServiceImpl extends MethodClass implements UserService {
                 .phoneNumber(user.getPhoneNumber())
                 .age(user.getAge())
                 .accountType(user.getAccountType())
+                .enabled(user.getEnabled())
                 .build();
     }
     static {

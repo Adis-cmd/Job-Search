@@ -117,4 +117,10 @@ public class UserDao {
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class), "%" + name + "%", "EMPLOYEE");
     }
 
+    public List<User> getApplicantsWhoRespondedToVacancy(Long vacancyId) {
+        String sql = "SELECT u.* FROM USERS u JOIN RESUMES r ON u.ID = r.APPLICANTID JOIN APPLICATIONS a ON r.ID = a.RESUME_ID WHERE a.JOB_ID = ?";
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class), vacancyId);
+    }
+
+
 }
