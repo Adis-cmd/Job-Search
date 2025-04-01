@@ -50,7 +50,6 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(a -> a
-                        .requestMatchers("/vacancies").permitAll()
                         .requestMatchers("/vacancies/add").hasAuthority("EMPLOYEE")
                         .requestMatchers("/vacancies/update/**").hasAuthority("EMPLOYEE")
                         .requestMatchers("/vacancies/delete/**").hasAuthority("EMPLOYEE")
