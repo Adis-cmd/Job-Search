@@ -1,5 +1,6 @@
 package kg.attractor.jobsearch.controller;
 
+import jakarta.validation.Valid;
 import kg.attractor.jobsearch.dto.UserDto;
 import kg.attractor.jobsearch.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +24,8 @@ public class LoginController {
     }
 
     @PostMapping("register")
-    public HttpStatus register(UserDto userDto) {
-        userService.createUser(userDto);
+    public HttpStatus register(@RequestBody @Valid UserDto userDto) {
+        userService.registerUser(userDto);
         return HttpStatus.CREATED;
     }
 
