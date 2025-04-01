@@ -1,0 +1,48 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_table_for_users_and_add_enabled_column
+      author: Adis
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: long
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(40)
+              - column:
+                  name: surname
+                  type: varchar(100)
+              - column:
+                  name: age
+                  type: int
+              - column:
+                  name: email
+                  type: varchar(125)
+              - column:
+                  name: password
+                  type: varchar(120)
+              - column:
+                  name: phoneNumber
+                  type: varchar(50)
+              - column:
+                  name: avatar
+                  type: varchar(255)
+              - column:
+                  name: accountType
+                  type: varchar(255)
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: enabled
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+                    defaultValue: true

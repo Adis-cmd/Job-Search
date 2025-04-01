@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: modify_table_users
+      author: Mamasultanov Adis
+      changes:
+        - dropColumn:
+            tableName: users
+            columnName: accountType
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: accountType_id
+                  type: long
+                  constraints:
+                    nullable: false
+
+
+        - addForeignKeyConstraint:
+            baseTableName: users
+            baseColumnNames: accountType_id
+            constraintName: fk_accountType_id
+            referencedTableName: account_type
+            referencedColumnNames: id
+            onDelete: CASCADE

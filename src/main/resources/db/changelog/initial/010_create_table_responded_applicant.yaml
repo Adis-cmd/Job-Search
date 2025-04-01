@@ -1,0 +1,46 @@
+databaseChangeLog:
+  - changeSet:
+      id: new_create_table_for_responded_applicant
+      author: Mamasultanov Adis
+      changes:
+        - createTable:
+            tableName: responded_applicant
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: resumeId
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: vacancyId
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: confirmation
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: responded_applicant
+            baseColumnNames: resumeId
+            constraintName: fk_responded_applicant_resume_id
+            referencedTableName: resume
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: responded_applicant
+            baseColumnNames: vacancyId
+            constraintName: fk_responded_applicant_vacancy_id
+            referencedTableName: vacancy
+            referencedColumnNames: id
+            onDelete: CASCADE

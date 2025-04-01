@@ -1,0 +1,48 @@
+databaseChangeLog:
+  - changeSet:
+      id: new_create_table_for_work_experience_info
+      author: Mamasultanov Adis
+      changes:
+        - createTable:
+            tableName: work_experience_info
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: resumeId
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: years
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: companyName
+                  type: VARCHAR(40)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: position
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: responsibilities
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: work_experience_info
+            baseColumnNames: resumeId
+            constraintName: fk_work_experience_info_resume_id
+            referencedTableName: resume
+            referencedColumnNames: id
+            onDelete: CASCADE

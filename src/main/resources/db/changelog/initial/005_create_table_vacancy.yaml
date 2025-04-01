@@ -1,0 +1,81 @@
+databaseChangeLog:
+  - changeSet:
+      id: new_crete_table_for_vacancy
+      author: Mamasultanov Adis
+      changes:
+        - createTable:
+            tableName: vacancy
+            columns:
+              - column:
+                  name: id
+                  type: long
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: categoryId
+                  type: long
+                  constraints:
+                    nullable: false
+              - column:
+                  name: salary
+                  type: DOUBLE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: expFrom
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: expTo
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: isActive
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+              - column:
+                  name: authorId
+                  type: long
+                  constraints:
+                    nullable: false
+              - column:
+                  name: createdDate
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updatedTime
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: vacancy
+            baseColumnNames: categoryId
+            constraintName: fk_category_id
+            referencedTableName: category
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: vacancy
+            baseColumnNames: authorId
+            constraintName: fk_author_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: CASCADE

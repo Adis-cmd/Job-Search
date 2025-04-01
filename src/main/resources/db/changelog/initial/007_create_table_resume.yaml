@@ -1,0 +1,66 @@
+databaseChangeLog:
+  - changeSet:
+      id: new_create_table_for_resume
+      author: Mamasultanov Adis
+      changes:
+        - createTable:
+            tableName: resume
+            columns:
+              - column:
+                  name: id
+                  type: long
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: applicantId
+                  type: long
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: categoryId
+                  type: long
+                  constraints:
+                    nullable: false
+              - column:
+                  name: salary
+                  type: double
+                  constraints:
+                    nullable: false
+              - column:
+                  name: isActive
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+              - column:
+                  name: createdDate
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updateTime
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: resume
+            baseColumnNames: applicantId
+            constraintName: fk_resume_applicant_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: resume
+            baseColumnNames: categoryId
+            constraintName: fk_resume_category_id
+            referencedTableName: category
+            referencedColumnNames: id
+            onDelete: CASCADE

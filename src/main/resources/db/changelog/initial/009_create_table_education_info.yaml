@@ -1,0 +1,54 @@
+databaseChangeLog:
+  - changeSet:
+      id: new_create_table_for_education_info
+      author: Mamasultanov Adis
+      changes:
+        - createTable:
+            tableName: education_info
+            columns:
+              - column:
+                  name: id
+                  type: long
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: resumeId
+                  type: long
+                  constraints:
+                    nullable: false
+              - column:
+                  name: institution
+                  type: VARCHAR(40)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: program
+                  type: VARCHAR(40)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: startDate
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: endDate
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: degree
+                  type: VARCHAR(40)
+                  constraints:
+                    nullable: false
+
+
+        - addForeignKeyConstraint:
+            baseTableName: education_info
+            baseColumnNames: resumeId
+            constraintName: fk_education_info_resume_id
+            referencedTableName: resume
+            referencedColumnNames: id
+            onDelete: CASCADE

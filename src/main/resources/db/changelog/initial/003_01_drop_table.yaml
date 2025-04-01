@@ -1,0 +1,61 @@
+databaseChangeLog:
+  - changeSet:
+      id: drop_table_for_work_experience_info
+      author: Mamasultanov Adis
+      changes:
+        - dropTable:
+            tableName: work_experience_info
+  - changeSet:
+      id: drop_table_for_message
+      author: Mamasultanov Adis
+      changes:
+        - dropTable:
+            tableName: message
+  - changeSet:
+      id: drop_table_for_responded_applicant
+      author: Mamasultanov Adis
+      changes:
+        - dropTable:
+            tableName: responded_applicant
+  - changeSet:
+      id: drop_table_for_education_info
+      author: Mamasultanov Adis
+      changes:
+        - dropTable:
+            tableName: education_info
+  - changeSet:
+      id: drop_table_for_contact_info
+      author: Mamasultanov Adis
+      changes:
+        - dropTable:
+            tableName: contact_info
+  - changeSet:
+      id: drop_table_for_resume
+      author: Mamasultanov Adis
+      changes:
+        - dropTable:
+            tableName: resume
+  - changeSet:
+      id: drop_table_contact_type
+      author: Mamasultanov Adis
+      changes:
+        - dropTable:
+            tableName: contact_type
+  - changeSet:
+      id: drop_table_for_vacancy
+      author: Mamasultanov Adis
+      changes:
+        - dropTable:
+            tableName: vacancy
+  - changeSet:
+      id: drop_table_for_category
+      author: Mamasultanov Adis
+      changes:
+        - dropTable:
+            tableName: category
+  - changeSet:
+      id: drop_table_for_users
+      author: Mamasultanov Adis
+      changes:
+        - dropTable:
+            tableName: users

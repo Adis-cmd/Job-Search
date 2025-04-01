@@ -1,0 +1,46 @@
+databaseChangeLog:
+  - changeSet:
+      id: new_create_table_for_contact_info
+      author: Mamasultanov Adis
+      changes:
+        - createTable:
+            tableName: contact_info
+            columns:
+              - column:
+                  name: id
+                  type: long
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: typeId
+                  type: long
+                  constraints:
+                    nullable: false
+              - column:
+                  name: resumeId
+                  type: long
+                  constraints:
+                    nullable: false
+              - column:
+                  name: info_value
+                  type: TEXT
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: contact_info
+            baseColumnNames: typeId
+            constraintName: fk_contact_info_type_id
+            referencedTableName: contact_type
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: contact_info
+            baseColumnNames: resumeId
+            constraintName: fk_contact_info_resume_id
+            referencedTableName: resume
+            referencedColumnNames: id
+            onDelete: CASCADE
