@@ -33,3 +33,4 @@ build/
 .vscode/
 /JobSearch.lock.db/
 /db/
+/logs/
