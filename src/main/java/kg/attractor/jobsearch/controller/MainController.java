@@ -2,16 +2,18 @@ package kg.attractor.jobsearch.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("auth")
-public class AuthController {
+public class MainController {
 
-    @GetMapping("login")
-    public String login() {
-        return "auth/login";
+    @GetMapping("/")
+    public String index(Model model) {
+        model.addAttribute("world", "world");
+        return "index";
     }
+
 }
