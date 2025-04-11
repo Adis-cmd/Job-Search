@@ -5,7 +5,6 @@
 
         <div class="card shadow-lg p-4" style="max-width: 900px; width: 100%; border-radius: 16px;">
             <div class="row g-0">
-                <!-- Левая картинка -->
                 <div class="col-lg-6 d-none d-lg-block">
                     <img src="https://mdbootstrap.com/img/new/ecommerce/vertical/004.jpg" alt="Login image"
                          class="img-fluid rounded-start" style="height: 100%; object-fit: cover;">

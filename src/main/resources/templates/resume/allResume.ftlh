@@ -1,5 +1,6 @@
 <#import "../layout.ftlh" as main>
 <@main.layout>
+    <title>Все Резюме</title>
     <section class="container py-5">
         <h2 class="mb-4 text-center">Список всех резюме</h2>
 

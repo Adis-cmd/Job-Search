@@ -1,21 +1,14 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Профиль пользователя</title>
-    <link rel="stylesheet" href="/static/profileStyle.css">
-</head>
-<body>
+<#import "../layout.ftlh" as main>
+<@main.layout>
 <div class="container">
     <div class="profile-header">
         <div class="profile-info">
-            <img src="https://via.placeholder.com/80" alt="Профильное фото">
+            <img src="users/photos/avatar" alt="Профильное фото">
             <div>
                 <h2>${user.name}</h2>
                 <#if user.surname?? && user.surname?has_content>
                     <p>${user.surname}</p>
-                    <p>${user.age} лет</p>
+                    <p>${user.age} года</p>
                 </#if>
 
                 <a href="/profile/edit" class="action-button edit-profile-button">Редактировать профиль</a>
@@ -34,7 +27,6 @@
 
 
     <#if user.surname?? && user.surname?has_content>
-        <!-- Соискатель -->
         <div class="resumes-section">
             <h3>Мои резюме</h3>
             <div class="resume-cards">
@@ -69,5 +61,4 @@
         </div>
     </#if>
 </div>
-</body>
-</html>
+</@main.layout>

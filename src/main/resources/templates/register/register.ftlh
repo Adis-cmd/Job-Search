@@ -6,9 +6,20 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="/static/registerStyle.css">
-    <title>Регистрация | CareerHub</title>
+    <title>Регистрация</title>
 </head>
 <body>
+
+<div class="navbar">
+    <div class="nav-left">
+        <a href="/">💼 Job Search</a>
+    </div>
+    <div class="nav-right">
+        <a href="/">Главная</a>
+        <a href="/auth/login">Войти</a>
+    </div>
+</div>
+
 <div class="register-container">
     <div class="register-header">
         <h1>Создать аккаунт</h1>

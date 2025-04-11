@@ -8,6 +8,7 @@
         <meta name="viewport"
               content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <link rel="stylesheet" href="/static/profileStyle.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
               integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
               crossorigin="anonymous">
@@ -15,43 +16,31 @@
                 integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
                 crossorigin="anonymous"></script>
         <script src="../static/scripts/main.js"></script>
-        <title>Job Search</title>
+
     </head>
     <body>
 
         <style>
-            body {
-                background-color: #f4f6f9;
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            html, body {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                width: 100%;
+                background-color: #f9f9f9;
             }
 
-            .navbar {
-                position: sticky;
-                top: 0;
-                z-index: 1030;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            .container {
+                max-width: 100%;
+                padding-left: 1rem;
+                padding-right: 1rem;
             }
 
-            .navbar-brand {
-                font-weight: bold;
-                font-size: 1.4rem;
-            }
 
-            .nav-link {
-                font-size: 1rem;
-                transition: color 0.3s ease;
-            }
-
-            .nav-link:hover {
-                color: #ffc107 !important;
-            }
-
-            main.container {
-                background-color: #fff;
-                padding: 2rem;
-                border-radius: 8px;
-                box-shadow: 0 0 10px rgba(0,0,0,0.05);
-                margin-top: 2rem;
+            @media (min-width: 768px) {
+                .container {
+                    max-width: 1140px;
+                    margin: 0 auto;
+                }
             }
         </style>
     </body>

@@ -25,7 +25,7 @@ public class ProfileController {
         String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         UserDto currentUser = userService.getUserEmail(currentUserEmail);
         model.addAttribute("user", currentUser);
-        model.addAttribute("resumes", resumeService.getAllResumes());
+        model.addAttribute("resumes", resumeService.getResumeByUserid(String.valueOf(currentUser.getId())));
         model.addAttribute("vacancies", vacancyService.getVacancyByCreatorId(String.valueOf(currentUser.getId())));
         return "profile/profile";
     }

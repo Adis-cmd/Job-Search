@@ -102,7 +102,7 @@ public class UserDao {
                             .addValue("email", user.getEmail())
                             .addValue("password", user.getPassword())
                             .addValue("phoneNumber", user.getPhoneNumber())
-                            .addValue("avatar", "data/images/аватар.jpg")
+                            .addValue("avatar", "data/images/avatar.jpg")
                             .addValue("enabled", true)
                             .addValue("accountType_id", user.getAccountType())
             );
