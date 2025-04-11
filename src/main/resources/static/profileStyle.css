@@ -1,0 +1,187 @@
+/* Общие стили */
+* {
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #f5f7fa;
+    color: #333;
+    padding: 20px;
+}
+
+/* Контейнер страницы */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Стили для профиля */
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+/* Слева: Информация профиля */
+.profile-info {
+    display: flex;
+    align-items: center;
+}
+
+.profile-info img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+.profile-info h2 {
+    margin: 0;
+    font-size: 24px;
+    color: #2c3e50;
+}
+
+.profile-info p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #7f8c8d;
+}
+
+/* Справа: Кнопки действия */
+.profile-actions {
+    display: flex;
+    gap: 20px;
+}
+
+.action-button {
+    background-color: #3498db;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-block;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+
+.action-button:hover {
+    background-color: #2980b9;
+}
+
+.resume-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 20px;
+}
+
+.resume-card {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    padding: 1rem;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 300px;
+}
+
+.view-resume-link {
+    display: inline-block;
+    margin-top: 0.5rem;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.edit-link {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: #007bff;
+}
+.action-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    margin: 5px 0;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.action-button:hover {
+    background-color: #007bff;
+}
+
+.edit-profile-button {
+    background-color: #007bff;
+    margin-top: 20px;
+}
+
+.edit-profile-button:hover {
+    background-color: #007bff;
+}
+
+.resume-card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.view-resume-link {
+    display: inline-block;
+    margin-right: 10px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.view-resume-link:hover {
+    text-decoration: underline;
+}
+.resume-link,
+.edit-link {
+    display: inline-block;
+    padding: 8px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.25s ease-in-out;
+    margin-right: 10px;
+}
+
+.resume-link {
+    background-color: #007bff;
+    color: #fff;
+    border: 1px solid transparent;
+}
+
+.resume-link:hover {
+    background-color: #0056b3;
+}
+
+
+.edit-link {
+    background-color: #f8f9fa;
+    color: #343a40;
+    border: 1px solid #ced4da;
+}
+
+.edit-link:hover {
+    background-color: #e2e6ea;
+    color: #212529;
+    border-color: #adb5bd;
+}
+
