@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.sql.DataSource;
 
@@ -36,16 +37,22 @@ public class SecurityConfig {
         auth.jdbcAuthentication()
                 .dataSource(dataSource)
                 .usersByUsernameQuery(fetch)
-                .passwordEncoder(passwordEncoder)
                 .authoritiesByUsernameQuery(fetchAccountType);
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .formLogin(AbstractHttpConfigurer::disable)
-                .logout(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
+                .formLogin(form -> form
+                        .loginPage("/auth/login")
+                        .loginProcessingUrl("/auth/login")
+                        .defaultSuccessUrl("/profile", true)
+                        .failureUrl("/auth/login?error=true")
+                        .permitAll())
+                .logout(logout -> logout
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                        .permitAll())
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(a -> a
@@ -63,6 +70,7 @@ public class SecurityConfig {
                         .requestMatchers("/vacancies/search/category/**").hasAuthority("APPLICANT")
                         .requestMatchers("/response/**").hasAuthority("APPLICANT")
                         .requestMatchers("/users/employee/**").hasAuthority("APPLICANT")
+                        .requestMatchers("/profile").authenticated()
                         .anyRequest().permitAll()
                 );
         return http.build();
