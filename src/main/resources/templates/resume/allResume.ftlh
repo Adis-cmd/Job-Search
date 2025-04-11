@@ -10,7 +10,12 @@
                         <div class="card-body">
                             <h5 class="card-title">${resume.name}</h5>
                             <p class="mb-1"><strong>Зарплата:</strong> ${resume.salary}</p>
-                            <p class="mb-1"><strong>Статус:</strong> <#if resume.isActive?? && resume.isActive>Активно<#else>Не активно</#if></p>
+                            <p class="mb-1">
+                                <strong>Статус:</strong>
+                                <span class="badge ${resume.isActive?then('bg-success', 'bg-secondary')}">
+                                ${resume.isActive?then('Активна', 'Не активна')}
+                            </span>
+                            </p>
                             <p class="mb-1"><strong>Создано:</strong> ${resume.createdDate}</p>
                             <p><strong>Обновлено:</strong> ${resume.updateTime}</p>
                         </div>
