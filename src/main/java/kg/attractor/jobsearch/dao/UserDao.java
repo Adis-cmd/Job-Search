@@ -18,6 +18,11 @@ public class UserDao {
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
+    public Long findAccountTypeId(String accountType) {
+        String sql = "select id from account_type where type = ?";
+        return jdbcTemplate.queryForObject(sql, Long.class, accountType);
+    }
+
     public List<User> getAllUserName(String name) {
         String sql = "select * from users where name like ?";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class), "%" + name + "%");
@@ -32,6 +37,15 @@ public class UserDao {
         );
     }
 
+    public Long getUserId(String email) {
+        String sql = "select id from users where email like ?";
+        return jdbcTemplate.queryForObject(sql, Long.class, email);
+    }
+
+    public List<Long> getAllUserById(Long id) {
+        String sql = "select id from users where id = ?";
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Long.class), id);
+    }
 
     public Optional<User> getUserPhone(String phone) {
         String sql = "select * from users where phoneNumber like ?";
@@ -62,7 +76,7 @@ public class UserDao {
     }
     public void editProfile(User user, Long userId) {
         String sql = "update users set" +
-                " name = ?, surname = ?, age = ?, email = ?, password = ?, phoneNumber = ?, accountType = ?" +
+                " name = ?, surname = ?, age = ?" +
                 " where id = ?";
 
         jdbcTemplate.update(
@@ -70,10 +84,6 @@ public class UserDao {
                 user.getName(),
                 user.getSurname(),
                 user.getAge(),
-                user.getEmail(),
-                user.getPassword(),
-                user.getPhoneNumber(),
-                user.getAccountType(),
                 userId
         );
     }

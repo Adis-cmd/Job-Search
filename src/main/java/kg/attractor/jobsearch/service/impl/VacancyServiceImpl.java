@@ -30,11 +30,18 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
     }
 
     @Override
-    public void editVacancies(VacancyDto vacanciesDto, String vacancyId) {
+    public void editVacancies(VacancyDto vacanciesDto, String vacancyId, String email) {
         log.info("Редактирование вакансии с ID: {}", vacancyId);
         Long parceLong = parseId(vacancyId);
 
+        Long authorId = vacancyDao.findCompanyByEmail(email);
+
+        if (!vacancyDao.isVacancyOwnedByUser(parceLong, authorId)) {
+            throw new VacancyNotFoundException("Эта вакансия не принадлежит вам");
+        }
+
         Vacancy v = auxiliaryMethod(vacanciesDto);
+
 
         vacancyDao.editVacancy(v, parceLong);
         //TODO логика для редактирование вакансии
@@ -88,9 +95,16 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
 
 
     @Override
-    public void deleteVacancies(String vacancyId) {
+    public void deleteVacancies(String vacancyId, String email) {
         log.info("Удаление вакансии с ID: {}", vacancyId);
         Long parceLong = parseId(vacancyId);
+
+        Long authorId = vacancyDao.findCompanyByEmail(email);
+
+        if (!vacancyDao.isVacancyOwnedByUser(parceLong, authorId)) {
+            throw new VacancyNotFoundException("Эта вакансия не принадлежит вам");
+        }
+
         vacancyDao.deleteVacancy(parceLong);
         log.info("Вакансия с ID: {} успешно удалена", vacancyId);
         //TODO логика для удаление вакансии по id
@@ -125,6 +139,13 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
         List<Vacancy> v = vacancyDao.getAllVacancyIsActive();
         return getVacancyDto(v);
         //TODO логика для поиска всех активных вакансий
+    }
+
+    @Override
+    public List<VacancyDto> getVacancyByCreatorId(String creatorId) {
+        Long parseCreatorId = parseId(creatorId);
+        List<Vacancy> v = vacancyDao.getVacancyByCreatorId(parseCreatorId);
+        return getVacancyDto(v);
     }
 
     private VacancyDto vacancyDtos(Vacancy v) {

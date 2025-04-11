@@ -3,7 +3,6 @@ package kg.attractor.jobsearch.service.impl;
 import kg.attractor.jobsearch.dao.UserDao;
 import kg.attractor.jobsearch.dto.UserDto;
 import kg.attractor.jobsearch.exception.NumberFormatException.UserServiceException;
-import kg.attractor.jobsearch.exception.UnknownUserException;
 import kg.attractor.jobsearch.modal.User;
 import kg.attractor.jobsearch.service.UserService;
 import kg.attractor.jobsearch.util.FileUtil;
@@ -11,14 +10,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -36,6 +34,12 @@ public class UserServiceImpl extends MethodClass implements UserService {
         List<User> users = userDao.getApplicantsWhoRespondedToVacancy(vacancyId);
         //TODO логика для поиска откликнувшихся соискателей на вакансию
         return userDto(users);
+    }
+
+    @Override
+    public Long findAccountTypeId(String accountType) {
+        log.info("Найден тип аккаунта");
+        return userDao.findAccountTypeId(accountType);
     }
 
     @Override
@@ -59,7 +63,7 @@ public class UserServiceImpl extends MethodClass implements UserService {
             throw new UserServiceException("Имя не может быть пустым");
         }
         log.info("Поиск сотрудника по имени: {}", name);
-        List<User> user =  userDao.findEmployeeBy(name);
+        List<User> user = userDao.findEmployeeBy(name);
         //TODO логика для поиска компании
         return userDto(user);
     }
@@ -82,8 +86,17 @@ public class UserServiceImpl extends MethodClass implements UserService {
     @Override
     public void editUser(UserDto userDto, Long userId) {
         log.info("Редактирование профиля пользователя с ID: {}", userId);
-        User user = createUserFromDto(userDto);
+        User user = editUser(userDto);
         userDao.editProfile(user, userId);
+    }
+
+
+    private User editUser(UserDto userDto) {
+        User user = new User();
+        user.setName(userDto.getName());
+        user.setSurname(userDto.getSurname());
+        user.setAge(userDto.getAge());
+        return user;
     }
 
     @Override
@@ -134,6 +147,15 @@ public class UserServiceImpl extends MethodClass implements UserService {
         return userDtos(user);
         //TODO Логика для поиска пользователя по его email
     }
+    @Override
+    public Long getUserId(String email) {
+        Long userId = userDao.getUserId(email);
+        if (userId == null || userId == 0) {
+            throw new UserServiceException("Нету пользователя с таким Email");
+        }
+        return  userId;
+    }
+
 
     @Override
     public UserDto getUserPhone(String phone) {
@@ -178,6 +200,7 @@ public class UserServiceImpl extends MethodClass implements UserService {
                 .enabled(user.getEnabled())
                 .build();
     }
+
     static {
         ACCOUNTTYPEMAP.put("Работадатель", 1L);
         ACCOUNTTYPEMAP.put("Соискатель", 2L);

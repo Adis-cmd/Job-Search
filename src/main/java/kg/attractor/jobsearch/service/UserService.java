@@ -9,6 +9,8 @@ import java.util.List;
 public interface UserService {
     List<UserDto> searchSuccessfulApplicants(Long vacancyId);
 
+    Long findAccountTypeId(String accountType);
+
     List<UserDto> findUser(String userId);
 
     List<UserDto> findEmployee(String employeeId);
@@ -24,6 +26,10 @@ public interface UserService {
     List<UserDto> getUsers(String name);
 
     UserDto getUserEmail(String email);
+
+    Long getUserId(String email);
+
+//    List<Long> getUserById(Long userId);
 
     UserDto getUserPhone(String phone);
 

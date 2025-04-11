@@ -93,6 +93,17 @@ public class VacancyDao {
                         .addValue("updatedTime",  LocalDateTime.now())
         );
     }
+    public Boolean isVacancyOwnedByUser(Long vacancyId, Long userId) {
+        String sql = "SELECT COUNT(*) FROM vacancy WHERE id = ? AND authorId = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, vacancyId, userId);
+        return count != null && count > 0;
+    }
+
+
+    public Long findCompanyByEmail(String email) {
+        String sql= "select id from users where email = ?";
+        return jdbcTemplate.queryForObject(sql, Long.class, email);
+    }
 
     public void editVacancy(Vacancy vacancy, Long vacancyId) {
         String sqlCheckCategory = "SELECT COUNT(*) FROM category WHERE id = ?";
@@ -127,5 +138,10 @@ public class VacancyDao {
     public List<Vacancy> getAllVacancyIsActive() {
         String sql = "select * from vacancy where isActive = true";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Vacancy.class));
+    }
+
+    public List<Vacancy> getVacancyByCreatorId(Long authorId) {
+        String sql = "select * from vacancy where authorId = ?";
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Vacancy.class), authorId);
     }
 }
