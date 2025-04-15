@@ -1,9 +1,9 @@
-package kg.attractor.jobsearch.modal;
+package kg.attractor.jobsearch.dto;
 
 import lombok.Data;
 
 @Data
-public class ContactInfo {
+public class ContactInfoDto {
     private Long id;
     private Long typeId;
     private Long resumeId;

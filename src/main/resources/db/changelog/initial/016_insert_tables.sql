@@ -28,7 +28,10 @@ VALUES ('Старший Бэкенд-разработчик', 'Разработ�
 
 INSERT INTO contact_type (type)
 VALUES ('Телефон'),
-       ('Электронная почта');
+       ('Электронная почта'),
+       ('Телеграмм'),
+       ('Facebook'),
+       ('Linked In');
 
 INSERT INTO resume (applicantId, name, categoryId, salary, isActive, createdDate, updateTime)
 VALUES ((SELECT id FROM users WHERE name = 'Иван' LIMIT 1), 'Резюме Ивана Иванова (Бэкенд-разработчик)',
