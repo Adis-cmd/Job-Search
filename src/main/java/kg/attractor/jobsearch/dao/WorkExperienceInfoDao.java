@@ -1,6 +1,6 @@
 package kg.attractor.jobsearch.dao;
 
-import kg.attractor.jobsearch.modal.WorkExperienceInfo;
+import kg.attractor.jobsearch.model.WorkExperienceInfo;
 import lombok.*;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;

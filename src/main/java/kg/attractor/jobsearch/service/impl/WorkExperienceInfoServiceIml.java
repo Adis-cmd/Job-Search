@@ -3,7 +3,7 @@ package kg.attractor.jobsearch.service.impl;
 import kg.attractor.jobsearch.dao.WorkExperienceInfoDao;
 import kg.attractor.jobsearch.dto.WorkExperienceInfoDto;
 import kg.attractor.jobsearch.exception.NoSuchElementException.WorkExperienceInfoException;
-import kg.attractor.jobsearch.modal.WorkExperienceInfo;
+import kg.attractor.jobsearch.model.WorkExperienceInfo;
 import kg.attractor.jobsearch.service.WorkExperienceInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

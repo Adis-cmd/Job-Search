@@ -10,7 +10,6 @@ import lombok.*;
 @Builder
 public class WorkExperienceInfoDto {
     private Long id;
-    @NotNull(message = "id резюме не должен быть пустым")
     private Long resumeId;
     @NotNull(message = "Робочий опыт не должен быть пустым")
     @Min(value = 0,  message = "Опыт работы не может быть отрицательным")

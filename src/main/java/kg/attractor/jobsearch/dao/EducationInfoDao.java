@@ -1,6 +1,6 @@
 package kg.attractor.jobsearch.dao;
 
-import kg.attractor.jobsearch.modal.EducationInfo;
+import kg.attractor.jobsearch.model.EducationInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;

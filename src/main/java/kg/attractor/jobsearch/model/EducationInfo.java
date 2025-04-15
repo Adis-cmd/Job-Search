@@ -1,4 +1,4 @@
-package kg.attractor.jobsearch.modal;
+package kg.attractor.jobsearch.model;
 
 import lombok.*;
 
