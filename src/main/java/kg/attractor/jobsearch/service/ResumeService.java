@@ -18,4 +18,6 @@ public interface ResumeService {
     List<ResumeDto> getResumeCategory(String categoryId);
 
     List<ResumeDto> getResumeByUserid(String userid);
+
+    List<ResumeDto> getAllResumeIsActive();
 }

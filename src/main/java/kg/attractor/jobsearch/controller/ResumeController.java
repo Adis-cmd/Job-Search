@@ -27,7 +27,7 @@ public class ResumeController {
 
     @GetMapping
     public String getAllResume(Model model) {
-        List<ResumeDto> allResume = resumeService.getAllResumes();
+        List<ResumeDto> allResume = resumeService.getAllResumeIsActive();
         model.addAttribute("resumes", allResume);
         return "resume/allResume";
     }

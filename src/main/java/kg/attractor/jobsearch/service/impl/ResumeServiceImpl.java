@@ -6,7 +6,6 @@ import kg.attractor.jobsearch.dao.ResumeDao;
 import kg.attractor.jobsearch.dao.WorkExperienceInfoDao;
 import kg.attractor.jobsearch.dto.ResumeDto;
 import kg.attractor.jobsearch.exception.NumberFormatException.ResumeServiceException;
-import kg.attractor.jobsearch.model.ContactInfo;
 import kg.attractor.jobsearch.model.EducationInfo;
 import kg.attractor.jobsearch.model.Resume;
 import kg.attractor.jobsearch.model.WorkExperienceInfo;
@@ -163,5 +162,11 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
                 .map(this::resumeDtos)
                 .filter(Objects::nonNull)
                 .toList();
+    }
+
+    @Override
+    public List<ResumeDto> getAllResumeIsActive() {
+        List<Resume> resumes = resumeDao.getAllResumeIsActive();
+        return resumeDtos(resumes);
     }
 }

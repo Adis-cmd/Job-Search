@@ -129,4 +129,9 @@ public class ResumeDao {
 
         return generatedId;
     }
+
+    public List<Resume> getAllResumeIsActive() {
+        String sql = "select * from resume where isActive = true";
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Resume.class));
+    }
 }
