@@ -3,7 +3,7 @@ package kg.attractor.jobsearch.dao;
 import kg.attractor.jobsearch.exception.NumberFormatException.CategoryServiceException;
 import kg.attractor.jobsearch.exception.NumberFormatException.UserServiceException;
 import kg.attractor.jobsearch.exception.NumberFormatException.VacancyServiceException;
-import kg.attractor.jobsearch.modal.Vacancy;
+import kg.attractor.jobsearch.model.Vacancy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -87,7 +87,7 @@ public class VacancyDao {
                         .addValue("salary", vacancy.getSalary())
                         .addValue("expFrom",vacancy.getExpFrom())
                         .addValue("expTo", vacancy.getExpTo())
-                        .addValue("isActive", true)
+                        .addValue("isActive", vacancy.getIsActive())
                         .addValue("authorId", authorId)
                         .addValue("createdDate", LocalDateTime.now())
                         .addValue("updatedTime",  LocalDateTime.now())
@@ -113,7 +113,7 @@ public class VacancyDao {
             throw new VacancyServiceException("Категория с таким ID не существует.");
         }
 
-        String sql = "update resume set" +
+        String sql = "update vacancy set" +
                 " name = ?, description = ?, categoryId = ?, salary = ?, expFrom = ?, expTo = ?, isActive = ?, updatedTime = ?" +
                 " where id = ?";
         jdbcTemplate.update(

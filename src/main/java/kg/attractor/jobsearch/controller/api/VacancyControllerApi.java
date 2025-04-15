@@ -21,11 +21,11 @@ public class VacancyControllerApi {
         return vacanciesService.getVacancyById(vacancyId);
     }
 
-    @PostMapping("add")
-    public HttpStatus createVacancies(@RequestBody @Valid  VacancyDto vacanciesDto, @RequestParam(name = "authorId") String authorId) {
-        vacanciesService.createVacancies(vacanciesDto, authorId);
-        return HttpStatus.CREATED;
-    }
+//    @PostMapping("add")
+//    public HttpStatus createVacancies(@RequestBody @Valid  VacancyDto vacanciesDto, @RequestParam(name = "authorId") String authorId) {
+//        vacanciesService.createVacancies(vacanciesDto, authorId);
+//        return HttpStatus.CREATED;
+//    }
 
     @PutMapping("update/{vacancyId}")
     public HttpStatus editVacancies(@RequestBody @Valid @PathVariable("vacancyId") VacancyDto vacanciesDto, String vacancyId, Authentication auth) {

@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Getter
 @Setter
@@ -26,7 +27,7 @@ public class VacancyDto {
             message = "Допустимы буквы, цифры, пробелы и знаки .,!?—-"
     )
     private String description;
-    @NotNull(message = "Категория не может быть пустым")
+    @NotNull(message = "Нужно выбрать категорию")
     private Long categoryId;
     @NotNull(message = "Зарплата обязательна для заполнения")
     @DecimalMin(value = "100", message = "Зарплата не может быть меньше 100")
@@ -44,4 +45,16 @@ public class VacancyDto {
     private Long authorId;
     private LocalDateTime createdDate;
     private LocalDateTime updatedTime;
+
+    public String getFormattedCreatedDate() {
+        if (createdDate == null) return "";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+        return createdDate.format(formatter);
+    }
+
+    public String getFormattedUpdatedTime() {
+        if (updatedTime == null) return "";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+        return updatedTime.format(formatter);
+    }
 }

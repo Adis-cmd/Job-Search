@@ -1,7 +1,6 @@
 package kg.attractor.jobsearch.service;
 
 import kg.attractor.jobsearch.dto.VacancyDto;
-import kg.attractor.jobsearch.modal.Vacancy;
 
 import java.util.List;
 
@@ -9,6 +8,8 @@ public interface VacancyService {
     VacancyDto getVacancyById(String vacancyId);
 
     void editVacancies(VacancyDto vacanciesDto, String vacancyId, String email);
+
+    long findCompanyByEmail(String email);
 
     void createVacancies(VacancyDto vacanciesDto, String authorId);
 

@@ -4,7 +4,7 @@ import kg.attractor.jobsearch.dao.VacancyDao;
 import kg.attractor.jobsearch.dto.VacancyDto;
 import kg.attractor.jobsearch.exception.NoSuchElementException.VacancyNotFoundException;
 import kg.attractor.jobsearch.exception.NumberFormatException.VacancyServiceException;
-import kg.attractor.jobsearch.modal.Vacancy;
+import kg.attractor.jobsearch.model.Vacancy;
 import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +47,10 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
         //TODO логика для редактирование вакансии
         log.info("Вакансия с ID: {} успешно обновлена", vacancyId);
     }
+    @Override
+    public long findCompanyByEmail(String email) {
+        return vacancyDao.findCompanyByEmail(email);
+    }
 
     @Override
     public void createVacancies(VacancyDto vacanciesDto, String authorId) {
@@ -64,6 +68,7 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
         v.setDescription(vacanciesDto.getDescription());
         v.setCategoryId(vacanciesDto.getCategoryId());
         v.setSalary(vacanciesDto.getSalary());
+        v.setIsActive(vacanciesDto.getIsActive());
 
         if (vacanciesDto.getExpFrom() == null || vacanciesDto.getExpFrom() < 0) {
             log.error("Ошибка: Начальный опыт работы не может быть отрицательным. ExpFrom: {}", vacanciesDto.getExpFrom());
