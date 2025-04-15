@@ -3,7 +3,7 @@ package kg.attractor.jobsearch.dao;
 import kg.attractor.jobsearch.exception.NumberFormatException.CategoryServiceException;
 import kg.attractor.jobsearch.exception.NumberFormatException.ResumeServiceException;
 import kg.attractor.jobsearch.exception.NumberFormatException.UserServiceException;
-import kg.attractor.jobsearch.modal.Resume;
+import kg.attractor.jobsearch.model.Resume;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -118,7 +118,7 @@ public class ResumeDao {
                         .addValue("salary", resume.getSalary())
                         .addValue("createdDate", LocalDateTime.now())
                         .addValue("updateTime", LocalDateTime.now())
-                        .addValue("isActive", true),
+                        .addValue("isActive", resume.getIsActive()),
 
                 keyHolder,
                 new String[]{"id"}

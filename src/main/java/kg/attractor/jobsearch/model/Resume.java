@@ -1,7 +1,5 @@
-package kg.attractor.jobsearch.modal;
+package kg.attractor.jobsearch.model;
 
-import kg.attractor.jobsearch.dto.EducationInfoDto;
-import kg.attractor.jobsearch.dto.WorkExperienceInfoDto;
 import lombok.*;
 
 import java.time.LocalDateTime;

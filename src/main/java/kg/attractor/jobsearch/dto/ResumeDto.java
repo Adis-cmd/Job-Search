@@ -1,6 +1,8 @@
 package kg.attractor.jobsearch.dto;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+import kg.attractor.jobsearch.model.ContactInfo;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -31,6 +33,9 @@ public class ResumeDto {
     private Boolean isActive = true;
     private LocalDateTime createdDate;
     private LocalDateTime updateTime;
+    @Valid
     private List<WorkExperienceInfoDto> workExperiences;
+    @Valid
     private List<EducationInfoDto> educationInfos;
+//    private List<ContactInfoDto> contactInfos;
 }

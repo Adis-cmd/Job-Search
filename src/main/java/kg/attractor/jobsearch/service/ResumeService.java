@@ -1,7 +1,6 @@
 package kg.attractor.jobsearch.service;
 
 import kg.attractor.jobsearch.dto.ResumeDto;
-import kg.attractor.jobsearch.modal.Resume;
 
 import java.util.List;
 

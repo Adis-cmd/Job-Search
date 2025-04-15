@@ -1,13 +1,15 @@
 package kg.attractor.jobsearch.service.impl;
 
+import kg.attractor.jobsearch.dao.ContactInfoDao;
 import kg.attractor.jobsearch.dao.EducationInfoDao;
 import kg.attractor.jobsearch.dao.ResumeDao;
 import kg.attractor.jobsearch.dao.WorkExperienceInfoDao;
 import kg.attractor.jobsearch.dto.ResumeDto;
 import kg.attractor.jobsearch.exception.NumberFormatException.ResumeServiceException;
-import kg.attractor.jobsearch.modal.EducationInfo;
-import kg.attractor.jobsearch.modal.Resume;
-import kg.attractor.jobsearch.modal.WorkExperienceInfo;
+import kg.attractor.jobsearch.model.ContactInfo;
+import kg.attractor.jobsearch.model.EducationInfo;
+import kg.attractor.jobsearch.model.Resume;
+import kg.attractor.jobsearch.model.WorkExperienceInfo;
 import kg.attractor.jobsearch.service.ResumeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +24,7 @@ import java.util.Objects;
 public class ResumeServiceImpl extends MethodClass implements ResumeService {
 
     private final ResumeDao resumeDao;
+    private final ContactInfoDao contactInfoDao;
     private final EducationInfoDao educationInfoDao;
     private final WorkExperienceInfoDao workExperienceInfoDao;
 
@@ -41,6 +44,7 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
         resume.setName(resumesDto.getName());
         resume.setCategoryId(resumesDto.getCategoryId());
         resume.setSalary(resumesDto.getSalary());
+        resume.setIsActive(resumesDto.getIsActive());
 
         Long resumeId = resumeDao.createResumes(resume, userParse);
         log.info("Резюме успешно создано с ID: {}", resumeId);
@@ -71,6 +75,16 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
                     workExperienceInfoDao.createWorkExperienceInfo(work);
                 });
             }
+
+//            if (resumesDto.getContactInfos() != null) {
+//                resumesDto.getContactInfos().forEach(contactInfoDto -> {
+//                    ContactInfo contact = new ContactInfo();
+//                    contact.setResumeId(resume.getId());
+//                    contact.setTypeId(contactInfoDto.getTypeId());
+//                    contact.setTypeId(contactInfoDto.getTypeId());
+//                    contactInfoDao.addContactInfo(contact);
+//                });
+//            }
         }
 
         // TODO логика для создание резюме
