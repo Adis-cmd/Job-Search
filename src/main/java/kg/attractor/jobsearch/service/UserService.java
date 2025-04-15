@@ -19,7 +19,7 @@ public interface UserService {
 
     ResponseEntity<?> findByName(String imageName);
 
-    void editUser(UserDto userDto, Long userId);
+    void editUser(UserDto userDto, Long userId, String userAvatar);
 
     void registerUser(UserDto userDto);
 

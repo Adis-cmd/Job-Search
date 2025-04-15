@@ -83,7 +83,7 @@ public class UserDao {
                 """;
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
     }
-    public void editProfile(User user, Long userId) {
+    public void editProfile(User user, Long userId, String avatar) {
         String sql = "update users set" +
                 " name = ?, surname = ?, age = ?, avatar = ?" +
                 " where id = ?";
@@ -93,7 +93,7 @@ public class UserDao {
                 user.getName(),
                 user.getSurname(),
                 user.getAge(),
-                user.getAvatar(),
+                avatar,
                 userId
         );
     }

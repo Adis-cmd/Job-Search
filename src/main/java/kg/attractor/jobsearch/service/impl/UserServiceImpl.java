@@ -82,10 +82,10 @@ public class UserServiceImpl extends MethodClass implements UserService {
 
 
     @Override
-    public void editUser(UserDto userDto, Long userId) {
+    public void editUser(UserDto userDto, Long userId, String avatar) {
         log.info("Редактирование профиля пользователя с ID: {}", userId);
         User user = editUser(userDto);
-        userDao.editProfile(user, userId);
+        userDao.editProfile(user, userId, avatar);
     }
 
 

@@ -16,12 +16,6 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
-
-    @PutMapping("{id}")
-    public void editUser(@RequestBody UserDto userDto, @PathVariable Long id) {
-        userService.editUser(userDto, id);
-    }
-
     @GetMapping("applicant/{name}")
     public List<UserDto> findUser(@PathVariable("name") String name) {
        return userService.findUser(name);

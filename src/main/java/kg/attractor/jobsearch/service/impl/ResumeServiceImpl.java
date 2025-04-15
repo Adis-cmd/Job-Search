@@ -6,6 +6,7 @@ import kg.attractor.jobsearch.dao.ResumeDao;
 import kg.attractor.jobsearch.dao.WorkExperienceInfoDao;
 import kg.attractor.jobsearch.dto.ResumeDto;
 import kg.attractor.jobsearch.exception.NumberFormatException.ResumeServiceException;
+import kg.attractor.jobsearch.model.ContactInfo;
 import kg.attractor.jobsearch.model.EducationInfo;
 import kg.attractor.jobsearch.model.Resume;
 import kg.attractor.jobsearch.model.WorkExperienceInfo;
@@ -75,15 +76,18 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
                 });
             }
 
-//            if (resumesDto.getContactInfos() != null) {
-//                resumesDto.getContactInfos().forEach(contactInfoDto -> {
-//                    ContactInfo contact = new ContactInfo();
-//                    contact.setResumeId(resume.getId());
-//                    contact.setTypeId(contactInfoDto.getTypeId());
-//                    contact.setTypeId(contactInfoDto.getTypeId());
-//                    contactInfoDao.addContactInfo(contact);
-//                });
-//            }
+            if (resumesDto.getContactInfos() != null) {
+                resumesDto.getContactInfos().forEach(contactInfoDto -> {
+                    if (contactInfoDto.getValue() != null && !contactInfoDto.getValue().isBlank()) {
+                        ContactInfo contact = new ContactInfo();
+                        contact.setResumeId(resumeId);
+                        contact.setTypeId(contactInfoDto.getTypeId());
+                        contact.setValue(contactInfoDto.getValue());
+                        log.debug("Добавлен контакт: {}", contact);
+                        contactInfoDao.addContactInfo(contact);
+                    }
+                });
+            }
         }
 
         // TODO логика для создание резюме

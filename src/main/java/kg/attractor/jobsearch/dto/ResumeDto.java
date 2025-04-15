@@ -37,5 +37,5 @@ public class ResumeDto {
     private List<WorkExperienceInfoDto> workExperiences;
     @Valid
     private List<EducationInfoDto> educationInfos;
-//    private List<ContactInfoDto> contactInfos;
+    private List<ContactInfoDto> contactInfos;
 }

@@ -40,8 +40,11 @@ public class GlobalControllerAdvice {
     }
 
     @ExceptionHandler(NumberFormatException.class)
-    private ErrorResponseBody numberFormatException(NumberFormatException ex) {
-        return errorService.makeResponse(ex);
+    private String numberFormatException(Model model, HttpServletRequest request) {
+        model.addAttribute("status", HttpStatus.NOT_FOUND.value());
+        model.addAttribute("reason", HttpStatus.NOT_FOUND.getReasonPhrase());
+        model.addAttribute("details",request);
+        return "errors/error";
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -13,7 +13,7 @@ public class ContactInfoDao {
 
 
     public void addContactInfo(ContactInfo contactInfo) {
-        String sql = "insert into contact_info (type_id, resumeId, info_value) " +
+        String sql = "insert into contact_info (typeId, resumeId, info_value) " +
                 "values (:typeId, :resumeId, :infoValue)";
 
         MapSqlParameterSource params = new MapSqlParameterSource()

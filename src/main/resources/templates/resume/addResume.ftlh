@@ -86,38 +86,42 @@
 
             </div>
 
-            <div class="form-group">
-                <label>Контактная информация:</label>
-<#--                <@spring.hiddenInput "resumeDto.contactInfos[0].typeId" value="1" />-->
-<#--                <@spring.formInput "resumeDto.contactInfos[0].value" 'placeholder="+996 999 555 555" class="form-control"' />-->
-<#--                <div class="error-block">-->
-<#--                    <@spring.showErrors "<br>" "custom-error" />-->
-<#--                </div>-->
+<div class="form-group">
+    <label>Контактная информация:</label>
 
-<#--                <@spring.hiddenInput "resumeDto.contactInfos[1].typeId" value="2" />-->
-<#--                <@spring.formInput "resumeDto.contactInfos[1].value" 'placeholder="example@mail.com" type="email" class="form-control"' />-->
-<#--                <div class="error-block">-->
-<#--                    <@spring.showErrors "<br>" "custom-error" />-->
-<#--                </div>-->
+    <input type="hidden" name="contactInfos[0].typeId" value="1" />
+    <@spring.formInput "resumeDto.contactInfos[0].value" 'placeholder="+996 999 555 555" class="form-control"' />
+    <div class="error-block">
+        <@spring.showErrors "<br>" "custom-error" />
+    </div>
 
-<#--                <@spring.hiddenInput "resumeDto.contactInfos[2].typeId" value="3" />-->
-<#--                <@spring.formInput "resumeDto.contactInfos[2].value" 'placeholder="https://t.me/username" type="url" class="form-control"' />-->
-<#--                <div class="error-block">-->
-<#--                    <@spring.showErrors "<br>" "custom-error" />-->
-<#--                </div>-->
+    <input type="hidden" name="contactInfos[1].typeId" value="2" />
+    <@spring.formInput "resumeDto.contactInfos[1].value" 'placeholder="example@mail.com" type="email" class="form-control"' />
 
-<#--                <@spring.hiddenInput "resumeDto.contactInfos[3].typeId" value="4" />-->
-<#--                <@spring.formInput "resumeDto.contactInfos[3].value" 'placeholder="https://facebook.com/yourprofile" type="url" class="form-control"' />-->
-<#--                <div class="error-block">-->
-<#--                    <@spring.showErrors "<br>" "custom-error" />-->
-<#--                </div>-->
+    <div class="error-block">
+        <@spring.showErrors "<br>" "custom-error" />
+    </div>
 
-<#--                <@spring.hiddenInput "resumeDto.contactInfos[4].typeId" value="5" />-->
-<#--                <@spring.formInput "resumeDto.contactInfos[4].value" 'placeholder="https://linkedin.com/in/yourprofile" type="url" class="form-control"' />-->
-<#--                <div class="error-block">-->
-<#--                    <@spring.showErrors "<br>" "custom-error" />-->
-<#--                </div>-->
-<#--            </div>-->
+    <input type="hidden" name="contactInfos[2].typeId" value="3" />
+    <@spring.formInput "resumeDto.contactInfos[2].value" 'placeholder="https://t.me/username" type="url" class="form-control"' />
+    <div class="error-block">
+        <@spring.showErrors "<br>" "custom-error" />
+    </div>
+
+    <input type="hidden" name="contactInfos[3].typeId" value="4" />
+    <@spring.formInput "resumeDto.contactInfos[3].value" 'placeholder="https://facebook.com/yourprofile" type="url" class="form-control"' />
+    <div class="error-block">
+        <@spring.showErrors "<br>" "custom-error" />
+    </div>
+
+    <input type="hidden" name="contactInfos[4].typeId" value="4" />
+    <@spring.formInput "resumeDto.contactInfos[4].value" 'placeholder="https://linkedin.com/in/yourprofile" type="url" class="form-control"' />
+    <div class="error-block">
+        <@spring.showErrors "<br>" "custom-error" />
+    </div>
+</div>
+
+
 
         <div class="form-group">
             <label>Статус вакансии:</label>
