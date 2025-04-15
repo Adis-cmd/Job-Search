@@ -3,16 +3,6 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-body {
-    background-color: #f5f7fa;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    color: #333;
-}
 
 .register-container {
     background-color: white;
@@ -117,34 +107,16 @@ button:hover {
     }
 }
 
-
-.navbar {
-    background-color: #2c3e50;
-    padding: 1rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: #fff;
-}
-
-.navbar a {
-    color: #fff;
-    text-decoration: none;
-    margin-left: 1rem;
+.custom-error {
+    color: #ff4d4f;
     font-weight: 500;
-    transition: color 0.2s ease;
+    padding-left: 20px;
+    position: relative;
 }
 
-.navbar a:hover {
-    color: #f1c40f;
+.custom-error::before {
+    content: "⚠ ";
+    position: absolute;
+    left: 0;
 }
 
-.navbar .nav-left a {
-    font-size: 1.2rem;
-    font-weight: bold;
-}
-
-.navbar .nav-right {
-    display: flex;
-    align-items: center;
-}

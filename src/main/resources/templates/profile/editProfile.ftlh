@@ -1,29 +1,45 @@
 <#import "../layout.ftlh" as main>
-<link rel="stylesheet" href="/static/editProfileStyle.css">
-<@main.layout>
+<@main.layout ; spring>
     <section class="container py-5">
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-6">
                 <div class="card shadow-sm p-4">
                     <h3 class="text-center mb-4">Редактирование профиля</h3>
 
-                    <form action="/profile/edit" method="post">
+                    <form action="/profile/edit" method="post" enctype="multipart/form-data">
                         <div class="form-group mb-3">
                             <label for="name">Имя</label>
-                            <input type="text" class="form-control" id="name" name="name" value="${user.name}" required>
+                            <@spring.formInput "user.name" 'id="form3Example3cg" class="form-control form-control-lg"' />
+                            <div class="error-block">
+                                <@spring.showErrors "<br>" "custom-error" />
+                            </div>
                         </div>
 
                         <#if user.surname?? && user.surname?has_content>
                             <div class="form-group mb-3">
                                 <label for="surname">Фамилия</label>
-                                <input type="text" class="form-control" id="surname" name="surname" value="${user.surname}">
+                                <@spring.formInput "user.surname" 'id="form3Example3cg" class="form-control form-control-lg"' />
+                                <div class="error-block">
+                                    <@spring.showErrors "<br>" "custom-error" />
+                                </div>
                             </div>
+
 
                             <div class="form-group mb-3">
                                 <label for="age">Возраст</label>
-                                <input type="number" class="form-control" id="age" name="age" value="${user.age!}">
+                                <@spring.formInput "user.age" 'id="form3Example3cg" class="form-control form-control-lg"' />
+                                <div class="error-block">
+                                    <@spring.showErrors "<br>" "custom-error" />
+                                </div>
                             </div>
                         </#if>
+
+                        <img src="users/photos/${user.avatar}" alt="Профильное фото">
+
+                        <div class="form-group mb-4">
+                            <label for="avatar">Фото профиля</label>
+                            <input type="file" class="form-control" id="avatar" name="file" accept=".jpg,.jpeg,.png">
+                        </div>
 
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary btn-lg">Сохранить изменения</button>

@@ -3,7 +3,7 @@
 <div class="container">
     <div class="profile-header">
         <div class="profile-info">
-            <img src="users/photos/avatar" alt="Профильное фото">
+            <img src="users/photos/${user.avatar}" alt="Профильное фото">
             <div>
                 <h2>${user.name}</h2>
                 <#if user.surname?? && user.surname?has_content>
@@ -17,10 +17,10 @@
 
         <div class="profile-actions">
             <#if user.surname?? && user.surname?has_content>
-                <a href="/resume/create" class="action-button">Создать резюме</a>
+                <a href="/resume/add" class="action-button">Создать резюме</a>
                 <a href="/responses" class="action-button">Отклики</a>
             <#else>
-                <a href="/vacancy/create" class="action-button">Создать вакансию</a>
+                <a href="/vacancy/add" class="action-button">Создать вакансию</a>
             </#if>
         </div>
     </div>
@@ -50,9 +50,9 @@
                     <div class="resume-card">
                         <h4>${vacancy.name}</h4>
                         <p>Дата создания</p>
-                        <p>${vacancy.createdDate}</p>
+                        <p>${vacancy.formattedCreatedDate}</p>
                         <p>Дата обновления</p>
-                        <p>${vacancy.updatedTime}</p>
+                        <p>${vacancy.formattedUpdatedTime}</p>
                         <a href="/vacancy/update/${vacancy.id}" class="resume-link">Обновить</a>
                         <a href="/vacancy/edit/${vacancy.id}" class="edit-link">Редактировать</a>
                     </div>

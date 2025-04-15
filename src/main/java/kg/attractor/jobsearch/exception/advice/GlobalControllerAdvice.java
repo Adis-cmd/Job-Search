@@ -1,28 +1,42 @@
 package kg.attractor.jobsearch.exception.advice;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import kg.attractor.jobsearch.service.ErrorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.ModelAndView;
 
+import java.io.IOException;
 import java.util.NoSuchElementException;
 
-@RestControllerAdvice
+@ControllerAdvice
 @RequiredArgsConstructor
 public class GlobalControllerAdvice {
     private final ErrorService errorService;
 
     @ExceptionHandler(IllegalArgumentException.class)
-    private ErrorResponseBody  illegalArgumentExceptionHandler(IllegalArgumentException e) {
-        return errorService.makeResponse(e);
+    public String illegalArgumentException(Model model, HttpServletRequest request, IllegalArgumentException ex) {
+        model.addAttribute("status", HttpStatus.BAD_REQUEST);
+        model.addAttribute("reason", "Неверные данные");
+        model.addAttribute("details", request.getRequestURI());
+        return "errors/error";
     }
 
     @ExceptionHandler(NoSuchElementException.class)
-    private ErrorResponseBody noSuchElementException(NoSuchElementException ex) {
-        return errorService.makeResponse(ex);
+    public String handleNoSuchElementException(Model model, HttpServletRequest request) {
+        model.addAttribute("status", HttpStatus.NOT_FOUND.value());
+        model.addAttribute("reason", HttpStatus.NOT_FOUND.getReasonPhrase());
+        model.addAttribute("details",request);
+        return "errors/error";
     }
 
     @ExceptionHandler(NumberFormatException.class)

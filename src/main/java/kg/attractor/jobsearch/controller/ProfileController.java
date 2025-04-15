@@ -1,16 +1,21 @@
 package kg.attractor.jobsearch.controller;
 
+import jakarta.validation.Valid;
 import kg.attractor.jobsearch.dto.UserDto;
 import kg.attractor.jobsearch.service.ResumeService;
 import kg.attractor.jobsearch.service.UserService;
 import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
+import org.h2.engine.Mode;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequiredArgsConstructor
@@ -40,14 +45,24 @@ public class ProfileController {
     }
 
     @PostMapping("edit")
-    public String editProfile(UserDto userDto) {
+    public String editProfile(@Valid UserDto userDto, @RequestParam("file") MultipartFile file, BindingResult bindingResult, Model model) {
         String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         Long currentUser = userService.getUserId(currentUserEmail);
-        userService.editUser(UserDto.builder()
-                        .name(userDto.getName())
-                        .surname(userDto.getSurname())
-                        .age(userDto.getAge())
-                .build(), currentUser);
-        return "redirect:/profile";
+        userDto.setId(currentUser);
+
+        if (!bindingResult.hasErrors()) {
+            String userAvatar =  userService.uploadingPhotos(file);
+            userService.editUser(UserDto.builder()
+                    .name(userDto.getName())
+                    .surname(userDto.getSurname())
+                    .avatar(userAvatar)
+                    .age(userDto.getAge())
+                    .build(), currentUser);
+            return "redirect:/profile";
+        }
+
+        model.addAttribute("user", userDto);
+        return "resume/editResume";
     }
+
 }
