@@ -1,8 +1,6 @@
 <#import "../layout.ftlh" as main>
 <@main.layout ; spring>
-    <section class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-6">
+
                 <div class="card shadow-sm p-4">
                     <h3 class="text-center mb-4">Редактирование профиля</h3>
 
@@ -48,9 +46,5 @@
                             <button type="submit" class="btn btn-primary btn-lg">Сохранить изменения</button>
                         </div>
                     </form>
-
                 </div>
-            </div>
-        </div>
-    </section>
 </@main.layout>

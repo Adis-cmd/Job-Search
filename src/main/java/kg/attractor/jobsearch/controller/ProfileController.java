@@ -45,27 +45,30 @@ public class ProfileController {
     }
 
     @PostMapping("edit")
-    public String editProfile(@RequestParam("file") MultipartFile file,
-                              @Valid UserDto userDto,
-                              BindingResult bindingResult, Model model) {
-        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        UserDto currentUserDto = userService.getUserEmail(currentUserEmail);
+    public String editProfile(
+            @Valid UserDto userDto,
+            BindingResult bindingResult,
+            @RequestParam("file") MultipartFile file,
+            Model model) {
 
-        if (!bindingResult.hasErrors()) {
-            String userAvatar = file != null && !file.isEmpty()
-                    ? userService.uploadingPhotos(file)
-                    : currentUserDto.getAvatar();
-
-            currentUserDto.setName(userDto.getName());
-            currentUserDto.setSurname(userDto.getSurname());
-            currentUserDto.setAge(userDto.getAge());
-            currentUserDto.setAvatar(userAvatar);
-
-            userService.editUser(currentUserDto, currentUserDto.getId(), userAvatar);
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("userDto", userDto);
+            return "profile/editProfile";
         }
 
-        model.addAttribute("userDto", userDto);
-        return "profile/profile";
+        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long currentUser = userService.getUserId(currentUserEmail);
+        String userAvatar = userService.uploadingPhotos(file);
+
+        userService.editUser(UserDto.builder()
+                .name(userDto.getName())
+                .surname(userDto.getSurname())
+                .avatar(userAvatar)
+                .age(userDto.getAge())
+                .build(), currentUser, userAvatar);
+
+        return "redirect:/profile";
     }
+
 
 }
