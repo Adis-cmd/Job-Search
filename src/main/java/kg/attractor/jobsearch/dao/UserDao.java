@@ -1,6 +1,6 @@
 package kg.attractor.jobsearch.dao;
 
-import kg.attractor.jobsearch.modal.User;
+import kg.attractor.jobsearch.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -33,6 +33,15 @@ public class UserDao {
         return Optional.ofNullable(
                 DataAccessUtils.singleResult(
                         jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class), "%" + email + "%")
+                )
+        );
+    }
+
+    public Optional<User> getUserById(Long id) {
+        String sql = "select * from users where id = ?";
+        return Optional.ofNullable(
+                DataAccessUtils.singleResult(
+                        jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class),id)
                 )
         );
     }
@@ -76,7 +85,7 @@ public class UserDao {
     }
     public void editProfile(User user, Long userId) {
         String sql = "update users set" +
-                " name = ?, surname = ?, age = ?" +
+                " name = ?, surname = ?, age = ?, avatar = ?" +
                 " where id = ?";
 
         jdbcTemplate.update(
@@ -84,6 +93,7 @@ public class UserDao {
                 user.getName(),
                 user.getSurname(),
                 user.getAge(),
+                user.getAvatar(),
                 userId
         );
     }
@@ -102,7 +112,7 @@ public class UserDao {
                             .addValue("email", user.getEmail())
                             .addValue("password", user.getPassword())
                             .addValue("phoneNumber", user.getPhoneNumber())
-                            .addValue("avatar", "data/images/avatar.jpg")
+                            .addValue("avatar", "avatar.jpg")
                             .addValue("enabled", true)
                             .addValue("accountType_id", user.getAccountType())
             );

@@ -3,20 +3,18 @@ package kg.attractor.jobsearch.service.impl;
 import kg.attractor.jobsearch.dao.UserDao;
 import kg.attractor.jobsearch.dto.UserDto;
 import kg.attractor.jobsearch.exception.NumberFormatException.UserServiceException;
-import kg.attractor.jobsearch.modal.User;
+import kg.attractor.jobsearch.model.User;
 import kg.attractor.jobsearch.service.UserService;
 import kg.attractor.jobsearch.util.FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -96,6 +94,7 @@ public class UserServiceImpl extends MethodClass implements UserService {
         user.setName(userDto.getName());
         user.setSurname(userDto.getSurname());
         user.setAge(userDto.getAge());
+        user.setAvatar(userDto.getAvatar());
         return user;
     }
 
@@ -144,6 +143,15 @@ public class UserServiceImpl extends MethodClass implements UserService {
         log.info("Поиск пользователя с email: {}", email);
         User user = getEntityOrThrow(userDao.getUserEmail(email),
                 new UserServiceException("Не найден пользователь с такой почтой"));
+        return userDtos(user);
+        //TODO Логика для поиска пользователя по его email
+    }
+
+    @Override
+    public UserDto getUserById(Long id) {
+        log.info("Поиск пользователя с id: {}", id);
+        User user = getEntityOrThrow(userDao.getUserById(id),
+                new UserServiceException("Не найден пользователь с таким id"));
         return userDtos(user);
         //TODO Логика для поиска пользователя по его email
     }
