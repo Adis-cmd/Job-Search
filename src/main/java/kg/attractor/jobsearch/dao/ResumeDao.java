@@ -81,7 +81,7 @@ public class ResumeDao {
 
         jdbcTemplate.update(sql,
                 resume.getName(),
-                resume.getCategoryId(),
+                resume.getCategory(),
                 resume.getSalary(),
                 resume.getIsActive(),
                 LocalDateTime.now(),
@@ -114,7 +114,7 @@ public class ResumeDao {
                 new MapSqlParameterSource()
                         .addValue("applicantId", userId)
                         .addValue("name", resume.getName())
-                        .addValue("categoryId", resume.getCategoryId())
+                        .addValue("categoryId", resume.getCategory())
                         .addValue("salary", resume.getSalary())
                         .addValue("createdDate", LocalDateTime.now())
                         .addValue("updateTime", LocalDateTime.now())

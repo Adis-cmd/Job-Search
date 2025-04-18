@@ -41,7 +41,7 @@ public class ResumeControllerApi {
 
     @GetMapping("search/{categoryId}")
     public List<ResumeDto> searchResumesCategory(@PathVariable String categoryId) {
-        return resumesService.getResumeCategory(categoryId);
+        return resumesService.getResumeByCategoryId(categoryId);
     }
 
     @GetMapping("user/{userId}")

@@ -49,7 +49,7 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
         Long userParse = parseId(userId);
         Resume resume = new Resume();
         resume.setName(resumesDto.getName());
-        resume.setCategoryId(toCategoryEntity(resumesDto.getCategoryId()));
+        resume.setCategory(toCategoryEntity(resumesDto.getCategoryId()));
         resume.setSalary(resumesDto.getSalary());
         resume.setIsActive(resumesDto.getIsActive());
 
@@ -127,7 +127,7 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
         log.info("Редактирование резюме с ID: {}", parseResumeId);
         Resume resume = new Resume();
         resume.setName(resumesDto.getName());
-        resume.setCategoryId(toCategoryEntity(resumesDto.getCategoryId()));
+        resume.setCategory(toCategoryEntity(resumesDto.getCategoryId()));
         resume.setSalary(resumesDto.getSalary());
         resume.setIsActive(resumesDto.getIsActive());
         resumeDao.editResume(resume, parseResumeId);
@@ -150,7 +150,7 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
     public List<ResumeDto> getResumeByUserid(String userid) {
         Long parseUserId = parseId(userid);
         log.info("Поиск резюме для пользователя с ID: {}", parseUserId);
-        List<Resume> resume = resumeRepository.findAllResumeByApplicantId(parseUserId);
+        List<Resume> resume = resumeRepository.findAllResumeByApplicantId_Id(parseUserId);
         return resumeDtos(resume);
         //TODO логика для поиска резюме по id пользователя
     }
@@ -159,9 +159,9 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
     private ResumeDto resumeDtos(Resume resume) {
         return ResumeDto.builder()
                 .id(resume.getId())
-                .applicantId(userService.auxiliaryMethodUser(resume.getApplicantId()))
+                .applicantId(userService.auxiliaryMethodUser(resume.getApplicant()))
                 .name(resume.getName())
-                .categoryId(categoryService.category(resume.getCategoryId()))
+                .categoryId(categoryService.category(resume.getCategory()))
                 .salary(resume.getSalary())
                 .isActive(resume.getIsActive())
                 .createdDate(resume.getCreatedDate())
