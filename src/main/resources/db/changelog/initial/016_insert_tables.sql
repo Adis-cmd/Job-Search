@@ -6,16 +6,11 @@ VALUES ('Иван', 'Иванов', 30, 'ivan.ivanov@jobseeker.com', '$2a$10$kCm
 ', '987-654-3210', 'maria_avatar.jpg',
         (SELECT id FROM account_type WHERE TYPE LIKE 'EMPLOYEE'), true);
 
-INSERT INTO category (name, parentId)
-VALUES ('Бэкенд-разработчик', (SELECT id FROM category WHERE name = 'Бэкенд-разработчик' LIMIT 1)),
-       ('Фронтенд-разработчик', (SELECT id FROM category WHERE name = 'Фронтенд-разработчик' LIMIT 1));
-
-
-INSERT INTO category (name, parentId)
-VALUES ('Старший Бэкенд-разработчик', (SELECT id FROM category WHERE name = 'Бэкенд-разработчик' LIMIT 1)),
-       ('Младший Бэкенд-разработчик', (SELECT id FROM category WHERE name = 'Бэкенд-разработчик' LIMIT 1)),
-       ('Старший Фронтенд-разработчик', (SELECT id FROM category WHERE name = 'Фронтенд-разработчик' LIMIT 1)),
-       ('Младший Фронтенд-разработчик', (SELECT id FROM category WHERE name = 'Фронтенд-разработчик' LIMIT 1));
+INSERT INTO category (name)
+VALUES ('Старший Бэкенд-разработчик'),
+       ('Младший Бэкенд-разработчик'),
+       ('Старший Фронтенд-разработчик'),
+       ('Младший Фронтенд-разработчик');
 
 INSERT INTO vacancy (name, description, categoryId, salary, expFrom, expTo, isActive, authorId, createdDate,
                      updatedTime)

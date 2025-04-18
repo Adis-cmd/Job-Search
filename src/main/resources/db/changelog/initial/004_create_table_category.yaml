@@ -18,16 +18,3 @@ databaseChangeLog:
                   type: varchar(100)
                   constraints:
                     nullable: false
-              - column:
-                  name: parentId
-                  type: long
-                  constraints:
-                    nullable: true
-
-        - addForeignKeyConstraint:
-            baseTableName: category
-            baseColumnNames: parentId
-            constraintName: fk_parent_id
-            referencedTableName: category
-            referencedColumnNames: id
-            onDelete: CASCADE
