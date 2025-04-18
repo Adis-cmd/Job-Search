@@ -5,6 +5,7 @@ import kg.attractor.jobsearch.exception.NoSuchElementException.CategoryNotFoundE
 import kg.attractor.jobsearch.exception.NoSuchElementException.UserNotFoundException;
 import kg.attractor.jobsearch.exception.NoSuchElementException.VacancyNotFoundException;
 import kg.attractor.jobsearch.exception.NumberFormatException.VacancyServiceException;
+import kg.attractor.jobsearch.model.Category;
 import kg.attractor.jobsearch.model.User;
 import kg.attractor.jobsearch.model.Vacancy;
 import kg.attractor.jobsearch.repos.CategoryRepository;
@@ -42,32 +43,76 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
     }
 
     @Override
-    public void editVacancies(VacancyDto vacanciesDto, String vacancyId, String email) {
+    public void editVacancies(VacancyDto dto, String vacancyId, String email) {
         log.info("Редактирование вакансии с ID: {}", vacancyId);
-        Long parceLong = parseId(vacancyId);
+        Long id = parseId(vacancyId);
+        Long authorId = getEntityOrThrow(vacancyRepository.findUserIdByEmail(email),
+                new UserNotFoundException());
 
-        Long authorId = vacancyRepository.findCompanyByEmail(email);
+        dto.setAuthorId(authorId);
 
-        if (!vacancyRepository.isVacancyOwnedByUser(parceLong, authorId)) {
+        Vacancy vacancy = getOwnedVacancyOrThrow(id, email);
+        validateVacancyDto(dto);
+        updateVacancyFromDto(vacancy, dto);
+
+        vacancyRepository.saveAndFlush(vacancy);
+        log.info("Вакансия с ID: {} успешно обновлена", id);
+    }
+
+
+    private Vacancy getOwnedVacancyOrThrow(Long id, String email) {
+        Long authorId = getEntityOrThrow(vacancyRepository.findUserIdByEmail(email),
+                new UserNotFoundException());
+
+        Long count = vacancyRepository.countOwnedVacancy(id, authorId);
+        if (count <= 0) {
             throw new VacancyNotFoundException("Эта вакансия не принадлежит вам");
         }
-        if (!categoryRepository.existsById(vacanciesDto.getCategoryId().getId())) {
+
+        return vacancyRepository.findById(id)
+                .orElseThrow(() -> new VacancyNotFoundException("Вакансия не найдена по ID: " + id));
+    }
+
+
+    private void validateVacancyDto(VacancyDto dto) {
+        if (dto.getCategoryId() == null || categoryRepository.countById(dto.getCategoryId()) <= 0) {
             throw new CategoryNotFoundException();
         }
 
-        Vacancy updatedVacancy = auxiliaryMethod(vacanciesDto);
+        if (dto.getExpFrom() == null || dto.getExpFrom() < 0) {
+            throw new VacancyServiceException("Начальный опыт работы не может быть отрицательным.");
+        }
 
-        updatedVacancy.setUpdatedTime(LocalDateTime.now());
+        if (dto.getExpTo() == null || dto.getExpTo() < 0) {
+            throw new VacancyServiceException("Конечный опыт работы не может быть отрицательным.");
+        }
 
-//        vacancyRepository.editVacancy(updatedVacancy, parceLong);
-
-        //TODO логика для редактирование вакансии
-        log.info("Вакансия с ID: {} успешно обновлена", vacancyId);
+        if (dto.getExpFrom() > dto.getExpTo()) {
+            throw new VacancyServiceException("Начальный опыт не может быть больше конечного.");
+        }
     }
+
+
+    private void updateVacancyFromDto(Vacancy vacancy, VacancyDto dto) {
+        Category category = getEntityOrThrow(categoryRepository.findById(dto.getCategoryId()),
+                new CategoryNotFoundException());
+
+        vacancy.setName(dto.getName());
+
+        vacancy.setDescription(dto.getDescription());
+        vacancy.setCategory(category);
+        vacancy.setSalary(dto.getSalary());
+        vacancy.setIsActive(dto.getIsActive() != null ? dto.getIsActive() : true);
+        vacancy.setExpFrom(dto.getExpFrom());
+        vacancy.setExpTo(dto.getExpTo());
+        vacancy.setUpdatedTime(LocalDateTime.now());
+    }
+
 
     @Override
     public long findCompanyByEmail(String email) {
-        return vacancyRepository.findCompanyByEmail(email);
+        return getEntityOrThrow(vacancyRepository.findUserIdByEmail(email),
+                new UserNotFoundException());
     }
 
     @Override
@@ -89,7 +134,8 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
         Vacancy v = new Vacancy();
         v.setName(vacanciesDto.getName());
         v.setDescription(vacanciesDto.getDescription());
-        v.setCategory(categoryService.toCategoryEntity(vacanciesDto.getCategoryId()));
+        v.setCategory(getEntityOrThrow(categoryRepository.findById(vacanciesDto.getCategoryId()),
+                new CategoryNotFoundException()));
         v.setSalary(vacanciesDto.getSalary());
         v.setIsActive(vacanciesDto.getIsActive() != null ? vacanciesDto.getIsActive() : true);
 
@@ -127,9 +173,9 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
         log.info("Удаление вакансии с ID: {}", vacancyId);
         Long parceLong = parseId(vacancyId);
 
-        Long authorId = vacancyRepository.findCompanyByEmail(email);
+        Long authorId = getEntityOrThrow(vacancyRepository.findUserIdByEmail(email), new UserNotFoundException());
 
-        if (!vacancyRepository.isVacancyOwnedByUser(parceLong, authorId)) {
+        if (vacancyRepository.countOwnedVacancy(parceLong, authorId) <= 0) {
             throw new VacancyNotFoundException("Эта вакансия не принадлежит вам");
         }
 
@@ -181,12 +227,12 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
                 .id(v.getId())
                 .name(v.getName())
                 .description(v.getDescription())
-                .categoryId(categoryService.category(v.getCategory()))
+                .categoryId(v.getCategory().getId())
                 .salary(v.getSalary())
                 .expFrom(v.getExpFrom())
                 .expTo(v.getExpTo())
                 .isActive(v.getIsActive())
-                .authorId(userService.auxiliaryMethodUser(v.getAuthorId()))
+                .authorId(v.getAuthorId().getId())
                 .createdDate(v.getCreatedDate())
                 .updatedTime(v.getUpdatedTime())
                 .build();

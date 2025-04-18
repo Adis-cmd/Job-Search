@@ -1,10 +1,12 @@
 package kg.attractor.jobsearch.controller;
 
 import jakarta.validation.Valid;
+import kg.attractor.jobsearch.dto.EditProfileDto;
 import kg.attractor.jobsearch.dto.ResumeDto;
 import kg.attractor.jobsearch.dto.UserDto;
 import kg.attractor.jobsearch.dto.VacancyDto;
 import kg.attractor.jobsearch.model.Resume;
+import kg.attractor.jobsearch.model.User;
 import kg.attractor.jobsearch.model.Vacancy;
 import kg.attractor.jobsearch.service.ResumeService;
 import kg.attractor.jobsearch.service.UserService;
@@ -53,29 +55,45 @@ public class ProfileController {
 
     @PostMapping("edit")
     public String editProfile(
-            @Valid UserDto userDto,
+            @Valid EditProfileDto editProfileDto,
             BindingResult bindingResult,
             @RequestParam("file") MultipartFile file,
             Model model) {
+        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
+        Long currentUser = userService.getUserId(currentUserEmail);
+
+        UserDto user = userService.getUserById(currentUser);
+
+        String userAvatar = userService.uploadingPhotos(file);
+
+        if (user.getAccountType() == 1) {
+            boolean onlyIgnoredErrors = bindingResult.getFieldErrors().stream()
+                    .allMatch(error -> error.getField().equals("surname") || error.getField().equals("age"));
+
+            if (onlyIgnoredErrors) {
+                bindingResult = new BeanPropertyBindingResult(editProfileDto, "editProfileDto");
+            }
+        }
         if (bindingResult.hasErrors()) {
-            model.addAttribute("userDto", userDto);
+            model.addAttribute("userDto", editProfileDto);
             return "profile/editProfile";
         }
 
-        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        Long currentUser = userService.getUserId(currentUserEmail);
-        String userAvatar = userService.uploadingPhotos(file);
-
-        userService.editUser(UserDto.builder()
-                .name(userDto.getName())
-                .surname(userDto.getSurname())
-                .avatar(userAvatar)
-                .age(userDto.getAge())
-                .build(), currentUser, userAvatar);
+        userService.editUser(
+                UserDto.builder()
+                        .name(editProfileDto.getName())
+                        .surname(editProfileDto.getSurname())
+                        .age(editProfileDto.getAge())
+                        .avatar(userAvatar)
+                        .build(),
+                currentUser,
+                userAvatar
+        );
 
         return "redirect:/profile";
     }
+
 
 
 }

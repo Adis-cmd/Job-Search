@@ -1,9 +1,7 @@
 package kg.attractor.jobsearch.repos;
 
-import kg.attractor.jobsearch.model.User;
 import kg.attractor.jobsearch.model.Vacancy;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
@@ -23,11 +21,11 @@ public interface VacancyRepository extends JpaRepository<Vacancy, Long> {
     @Query(value = "select v from Vacancy v where v.id = :vacancyId")
     Optional<Vacancy> findVacancyById(Long vacancyId);
 
-    @Query(value = "SELECT COUNT(v) FROM Vacancy v WHERE v.id = :vacancyId AND v.authorId = :userId")
-    Boolean isVacancyOwnedByUser(Long vacancyId, Long userId);
+    @Query(value = "SELECT COUNT(*) FROM vacancy v WHERE v.id = :vacancyId AND v.authorid = :userId", nativeQuery = true)
+    Long countOwnedVacancy(Long vacancyId, Long userId);
 
-    @Query(value = "select u.id from User u where u.email = :email")
-    Long findCompanyByEmail(String email);
+     @Query(value = "select id from users u where u.email = ?", nativeQuery = true)
+    Optional<Long> findUserIdByEmail(String email);
 
     List<Vacancy> findAllResumeByAuthorId_Id(Long authorIdId);
 

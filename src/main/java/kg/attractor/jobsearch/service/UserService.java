@@ -10,7 +10,6 @@ import java.util.List;
 public interface UserService {
     List<UserDto> searchSuccessfulApplicants(Long vacancyId);
 
-    Long findAccountTypeId(String accountType);
 
     String uploadingPhotos(MultipartFile file);
 

@@ -41,12 +41,6 @@ public class UserServiceImpl extends MethodClass implements UserService {
         return userDto(users);
     }
 
-    @Override
-    public Long findAccountTypeId(String accountType) {
-        log.info("Найден тип аккаунта");
-        return userDao.findAccountTypeId(accountType);
-    }
-
 
     @Override
     public String uploadingPhotos(MultipartFile file) {
@@ -65,18 +59,13 @@ public class UserServiceImpl extends MethodClass implements UserService {
     @Override
     public void editUser(UserDto userDto, Long userId, String avatar) {
         log.info("Редактирование профиля пользователя с ID: {}", userId);
-        User user = editUser(userDto);
-        userDao.editProfile(user, userId, avatar);
-    }
-
-
-    private User editUser(UserDto userDto) {
-        User user = new User();
+        User user = getEntityOrThrow(userRepository.findById(userId),
+                new UserServiceException("User not found"));
         user.setName(userDto.getName());
         user.setSurname(userDto.getSurname());
         user.setAge(userDto.getAge());
-        user.setAvatar(userDto.getAvatar());
-        return user;
+        user.setAvatar(avatar);
+        userRepository.saveAndFlush(user);
     }
 
     public void registerUser(UserDto userDto, Long accountTypeId) {
@@ -88,6 +77,7 @@ public class UserServiceImpl extends MethodClass implements UserService {
         user.setEmail(userDto.getEmail());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setPhoneNumber(userDto.getPhoneNumber());
+        user.setAvatar("avatar.jpg");
         user.setEnabled(true);
         user.setAccountType(accountTypeRepository.findById(accountTypeId).orElseThrow());
 
@@ -139,13 +129,14 @@ public class UserServiceImpl extends MethodClass implements UserService {
         return userDtos(user);
         //TODO Логика для поиска пользователя по его email
     }
+
     @Override
     public Long getUserId(String email) {
         Long userId = userRepository.findUSerByEmail(email);
         if (userId == null || userId == 0) {
             throw new UserServiceException("Нету пользователя с таким Email");
         }
-        return  userId;
+        return userId;
     }
 
 
@@ -205,7 +196,6 @@ public class UserServiceImpl extends MethodClass implements UserService {
                 .avatar(user.getAvatar())
                 .build();
     }
-
 
 
 }

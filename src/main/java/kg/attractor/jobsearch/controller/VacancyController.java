@@ -68,8 +68,7 @@ public class VacancyController {
                               BindingResult bindingResult,
                               Model model) {
         String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-//        vacancyDto.setAuthorId(vacancyService.findCompanyByEmail(currentUserEmail));
-
+        vacancyDto.setAuthorId(vacancyService.findCompanyByEmail(currentUserEmail));
         if (!bindingResult.hasErrors()) {
             vacancyService.editVacancies(vacancyDto, vacancyId, currentUserEmail);
             return "redirect:/profile";
