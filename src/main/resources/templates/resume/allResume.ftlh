@@ -22,7 +22,7 @@
                         </div>
                         <div class="card-footer bg-white border-top-0 d-flex justify-content-between align-items-center">
                             <a href="/resume/view/${resume.id}" class="btn btn-sm btn-primary">Посмотреть</a>
-                            <span class="badge bg-light text-dark">${resume.category!''}</span>
+                            <span class="badge bg-light text-dark">${resume.categoryId!''}</span>
                         </div>
                     </div>
                 </div>

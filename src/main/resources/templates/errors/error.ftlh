@@ -328,7 +328,7 @@
                 <h2><span data-l10n>UH OH</span>! <span data-l10n>${reason}</span></h2>
                 <!--        <p data-l10n>{{ description></p>-->
 
-                <#if details??>
+                <#if details?is_hash>
                     <ul class="details">
                         <#if details.serverName??>
                             <li><span><span data-l10n>Host</span>:</span> <code>${details.serverName}</code></li>

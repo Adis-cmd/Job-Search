@@ -8,6 +8,8 @@
 
 
         <form method="post" action="/register">
+            <input type="hidden" name="userDto.accountType.id" value="${accountType!''}" />
+
             <div class="form-group">
                 <label for="accountType">Тип аккаунта</label>
                 <select id="accountType" name="accountType" required
@@ -32,9 +34,6 @@
                         <@spring.showErrors "<br>" "custom-error" />
                     </div>
                 </#if>
-                <div class="error-block">
-                    <@spring.showErrors "<br>" "custom-error" />
-                </div>
 
                 <#if accountType == "2">
                     <label for="age">Год рождения</label>
@@ -43,9 +42,6 @@
                         <@spring.showErrors "<br>" "custom-error" />
                     </div>
                 </#if>
-                <div class="error-block">
-                    <@spring.showErrors "<br>" "custom-error" />
-                </div>
 
                 <label for="email">Email</label>
                 <@spring.formInput "userDto.email" 'id="form3Example3cg" class="form-control form-control-lg"' />

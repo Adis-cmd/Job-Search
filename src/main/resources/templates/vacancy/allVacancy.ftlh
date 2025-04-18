@@ -11,7 +11,7 @@
                             <h5 class="card-title">${vacancy.name}</h5>
                             <p class="mb-1"><strong>Опыт от:</strong> ${vacancy.expFrom}</p>
                             <p class="mb-1"><strong>Опыт до:</strong> ${vacancy.expTo}</p>
-                            <p class="mb-1"><strong>Компания:</strong> ${vacancy.authorId}</p>
+                            <p class="mb-1"><strong>Компания:</strong> ${vacancy.authorId.name}</p>
                             <p class="mb-1"><strong>Создано:</strong> ${vacancy.createdDate}</p>
                             <p class="mb-1"><strong>Обновлено:</strong> ${vacancy.updatedTime}</p>
 
