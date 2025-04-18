@@ -67,7 +67,7 @@ public class VacancyDao {
         }
 
         String sqlCheckCategory = "SELECT COUNT(*) FROM category WHERE id = ?";
-        Integer categoryCount = jdbcTemplate.queryForObject(sqlCheckCategory, Integer.class, vacancy.getCategoryId());
+        Integer categoryCount = jdbcTemplate.queryForObject(sqlCheckCategory, Integer.class, vacancy.getCategory());
 
         if (categoryCount == null || categoryCount == 0) {
             throw new VacancyServiceException("Категория с таким ID не существует.");
@@ -83,7 +83,7 @@ public class VacancyDao {
                 new MapSqlParameterSource()
                         .addValue("name", vacancy.getName())
                         .addValue("description", vacancy.getDescription())
-                        .addValue("categoryId", vacancy.getCategoryId())
+                        .addValue("categoryId", vacancy.getCategory())
                         .addValue("salary", vacancy.getSalary())
                         .addValue("expFrom",vacancy.getExpFrom())
                         .addValue("expTo", vacancy.getExpTo())
@@ -107,7 +107,7 @@ public class VacancyDao {
 
     public void editVacancy(Vacancy vacancy, Long vacancyId) {
         String sqlCheckCategory = "SELECT COUNT(*) FROM category WHERE id = ?";
-        Integer categoryCount = jdbcTemplate.queryForObject(sqlCheckCategory, Integer.class, vacancy.getCategoryId());
+        Integer categoryCount = jdbcTemplate.queryForObject(sqlCheckCategory, Integer.class, vacancy.getCategory());
 
         if (categoryCount == null || categoryCount == 0) {
             throw new VacancyServiceException("Категория с таким ID не существует.");
@@ -120,7 +120,7 @@ public class VacancyDao {
                 sql,
                 vacancy.getName(),
                 vacancy.getDescription(),
-                vacancy.getCategoryId(),
+                vacancy.getCategory(),
                 vacancy.getSalary(),
                 vacancy.getExpFrom(),
                 vacancy.getExpTo(),

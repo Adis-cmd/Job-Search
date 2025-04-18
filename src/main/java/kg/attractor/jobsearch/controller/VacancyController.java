@@ -6,14 +6,12 @@ import kg.attractor.jobsearch.service.CategoryService;
 import kg.attractor.jobsearch.service.UserService;
 import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -42,15 +40,17 @@ public class VacancyController {
     }
 
     @PostMapping("add")
-    public String addVacancy(@Valid VacancyDto vacancyDto, BindingResult bindingResult, Model model) {
+    public String addVacancy(@Valid @ModelAttribute("vacancyDto") VacancyDto vacancyDto,
+                             BindingResult bindingResult,
+                             Authentication authentication,
+                             Model model) {
+
         if (bindingResult.hasErrors()) {
             model.addAttribute("category", categoryService.getAllCategory());
-            model.addAttribute("vacancyDto", vacancyDto);
             return "vacancy/addVacancy";
         }
-        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        String currentUser = String.valueOf(userService.getUserId(currentUserEmail));
-        vacancyService.createVacancies(vacancyDto, currentUser);
+
+        vacancyService.createVacancies(vacancyDto, authentication);
 
         return "redirect:/profile";
     }
@@ -68,7 +68,7 @@ public class VacancyController {
                               BindingResult bindingResult,
                               Model model) {
         String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        vacancyDto.setAuthorId(vacancyService.findCompanyByEmail(currentUserEmail));
+//        vacancyDto.setAuthorId(vacancyService.findCompanyByEmail(currentUserEmail));
 
         if (!bindingResult.hasErrors()) {
             vacancyService.editVacancies(vacancyDto, vacancyId, currentUserEmail);

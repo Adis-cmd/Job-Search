@@ -36,8 +36,7 @@ public class VacancyControllerApi {
 
     @DeleteMapping("delete/{vacanciesId}")
     public HttpStatus deleteVacancies(@PathVariable("vacanciesId") String vacancyId , Authentication auth) {
-        String email = auth.getName();
-        vacanciesService.deleteVacancies(vacancyId, email);
+        vacanciesService.deleteVacancies(vacancyId, auth);
         return HttpStatus.OK;
     }
 

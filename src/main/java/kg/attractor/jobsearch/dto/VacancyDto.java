@@ -28,7 +28,7 @@ public class VacancyDto {
     )
     private String description;
     @NotNull(message = "Нужно выбрать категорию")
-    private Long categoryId;
+    private CategoryDto categoryId;
     @NotNull(message = "Зарплата обязательна для заполнения")
     @DecimalMin(value = "100", message = "Зарплата не может быть меньше 100")
     @DecimalMax(value = "1000000000.0", message = "Максимальная зарплата: 1 000 000 000")
@@ -42,7 +42,7 @@ public class VacancyDto {
     @Max(value = 50, message = "Максимальный опыт не может превышать 50 лет")
     private Integer expTo;
     Boolean isActive = true;
-    private Long authorId;
+    private UserDto authorId;
     private LocalDateTime createdDate;
     private LocalDateTime updatedTime;
 
