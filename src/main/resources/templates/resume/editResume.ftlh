@@ -20,7 +20,7 @@
                 <select id="categoryId" name="categoryId" class="form-control">
                     <option value="">Выберите категорию</option>
                     <#list category as cat>
-                        <option value="${cat.id}" <#if (resumeDto.categoryId?? && resumeDto.categoryId == cat.id)>selected</#if>>${cat.name}</option>
+                        <option <#if (resumeDto.categoryId?? && resumeDto.categoryId == cat.id)>selected</#if>>${cat.name}</option>
                     </#list>
                 </select>
                 <div class="error-block">

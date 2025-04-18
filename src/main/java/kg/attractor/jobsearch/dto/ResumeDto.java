@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ResumeDto {
     private Long id;
-    private UserDto applicantId;
+    private Long applicantId;
     @NotBlank(message = "Название резюме не может быть пустым")
     @Size(min = 1, max = 100)
     @Pattern(
@@ -23,7 +23,7 @@ public class ResumeDto {
     )
     private String name;
     @NotNull(message = "Категория не может быть пустым")
-    private CategoryDto categoryId;
+    private Long categoryId;
     @NotNull(message = "Зарплата обязательна для заполнения")
     @DecimalMin(value = "100", message = "Зарплата не может быть меньше 100")
     @DecimalMax(value = "1000000000.0", message = "Максимальная зарплата: 1 000 000 000")

@@ -43,7 +43,6 @@ public class ResumeController {
     public String addResume(@Valid ResumeDto resumeDto, BindingResult bindingResult, Model model) {
         String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         String currentUser = String.valueOf(userService.getUserId(currentUserEmail));
-//        resumeDto.setApplicantId(userService.getUserId(currentUserEmail));
 
         if (!bindingResult.hasErrors()) {
             resumeService.createResumes(resumeDto, currentUser);

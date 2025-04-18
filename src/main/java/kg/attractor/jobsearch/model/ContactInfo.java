@@ -16,10 +16,10 @@ public class ContactInfo {
     @Column(name = "id")
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "typeid")
+    @JoinColumn(name = "TYPEID")
     private ContactType typeId;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "resumeId")
+    @ManyToOne
+    @JoinColumn(name = "RESUMEID")
     private Resume resumeId;
     @Column(name = "info_value")
     private String value;

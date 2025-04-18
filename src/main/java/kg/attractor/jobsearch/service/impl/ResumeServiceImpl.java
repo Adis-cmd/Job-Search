@@ -1,23 +1,20 @@
 package kg.attractor.jobsearch.service.impl;
 
-import kg.attractor.jobsearch.dao.ContactInfoDao;
-import kg.attractor.jobsearch.dao.EducationInfoDao;
 import kg.attractor.jobsearch.dao.ResumeDao;
-import kg.attractor.jobsearch.dao.WorkExperienceInfoDao;
 import kg.attractor.jobsearch.dto.ResumeDto;
+import kg.attractor.jobsearch.exception.NoSuchElementException.CategoryNotFoundException;
+import kg.attractor.jobsearch.exception.NoSuchElementException.UserNotFoundException;
+import kg.attractor.jobsearch.exception.NumberFormatException.ResumeNotFoundException;
 import kg.attractor.jobsearch.exception.NumberFormatException.ResumeServiceException;
-import kg.attractor.jobsearch.model.ContactInfo;
-import kg.attractor.jobsearch.model.EducationInfo;
-import kg.attractor.jobsearch.model.Resume;
-import kg.attractor.jobsearch.model.WorkExperienceInfo;
-import kg.attractor.jobsearch.repos.ResumeRepository;
-import kg.attractor.jobsearch.service.CategoryService;
+import kg.attractor.jobsearch.model.*;
+import kg.attractor.jobsearch.repos.*;
+import kg.attractor.jobsearch.service.ContactInfoService;
 import kg.attractor.jobsearch.service.ResumeService;
-import kg.attractor.jobsearch.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,14 +24,13 @@ import java.util.Objects;
 public class ResumeServiceImpl extends MethodClass implements ResumeService {
 
     private final ResumeDao resumeDao;
-    private final ContactInfoDao contactInfoDao;
-    private final EducationInfoDao educationInfoDao;
-    private final WorkExperienceInfoDao workExperienceInfoDao;
+    private final EducationInfoRepository educationInfoRepository;
+    private final WorkExperienceInfoRepository workExperienceInfoRepository;
     private final ResumeRepository resumeRepository;
-    private final ContactInfoServiceImpl contactInfoService;
-    private final UserService userService;
-    private final CategoryService categoryService;
-
+    private final UserRepository userRepository;
+    private final CategoryRepository resumeCategoryRepository;
+    private final ContactInfoService  contactInfoService;
+    private final ContactInfoRepository contactInfoRepository;
     @Override
     public List<ResumeDto> getAllResumes() {
         log.info("Запрос всех резюме");
@@ -47,58 +43,88 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
     public void createResumes(ResumeDto resumesDto, String userId) {
         log.info("Создание резюме для пользователя с ID: {}", userId);
         Long userParse = parseId(userId);
-        Resume resume = new Resume();
-        resume.setName(resumesDto.getName());
-        resume.setCategory(categoryService.toCategoryEntity(resumesDto.getCategoryId()));
-        resume.setSalary(resumesDto.getSalary());
-        resume.setIsActive(resumesDto.getIsActive());
 
-        Long resumeId = resumeDao.createResumes(resume, userParse);
-        log.info("Резюме успешно создано с ID: {}", resumeId);
+        Resume resume = Resume.builder()
+                .name(resumesDto.getName())
+                .salary(resumesDto.getSalary())
+                .isActive(resumesDto.getIsActive())
+                .category(getEntityOrThrow(resumeCategoryRepository.findById(resumesDto.getCategoryId()),
+                        new CategoryNotFoundException()))
+                .applicant(getEntityOrThrow(userRepository.findById(userParse),
+                        new UserNotFoundException()))
+                .createdDate(LocalDateTime.now())
+                .updateTime(LocalDateTime.now())
+                .build();
 
-        Resume resumeFromDb = getEntityOrThrow(resumeRepository.findById(resumeId), new ResumeServiceException("Not found Resume"));
+        Resume savedResume = resumeRepository.save(resume);
 
-        if (resumesDto.getEducationInfos() != null) {
-            resumesDto.getEducationInfos().forEach(educationInfoDto -> {
-                EducationInfo edu = new EducationInfo();
-                edu.setResumeId(resumeFromDb);
-                edu.setInstitution(educationInfoDto.getInstitution());
-                edu.setProgram(educationInfoDto.getProgram());
-                edu.setStartDate(educationInfoDto.getStartDate());
-                edu.setEndDate(educationInfoDto.getEndDate());
-                edu.setDegree(educationInfoDto.getDegree());
-                log.debug("Добавлена информация об образовании: {}", edu);
-                educationInfoDao.createEducationInfo(edu);
-            });
+        log.info("Резюме успешно создано с ID: {}", savedResume.getId());
 
-            if (resumesDto.getWorkExperiences() != null) {
-                resumesDto.getWorkExperiences().forEach(workExperienceInfoDto -> {
-                    WorkExperienceInfo work = new WorkExperienceInfo();
-                    work.setResumeId(resumeFromDb);
-                    work.setYears(workExperienceInfoDto.getYears());
-                    work.setCompanyName(workExperienceInfoDto.getCompanyName());
-                    work.setPosition(workExperienceInfoDto.getPosition());
-                    work.setResponsibilities(workExperienceInfoDto.getResponsibilities());
-                    log.debug("Добавлен опыт работы: {}", work);
-                    workExperienceInfoDao.createWorkExperienceInfo(work);
-                });
-            }
+        saveEducationInfos(resumesDto, savedResume);
+        saveWorkExperiences(resumesDto, savedResume);
+        saveContactInfos(resumesDto, savedResume);
+    }
 
-            if (resumesDto.getContactInfos() != null) {
-                resumesDto.getContactInfos().forEach(contactInfoDto -> {
-                    if (contactInfoDto.getValue() != null && !contactInfoDto.getValue().isBlank()) {
-                        ContactInfo contact = new ContactInfo();
-                        contact.setResumeId(resumeFromDb);
-                        contact.setTypeId(contactInfoService.toContactTypeEntity(contactInfoDto.getTypeId()));
-                        contact.setValue(contactInfoDto.getValue());
-                        log.debug("Добавлен контакт: {}", contact);
-                        contactInfoDao.addContactInfo(contact);
-                    }
-                });
-            }
-        }
 
-        // TODO логика для создание резюме
+
+    private Resume buildResumeEntity(ResumeDto dto) {
+        return Resume.builder()
+                .name(dto.getName())
+                .category(getEntityOrThrow(
+                        resumeCategoryRepository.findById(dto.getCategoryId()),
+                        new CategoryNotFoundException()))
+                .salary(dto.getSalary())
+                .isActive(dto.getIsActive())
+                .build();
+    }
+
+    private void saveEducationInfos(ResumeDto dto, Resume resume) {
+        if (dto.getEducationInfos() == null) return;
+
+        dto.getEducationInfos().forEach(info -> {
+            EducationInfo edu = EducationInfo.builder()
+                    .resumeId(resume)
+                    .institution(info.getInstitution())
+                    .program(info.getProgram())
+                    .startDate(info.getStartDate())
+                    .endDate(info.getEndDate())
+                    .degree(info.getDegree())
+                    .build();
+
+            log.debug("Добавлена информация об образовании: {}", edu);
+            educationInfoRepository.saveAndFlush(edu);
+
+        });
+    }
+
+    private void saveWorkExperiences(ResumeDto dto, Resume resume) {
+        if (dto.getWorkExperiences() == null) return;
+
+        dto.getWorkExperiences().forEach(info -> {
+            WorkExperienceInfo work = WorkExperienceInfo.builder()
+                    .resumeId(resume)
+                    .years(info.getYears())
+                    .companyName(info.getCompanyName())
+                    .position(info.getPosition())
+                    .responsibilities(info.getResponsibilities())
+                    .build();
+
+            log.debug("Добавлен опыт работы: {}", work);
+            workExperienceInfoRepository.saveAndFlush(work);
+        });
+    }
+
+    private void saveContactInfos(ResumeDto dto, Resume resume) {
+        if (dto.getContactInfos() == null) return;
+        dto.getContactInfos().forEach(info -> {
+                ContactInfo contact = ContactInfo.builder()
+                        .resumeId(resume)
+                        .typeId(contactInfoService.toContactTypeEntity(info.getTypeId()))
+                        .value(info.getValue())
+                        .build();
+                log.debug("Добавлен контакт: {}", contact);
+                contactInfoRepository.saveAndFlush(contact);
+        });
     }
 
 
@@ -123,17 +149,24 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
 
     @Override
     public void editResume(ResumeDto resumesDto, String resumeId) {
-        Long parseResumeId = parseId(resumeId);
-        log.info("Редактирование резюме с ID: {}", parseResumeId);
-        Resume resume = new Resume();
-        resume.setName(resumesDto.getName());
-        resume.setCategory(categoryService.toCategoryEntity(resumesDto.getCategoryId()));
-        resume.setSalary(resumesDto.getSalary());
-        resume.setIsActive(resumesDto.getIsActive());
-        resumeDao.editResume(resume, parseResumeId);
-        log.info("Резюме с ID: {} успешно обновлено", parseResumeId);
-        //TODO логика для редактирование резюме
+        Long parsedResumeId = parseId(resumeId);
+        log.info("Редактирование резюме с ID: {}", parsedResumeId);
+
+        Resume existingResume = getEntityOrThrow( resumeRepository.findById(parsedResumeId),
+                new ResumeServiceException("Резюме с ID " + parsedResumeId + " не найдено"));
+
+        existingResume.setName(resumesDto.getName());
+        existingResume.setCategory(getEntityOrThrow(
+                resumeCategoryRepository.findById(resumesDto.getCategoryId()),
+                new CategoryNotFoundException()
+        ));
+        existingResume.setSalary(resumesDto.getSalary());
+        existingResume.setIsActive(resumesDto.getIsActive());
+        resumeRepository.saveAndFlush(existingResume);
+
+        log.info("Резюме с ID: {} успешно обновлено", parsedResumeId);
     }
+
 
 
     @Override
@@ -159,9 +192,9 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
     private ResumeDto resumeDtos(Resume resume) {
         return ResumeDto.builder()
                 .id(resume.getId())
-                .applicantId(userService.auxiliaryMethodUser(resume.getApplicant()))
+                .applicantId(resume.getApplicant().getId())
                 .name(resume.getName())
-                .categoryId(categoryService.category(resume.getCategory()))
+                .categoryId(resume.getCategory().getId())
                 .salary(resume.getSalary())
                 .isActive(resume.getIsActive())
                 .createdDate(resume.getCreatedDate())
