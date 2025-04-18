@@ -35,7 +35,7 @@ public class EducationInfoServiceIml extends MethodClass implements EducationInf
     @Override
     public void createEducationInfo(EducationInfoDto educationInfoDto) {
         EducationInfo educationInfo = new EducationInfo();
-        educationInfo.setResumeId(educationInfoDto.getResumeId());
+//        educationInfo.setResumeId(educationInfoDto.getResumeId());
         educationInfo.setInstitution(educationInfoDto.getInstitution());
         educationInfo.setProgram(educationInfoDto.getProgram());
         educationInfo.setStartDate(educationInfoDto.getStartDate());
@@ -55,7 +55,7 @@ public class EducationInfoServiceIml extends MethodClass implements EducationInf
     private EducationInfoDto eduDto(EducationInfo educationInfo) {
         return EducationInfoDto.builder()
                 .id(educationInfo.getId())
-                .resumeId(educationInfo.getResumeId())
+//                .resumeId(educationInfo.getResumeId())
                 .institution(educationInfo.getInstitution())
                 .program(educationInfo.getProgram())
                 .startDate(educationInfo.getStartDate())

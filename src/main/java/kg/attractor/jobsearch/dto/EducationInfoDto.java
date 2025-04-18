@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @Builder
 public class EducationInfoDto {
     private Long id;
-    private Long resumeId;
+    private ResumeDto resumeId;
     @NotBlank(message = "Учебное заведение обязательно для заполнения")
     @Size(max = 100, message = "Название учебного заведения не должно превышать 100 символов")
     private String institution;
