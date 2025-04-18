@@ -10,10 +10,10 @@ public class ContactInfoDto {
     private Long id;
 
     @NotNull(message = "Поле не может быть пустым")
-    private Long typeId;
+    private ContactTypeDto typeId;
 
     @NotNull(message = "Поле не может быть пустым")
-    private Long resumeId;
+    private ResumeDto resumeId;
 
     @NotNull(message = "Поле не может быть пустым")
     @Size(min = 5, max = 100, message = "Value must be between 5 and 100 characters")

@@ -6,7 +6,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-public class ContactType {
+public class ContactTypeDto {
     private Long id;
     private String type;
 }

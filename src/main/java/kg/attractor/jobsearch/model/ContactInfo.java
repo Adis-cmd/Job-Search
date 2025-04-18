@@ -1,11 +1,26 @@
 package kg.attractor.jobsearch.model;
 
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
+@Entity
+@Table(name = "contact_info", schema = "public")
 public class ContactInfo {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
-    private Long typeId;
-    private Long resumeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "typeid")
+    private ContactType typeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "resumeId")
+    private Resume resumeId;
+    @Column(name = "info_value")
     private String value;
 }

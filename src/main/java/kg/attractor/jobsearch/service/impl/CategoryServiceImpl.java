@@ -18,17 +18,16 @@ public class CategoryServiceImpl  implements CategoryService {
     @Override
     public List<CategoryDto> getAllCategory() {
         List<Category> category = categoryDao.getAllCategory();
-
         return category.stream()
                 .map(this::category)
                 .filter(Objects::nonNull)
                 .toList();
     }
-    private CategoryDto category(Category category) {
+    @Override
+    public CategoryDto category(Category category) {
         return CategoryDto.builder()
                 .id(category.getId())
                 .name(category.getName())
-                .parentId(category.getParentId())
                 .build();
     }
 }
