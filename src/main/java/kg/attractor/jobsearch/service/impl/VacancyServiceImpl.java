@@ -57,7 +57,7 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
 
         updatedVacancy.setUpdatedTime(LocalDateTime.now());
 
-        vacancyRepository.editVacancy(updatedVacancy, parceLong);
+//        vacancyRepository.editVacancy(updatedVacancy, parceLong);
 
         //TODO логика для редактирование вакансии
         log.info("Вакансия с ID: {} успешно обновлена", vacancyId);
@@ -87,7 +87,7 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
         Vacancy v = new Vacancy();
         v.setName(vacanciesDto.getName());
         v.setDescription(vacanciesDto.getDescription());
-        v.setCategoryId(toCategoryEntity(vacanciesDto.getCategoryId()));
+        v.setCategory(toCategoryEntity(vacanciesDto.getCategoryId()));
         v.setSalary(vacanciesDto.getSalary());
         v.setIsActive(vacanciesDto.getIsActive() != null ? vacanciesDto.getIsActive() : true);
 
@@ -170,7 +170,7 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
     @Override
     public List<VacancyDto> getVacancyByCreatorId(String creatorId) {
         Long parseCreatorId = parseId(creatorId);
-        List<Vacancy> v = vacancyRepository.getVacancyByCreatorId(parseCreatorId);
+        List<Vacancy> v = vacancyRepository.findAllResumeByAuthorId_Id(parseCreatorId);
         return getVacancyDto(v);
     }
 
@@ -179,7 +179,7 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
                 .id(v.getId())
                 .name(v.getName())
                 .description(v.getDescription())
-                .categoryId(auxiliaryMethodCategory(v.getCategoryId()))
+                .categoryId(auxiliaryMethodCategory(v.getCategory()))
                 .salary(v.getSalary())
                 .expFrom(v.getExpFrom())
                 .expTo(v.getExpTo())

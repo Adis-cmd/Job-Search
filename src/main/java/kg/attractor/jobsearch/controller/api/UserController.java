@@ -16,17 +16,6 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
-    @GetMapping("applicant/{name}")
-    public List<UserDto> findUser(@PathVariable("name") String name) {
-       return userService.findUser(name);
-    }
-
-    @GetMapping("employee/{name}")
-    public ResponseEntity<List<UserDto>> findEmployee(@PathVariable String name) {
-       List<UserDto> employee = userService.findEmployee(name);
-        return new ResponseEntity<>(employee, HttpStatus.OK);
-    }
-
     @GetMapping("photos/{imageName}")
     public ResponseEntity<?> getImage(@PathVariable String imageName) {
         return userService.findByName(imageName);

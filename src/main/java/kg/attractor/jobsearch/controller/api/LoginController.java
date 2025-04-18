@@ -19,7 +19,7 @@ public class LoginController {
 
     @PostMapping("register")
     public HttpStatus register(@RequestBody @Valid UserDto userDto) {
-        userService.registerUser(userDto);
+//        userService.registerUser(userDto);
         return HttpStatus.CREATED;
     }
 
