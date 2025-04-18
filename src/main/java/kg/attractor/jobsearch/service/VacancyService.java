@@ -1,6 +1,7 @@
 package kg.attractor.jobsearch.service;
 
 import kg.attractor.jobsearch.dto.VacancyDto;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
@@ -11,11 +12,11 @@ public interface VacancyService {
 
     long findCompanyByEmail(String email);
 
-    void createVacancies(VacancyDto vacanciesDto, String authorId);
+    void createVacancies(VacancyDto vacanciesDto, Authentication authorId);
 
     List<VacancyDto> getVacancies();
 
-    void deleteVacancies(String vacancyId, String email);
+    void deleteVacancies(String vacancyId, Authentication email);
 
     List<VacancyDto> getAllVacanciesCategory(String categoryId);
 

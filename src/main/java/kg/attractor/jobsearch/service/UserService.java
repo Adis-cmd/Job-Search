@@ -1,6 +1,7 @@
 package kg.attractor.jobsearch.service;
 
 import kg.attractor.jobsearch.dto.UserDto;
+import kg.attractor.jobsearch.model.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,21 +12,18 @@ public interface UserService {
 
     Long findAccountTypeId(String accountType);
 
-    List<UserDto> findUser(String userId);
-
-    List<UserDto> findEmployee(String employeeId);
-
     String uploadingPhotos(MultipartFile file);
 
     ResponseEntity<?> findByName(String imageName);
 
     void editUser(UserDto userDto, Long userId, String userAvatar);
 
-    void registerUser(UserDto userDto);
+    void registerUser(UserDto userDto, Long accountTypeId);
 
     List<UserDto> getUsers(String name);
 
     UserDto getUserEmail(String email);
+
 
     UserDto getUserById(Long id);
 
@@ -38,4 +36,6 @@ public interface UserService {
     Boolean userExists(String email);
 
     List<UserDto> getUserByResponse();
+
+    UserDto auxiliaryMethodUser(User user);
 }

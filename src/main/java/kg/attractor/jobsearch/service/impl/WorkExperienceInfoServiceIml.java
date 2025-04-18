@@ -36,7 +36,7 @@ public class WorkExperienceInfoServiceIml extends MethodClass implements WorkExp
     @Override
     public void createWorkExperienceInfo(WorkExperienceInfoDto wDto) {
         WorkExperienceInfo w = new WorkExperienceInfo();
-        w.setResumeId(wDto.getResumeId());
+//        w.setResumeId(wDto.getResumeId());
         w.setYears(wDto.getYears());
         w.setCompanyName(wDto.getCompanyName());
         w.setPosition(wDto.getPosition());
@@ -48,7 +48,7 @@ public class WorkExperienceInfoServiceIml extends MethodClass implements WorkExp
     private WorkExperienceInfoDto workDto(WorkExperienceInfo work) {
         return WorkExperienceInfoDto.builder()
                 .id(work.getId())
-                .resumeId(work.getResumeId())
+//                .resumeId(work.getResumeId())
                 .years(work.getYears())
                 .companyName(work.getCompanyName())
                 .position(work.getPosition())
