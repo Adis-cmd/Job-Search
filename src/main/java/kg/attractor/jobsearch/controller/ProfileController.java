@@ -1,7 +1,11 @@
 package kg.attractor.jobsearch.controller;
 
 import jakarta.validation.Valid;
+import kg.attractor.jobsearch.dto.ResumeDto;
 import kg.attractor.jobsearch.dto.UserDto;
+import kg.attractor.jobsearch.dto.VacancyDto;
+import kg.attractor.jobsearch.model.Resume;
+import kg.attractor.jobsearch.model.Vacancy;
 import kg.attractor.jobsearch.service.ResumeService;
 import kg.attractor.jobsearch.service.UserService;
 import kg.attractor.jobsearch.service.VacancyService;
@@ -16,6 +20,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -34,6 +40,7 @@ public class ProfileController {
         model.addAttribute("vacancies", vacancyService.getVacancyByCreatorId(String.valueOf(currentUser.getId())));
         return "profile/profile";
     }
+
 
     @GetMapping("edit")
     public String editProfile(Model model, String accountType) {

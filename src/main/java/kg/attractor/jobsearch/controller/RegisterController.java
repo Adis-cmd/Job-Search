@@ -30,26 +30,26 @@ public class RegisterController {
                            @Valid UserDto userDto,
                            BindingResult bindingResult,
                            Model model) {
-        userDto.setAccountType(accountType);
 
         if (accountType == 1) {
-            boolean hasOnlyIgnoredErrors = bindingResult.getFieldErrors().stream()
+            boolean onlyIgnoredErrors = bindingResult.getFieldErrors().stream()
                     .allMatch(error -> error.getField().equals("surname") || error.getField().equals("age"));
 
-            if (hasOnlyIgnoredErrors) {
+            if (onlyIgnoredErrors) {
                 bindingResult = new BeanPropertyBindingResult(userDto, "userDto");
             }
         }
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("accountType",  accountType != null ? accountType.toString() : "");
+            model.addAttribute("accountType", accountType != null ? accountType.toString() : "");
             model.addAttribute("userDto", userDto);
             return "register/register";
         }
 
-        userService.registerUser(userDto);
+        userService.registerUser(userDto, accountType);
 
         return "redirect:/profile";
     }
+
 
 }
