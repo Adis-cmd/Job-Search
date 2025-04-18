@@ -49,7 +49,7 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
         Long userParse = parseId(userId);
         Resume resume = new Resume();
         resume.setName(resumesDto.getName());
-        resume.setCategory(toCategoryEntity(resumesDto.getCategoryId()));
+        resume.setCategory(categoryService.toCategoryEntity(resumesDto.getCategoryId()));
         resume.setSalary(resumesDto.getSalary());
         resume.setIsActive(resumesDto.getIsActive());
 
@@ -127,7 +127,7 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
         log.info("Редактирование резюме с ID: {}", parseResumeId);
         Resume resume = new Resume();
         resume.setName(resumesDto.getName());
-        resume.setCategory(toCategoryEntity(resumesDto.getCategoryId()));
+        resume.setCategory(categoryService.toCategoryEntity(resumesDto.getCategoryId()));
         resume.setSalary(resumesDto.getSalary());
         resume.setIsActive(resumesDto.getIsActive());
         resumeDao.editResume(resume, parseResumeId);

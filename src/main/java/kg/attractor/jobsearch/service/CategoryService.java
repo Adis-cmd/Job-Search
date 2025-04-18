@@ -9,4 +9,6 @@ public interface CategoryService {
     List<CategoryDto> getAllCategory();
 
     CategoryDto category(Category category);
+
+    Category toCategoryEntity(CategoryDto dto);
 }

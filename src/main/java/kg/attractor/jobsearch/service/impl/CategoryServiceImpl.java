@@ -30,4 +30,12 @@ public class CategoryServiceImpl  implements CategoryService {
                 .name(category.getName())
                 .build();
     }
+
+    @Override
+    public Category toCategoryEntity(CategoryDto dto) {
+        return Category.builder()
+                .id(dto.getId())
+                .name(dto.getName())
+                .build();
+    }
 }

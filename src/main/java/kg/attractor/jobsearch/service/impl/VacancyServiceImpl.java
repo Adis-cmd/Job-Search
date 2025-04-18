@@ -10,6 +10,7 @@ import kg.attractor.jobsearch.model.Vacancy;
 import kg.attractor.jobsearch.repos.CategoryRepository;
 import kg.attractor.jobsearch.repos.UserRepository;
 import kg.attractor.jobsearch.repos.VacancyRepository;
+import kg.attractor.jobsearch.service.CategoryService;
 import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,7 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final UserServiceImpl userService;
+    private final CategoryService categoryService;
 
     @Override
     public VacancyDto getVacancyById(String vacancyId) {
@@ -87,7 +89,7 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
         Vacancy v = new Vacancy();
         v.setName(vacanciesDto.getName());
         v.setDescription(vacanciesDto.getDescription());
-        v.setCategory(toCategoryEntity(vacanciesDto.getCategoryId()));
+        v.setCategory(categoryService.toCategoryEntity(vacanciesDto.getCategoryId()));
         v.setSalary(vacanciesDto.getSalary());
         v.setIsActive(vacanciesDto.getIsActive() != null ? vacanciesDto.getIsActive() : true);
 
@@ -179,7 +181,7 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
                 .id(v.getId())
                 .name(v.getName())
                 .description(v.getDescription())
-                .categoryId(auxiliaryMethodCategory(v.getCategory()))
+                .categoryId(categoryService.category(v.getCategory()))
                 .salary(v.getSalary())
                 .expFrom(v.getExpFrom())
                 .expTo(v.getExpTo())
