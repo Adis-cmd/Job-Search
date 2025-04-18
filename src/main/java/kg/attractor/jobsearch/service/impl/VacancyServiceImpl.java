@@ -1,15 +1,22 @@
 package kg.attractor.jobsearch.service.impl;
 
-import kg.attractor.jobsearch.dao.VacancyDao;
 import kg.attractor.jobsearch.dto.VacancyDto;
+import kg.attractor.jobsearch.exception.NoSuchElementException.CategoryNotFoundException;
+import kg.attractor.jobsearch.exception.NoSuchElementException.UserNotFoundException;
 import kg.attractor.jobsearch.exception.NoSuchElementException.VacancyNotFoundException;
 import kg.attractor.jobsearch.exception.NumberFormatException.VacancyServiceException;
+import kg.attractor.jobsearch.model.User;
 import kg.attractor.jobsearch.model.Vacancy;
+import kg.attractor.jobsearch.repos.CategoryRepository;
+import kg.attractor.jobsearch.repos.UserRepository;
+import kg.attractor.jobsearch.repos.VacancyRepository;
 import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -18,13 +25,16 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class VacancyServiceImpl extends MethodClass implements VacancyService {
 
-    private final VacancyDao vacancyDao;
+    private final VacancyRepository vacancyRepository;
+    private final CategoryRepository categoryRepository;
+    private final UserRepository userRepository;
+    private final UserServiceImpl userService;
 
     @Override
     public VacancyDto getVacancyById(String vacancyId) {
         log.info("Поиск вакансии с ID: {}", vacancyId);
         Long parceLong = parseId(vacancyId);
-        Vacancy vacancy = getEntityOrThrow(vacancyDao.getVacancyById(parceLong), new VacancyNotFoundException());
+        Vacancy vacancy = getEntityOrThrow(vacancyRepository.findVacancyById(parceLong), new VacancyNotFoundException());
         log.info("Вакансия с ID: {} найдена", vacancyId);
         return vacancyDtos(vacancy);
     }
@@ -34,31 +44,42 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
         log.info("Редактирование вакансии с ID: {}", vacancyId);
         Long parceLong = parseId(vacancyId);
 
-        Long authorId = vacancyDao.findCompanyByEmail(email);
+        Long authorId = vacancyRepository.findCompanyByEmail(email);
 
-        if (!vacancyDao.isVacancyOwnedByUser(parceLong, authorId)) {
+        if (!vacancyRepository.isVacancyOwnedByUser(parceLong, authorId)) {
             throw new VacancyNotFoundException("Эта вакансия не принадлежит вам");
         }
+        if (!categoryRepository.existsById(vacanciesDto.getCategoryId().getId())) {
+            throw new CategoryNotFoundException();
+        }
 
-        Vacancy v = auxiliaryMethod(vacanciesDto);
+        Vacancy updatedVacancy = auxiliaryMethod(vacanciesDto);
 
+        updatedVacancy.setUpdatedTime(LocalDateTime.now());
 
-        vacancyDao.editVacancy(v, parceLong);
+        vacancyRepository.editVacancy(updatedVacancy, parceLong);
+
         //TODO логика для редактирование вакансии
         log.info("Вакансия с ID: {} успешно обновлена", vacancyId);
     }
+
     @Override
     public long findCompanyByEmail(String email) {
-        return vacancyDao.findCompanyByEmail(email);
+        return vacancyRepository.findCompanyByEmail(email);
     }
 
     @Override
-    public void createVacancies(VacancyDto vacanciesDto, String authorId) {
-        log.info("Создание вакансии для автор с ID: {}", authorId);
-        Long parceLong = parseId(authorId);
+    public void createVacancies(VacancyDto vacanciesDto, Authentication authentication) {
+        String userEmail = authentication.getName();
+        log.info("Создание вакансии для автора с email: {}", userEmail);
+        User user = getEntityOrThrow(userRepository.findByEmail(userEmail), new UserNotFoundException());
         Vacancy v = auxiliaryMethod(vacanciesDto);
-        vacancyDao.createVacancy(v, parceLong);
-        log.info("Вакансия успешно создана для автора с ID: {}", authorId);
+        v.setAuthorId(user);
+        v.setCreatedDate(LocalDateTime.now());
+        v.setUpdatedTime(LocalDateTime.now());
+
+        vacancyRepository.saveAndFlush(v);
+        log.info("Вакансия успешно создана для автора с ID: {}", user.getId());
         //TODO логика для создании вакансии
     }
 
@@ -66,9 +87,9 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
         Vacancy v = new Vacancy();
         v.setName(vacanciesDto.getName());
         v.setDescription(vacanciesDto.getDescription());
-        v.setCategoryId(vacanciesDto.getCategoryId());
+        v.setCategoryId(toCategoryEntity(vacanciesDto.getCategoryId()));
         v.setSalary(vacanciesDto.getSalary());
-        v.setIsActive(vacanciesDto.getIsActive());
+        v.setIsActive(vacanciesDto.getIsActive() != null ? vacanciesDto.getIsActive() : true);
 
         if (vacanciesDto.getExpFrom() == null || vacanciesDto.getExpFrom() < 0) {
             log.error("Ошибка: Начальный опыт работы не может быть отрицательным. ExpFrom: {}", vacanciesDto.getExpFrom());
@@ -90,27 +111,27 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
         return v;
     }
 
-
     @Override
     public List<VacancyDto> getVacancies() {
         log.info("Запрос всех вакансий");
-        List<Vacancy> vacancy = vacancyDao.getAllVacancies();
+        List<Vacancy> vacancy = vacancyRepository.findAllVacancies();
         return getVacancyDto(vacancy);
     }
 
 
     @Override
-    public void deleteVacancies(String vacancyId, String email) {
+    public void deleteVacancies(String vacancyId, Authentication auth) {
+        String email = auth.getName();
         log.info("Удаление вакансии с ID: {}", vacancyId);
         Long parceLong = parseId(vacancyId);
 
-        Long authorId = vacancyDao.findCompanyByEmail(email);
+        Long authorId = vacancyRepository.findCompanyByEmail(email);
 
-        if (!vacancyDao.isVacancyOwnedByUser(parceLong, authorId)) {
+        if (!vacancyRepository.isVacancyOwnedByUser(parceLong, authorId)) {
             throw new VacancyNotFoundException("Эта вакансия не принадлежит вам");
         }
 
-        vacancyDao.deleteVacancy(parceLong);
+        vacancyRepository.deleteById(parceLong);
         log.info("Вакансия с ID: {} успешно удалена", vacancyId);
         //TODO логика для удаление вакансии по id
     }
@@ -119,14 +140,14 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
     public List<VacancyDto> getAllVacanciesCategory(String categoryId) {
         log.info("Поиск вакансий по категории с ID: {}", categoryId);
         Long parseCategoryId = parseId(categoryId);
-        List<Vacancy> vacancies = vacancyDao.getVacanciesByCategory(parseCategoryId);
+        List<Vacancy> vacancies = vacancyRepository.findVacanciesByCategoryId(parseCategoryId);
         //TODO логика для поиска вакансии по категории
         return getVacancyDto(vacancies);
     }
 
     @Override
     public List<VacancyDto> getAllVacancyByResponded() {
-        List<Vacancy> vacancies = vacancyDao.getVacancyByApplicant();
+        List<Vacancy> vacancies = vacancyRepository.findAllVacancyByApplicant();
         return getVacancyDto(vacancies);
     }
 
@@ -141,7 +162,7 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
     @Override
     public List<VacancyDto> getAllVacanciesIsActive() {
         log.info("Поиск всех активных вакансий");
-        List<Vacancy> v = vacancyDao.getAllVacancyIsActive();
+        List<Vacancy> v = vacancyRepository.findVacanciesByIsActive();
         return getVacancyDto(v);
         //TODO логика для поиска всех активных вакансий
     }
@@ -149,7 +170,7 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
     @Override
     public List<VacancyDto> getVacancyByCreatorId(String creatorId) {
         Long parseCreatorId = parseId(creatorId);
-        List<Vacancy> v = vacancyDao.getVacancyByCreatorId(parseCreatorId);
+        List<Vacancy> v = vacancyRepository.getVacancyByCreatorId(parseCreatorId);
         return getVacancyDto(v);
     }
 
@@ -158,12 +179,12 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
                 .id(v.getId())
                 .name(v.getName())
                 .description(v.getDescription())
-                .categoryId(v.getCategoryId())
+                .categoryId(auxiliaryMethodCategory(v.getCategoryId()))
                 .salary(v.getSalary())
                 .expFrom(v.getExpFrom())
                 .expTo(v.getExpTo())
                 .isActive(v.getIsActive())
-                .authorId(v.getAuthorId())
+                .authorId(userService.auxiliaryMethodUser(v.getAuthorId()))
                 .createdDate(v.getCreatedDate())
                 .updatedTime(v.getUpdatedTime())
                 .build();

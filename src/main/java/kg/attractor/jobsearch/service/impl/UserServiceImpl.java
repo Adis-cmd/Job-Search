@@ -1,9 +1,14 @@
 package kg.attractor.jobsearch.service.impl;
 
 import kg.attractor.jobsearch.dao.UserDao;
+import kg.attractor.jobsearch.dto.AccountTypeDto;
 import kg.attractor.jobsearch.dto.UserDto;
+import kg.attractor.jobsearch.exception.NoSuchElementException.UserNotFoundException;
 import kg.attractor.jobsearch.exception.NumberFormatException.UserServiceException;
+import kg.attractor.jobsearch.model.AccountType;
 import kg.attractor.jobsearch.model.User;
+import kg.attractor.jobsearch.repos.AccountTypeRepository;
+import kg.attractor.jobsearch.repos.UserRepository;
 import kg.attractor.jobsearch.service.UserService;
 import kg.attractor.jobsearch.util.FileUtil;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -23,7 +29,8 @@ public class UserServiceImpl extends MethodClass implements UserService {
 
     private final UserDao userDao;
     private final PasswordEncoder passwordEncoder;
-    private static final Map<String, Long> ACCOUNTTYPEMAP = new HashMap<>();
+    private final UserRepository userRepository;
+    private final AccountTypeRepository accountTypeRepository;
 
 
     @Override
@@ -38,32 +45,6 @@ public class UserServiceImpl extends MethodClass implements UserService {
     public Long findAccountTypeId(String accountType) {
         log.info("Найден тип аккаунта");
         return userDao.findAccountTypeId(accountType);
-    }
-
-    @Override
-    public List<UserDto> findUser(String name) {
-        if (name == null || name.isEmpty()) {
-            log.error("Попытка поиска пользователя с пустым именем");
-            throw new UserServiceException("Имя не может быть пустым");
-        }
-        log.info("Поиск пользователя по имени: {}", name);
-        List<User> users = userDao.findApplicant(name);
-        //TODO логика для поиска заявителя
-        return userDto(users);
-    }
-
-
-    @Override
-    public List<UserDto> findEmployee(String name) {
-
-        if (name == null || name.isEmpty()) {
-            log.error("Попытка поиска сотрудника с пустым именем");
-            throw new UserServiceException("Имя не может быть пустым");
-        }
-        log.info("Поиск сотрудника по имени: {}", name);
-        List<User> user = userDao.findEmployeeBy(name);
-        //TODO логика для поиска компании
-        return userDto(user);
     }
 
 
@@ -98,32 +79,35 @@ public class UserServiceImpl extends MethodClass implements UserService {
         return user;
     }
 
-    @Override
-    public void registerUser(UserDto userDto) {
-        log.info("Регистрация нового пользователя с email: {}", userDto.getEmail());
-        User user = createUserFromDto(userDto);
-        userDao.registerUser(user);
-    }
-
-    private User createUserFromDto(UserDto userDto) {
+    public void registerUser(UserDto userDto, Long accountTypeId) {
         User user = new User();
+
         user.setName(userDto.getName());
         user.setSurname(userDto.getSurname());
         user.setAge(userDto.getAge());
         user.setEmail(userDto.getEmail());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setPhoneNumber(userDto.getPhoneNumber());
-        user.setAccountType(userDto.getAccountType());
-//        String accountTypeStr = String.valueOf(userDto.getAccountType());
-//        try {
-//            Long accountType = Long.parseLong(accountTypeStr);
-//            if (ACCOUNTTYPEMAP.get(accountType) == null) {
-//                throw new UnknownUserException("Тип аккаунта не найден");
-//            }
-//            user.setAccountType(accountType);
-//        } catch (IllegalArgumentException e) {
-//            throw new UnknownUserException("Тип аккаунта должен быть числом. Получено: " + accountTypeStr);
-//        }
+        user.setEnabled(true);
+        user.setAccountType(accountTypeRepository.findById(accountTypeId).orElseThrow());
+
+        userRepository.save(user);
+    }
+
+    private User createUserFromDto(UserDto userDto, AccountType accountType) {
+        User user = new User();
+        user.setName(userDto.getName());
+        user.setEmail(userDto.getEmail());
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        user.setPhoneNumber(userDto.getPhoneNumber());
+        user.setAccountType(accountType);
+        user.setEnabled(true);
+
+        if (!"EMPLOYEE".equalsIgnoreCase(accountType.getType())) {
+            user.setSurname(userDto.getSurname());
+            user.setAge(userDto.getAge());
+        }
+
         log.debug("Создание объекта User из DTO для пользователя с email: {}", userDto.getEmail());
         return user;
     }
@@ -132,7 +116,7 @@ public class UserServiceImpl extends MethodClass implements UserService {
     @Override
     public List<UserDto> getUsers(String name) {
         log.info("Поиск всех пользователей с именем: {}", name);
-        List<User> user = userDao.getAllUserName(name);
+        List<User> user = userRepository.findAllByName(name);
         return userDto(user);
         //TODO логика для поиска пользователя по его имени
     }
@@ -141,7 +125,7 @@ public class UserServiceImpl extends MethodClass implements UserService {
     @Override
     public UserDto getUserEmail(String email) {
         log.info("Поиск пользователя с email: {}", email);
-        User user = getEntityOrThrow(userDao.getUserEmail(email),
+        User user = getEntityOrThrow(userRepository.findByEmail(email),
                 new UserServiceException("Не найден пользователь с такой почтой"));
         return userDtos(user);
         //TODO Логика для поиска пользователя по его email
@@ -150,14 +134,14 @@ public class UserServiceImpl extends MethodClass implements UserService {
     @Override
     public UserDto getUserById(Long id) {
         log.info("Поиск пользователя с id: {}", id);
-        User user = getEntityOrThrow(userDao.getUserById(id),
+        User user = getEntityOrThrow(userRepository.findById(id),
                 new UserServiceException("Не найден пользователь с таким id"));
         return userDtos(user);
         //TODO Логика для поиска пользователя по его email
     }
     @Override
     public Long getUserId(String email) {
-        Long userId = userDao.getUserId(email);
+        Long userId = userRepository.findUSerByEmail(email);
         if (userId == null || userId == 0) {
             throw new UserServiceException("Нету пользователя с таким Email");
         }
@@ -168,7 +152,7 @@ public class UserServiceImpl extends MethodClass implements UserService {
     @Override
     public UserDto getUserPhone(String phone) {
         log.info("Поиск пользователя с номером телефона: {}", phone);
-        User user = getEntityOrThrow(userDao.getUserPhone(phone),
+        User user = getEntityOrThrow(userRepository.findUserByPhoneNumber(phone),
                 new UserServiceException("Не найден пользователь с таким номером"));
         return userDtos(user);
         //TODO Логика для поиска пользователя по его телефону
@@ -177,13 +161,13 @@ public class UserServiceImpl extends MethodClass implements UserService {
     @Override
     public Boolean userExists(String email) {
         log.info("Проверка существования пользователя с email: {}", email);
-        return userDao.userExists(email);
+        return userRepository.userExistsByEmail(email);
         //TODO Логика что выводит существует ли такоей то пользователь по его id
     }
 
     @Override
     public List<UserDto> getUserByResponse() {
-        List<User> users = userDao.getUserByResponse();
+        List<User> users = userRepository.getUserByResponse();
         return userDto(users);
     }
 
@@ -204,14 +188,24 @@ public class UserServiceImpl extends MethodClass implements UserService {
                 .password(user.getPassword())
                 .phoneNumber(user.getPhoneNumber())
                 .age(user.getAge())
-                .accountType(user.getAccountType())
+                .accountType(user.getAccountType().getId())
                 .enabled(user.getEnabled())
                 .build();
     }
 
-    static {
-        ACCOUNTTYPEMAP.put("Работадатель", 1L);
-        ACCOUNTTYPEMAP.put("Соискатель", 2L);
+    @Override
+    public UserDto auxiliaryMethodUser(User user) {
+        return UserDto.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .surname(user.getSurname())
+                .age(user.getAge())
+                .email(user.getEmail())
+                .password(user.getEmail())
+                .avatar(user.getAvatar())
+                .build();
     }
+
+
 
 }

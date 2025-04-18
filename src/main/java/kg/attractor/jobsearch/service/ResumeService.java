@@ -15,7 +15,7 @@ public interface ResumeService {
 
     void editResume(ResumeDto resumesDto, String resumeId);
 
-    List<ResumeDto> getResumeCategory(String categoryId);
+    List<ResumeDto> getResumeByCategoryId(String categoryId);
 
     List<ResumeDto> getResumeByUserid(String userid);
 
