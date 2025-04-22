@@ -1,11 +1,11 @@
 package kg.attractor.jobsearch.service.impl;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import kg.attractor.jobsearch.dao.UserDao;
-import kg.attractor.jobsearch.dto.AccountTypeDto;
 import kg.attractor.jobsearch.dto.UserDto;
-import kg.attractor.jobsearch.exception.NoSuchElementException.UserNotFoundException;
+import kg.attractor.jobsearch.dto.VacancyDto;
 import kg.attractor.jobsearch.exception.NumberFormatException.UserServiceException;
-import kg.attractor.jobsearch.model.AccountType;
 import kg.attractor.jobsearch.model.User;
 import kg.attractor.jobsearch.repos.AccountTypeRepository;
 import kg.attractor.jobsearch.repos.UserRepository;
@@ -13,14 +13,19 @@ import kg.attractor.jobsearch.service.UserService;
 import kg.attractor.jobsearch.util.FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -39,6 +44,20 @@ public class UserServiceImpl extends MethodClass implements UserService {
         List<User> users = userDao.getApplicantsWhoRespondedToVacancy(vacancyId);
         //TODO логика для поиска откликнувшихся соискателей на вакансию
         return userDto(users);
+    }
+
+    @Override
+    public List<UserDto> findUserByVacancy(Page<VacancyDto> dto) {
+        List<UserDto> result = new ArrayList<>();
+
+        for (VacancyDto vacancy : dto) {
+            Long authorId = vacancy.getAuthorId();
+            if (authorId != null) {
+                Optional<User> userOpt = userRepository.findById(authorId);
+                userOpt.ifPresent(user -> result.add(userDtos(user)));
+            }
+        }
+        return result;
     }
 
 
@@ -68,8 +87,17 @@ public class UserServiceImpl extends MethodClass implements UserService {
         userRepository.saveAndFlush(user);
     }
 
-    public void registerUser(UserDto userDto, Long accountTypeId) {
+    @Transactional
+    public void registerUser(UserDto userDto, Long accountTypeId, HttpServletRequest request) {
         User user = new User();
+
+        if (userRepository.existsByPhoneNumber(userDto.getEmail())) {
+            throw new UserServiceException("Есть пользователь с таким номером телефона");
+        }
+
+        if (userRepository.existsByEmail(userDto.getEmail())) {
+            throw new UserServiceException("Есть пользотель с таким Email");
+        }
 
         user.setName(userDto.getName());
         user.setSurname(userDto.getSurname());
@@ -77,30 +105,22 @@ public class UserServiceImpl extends MethodClass implements UserService {
         user.setEmail(userDto.getEmail());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setPhoneNumber(userDto.getPhoneNumber());
-        user.setAvatar("avatar.jpg");
+        if (accountTypeId == 1) {
+            user.setAvatar("avatarForEmployee.jpg");
+        } else if (accountTypeId == 2) {
+            user.setAvatar("avatarForApplicant.jpg");
+        }
         user.setEnabled(true);
         user.setAccountType(accountTypeRepository.findById(accountTypeId).orElseThrow());
 
         userRepository.save(user);
-    }
-
-    private User createUserFromDto(UserDto userDto, AccountType accountType) {
-        User user = new User();
-        user.setName(userDto.getName());
-        user.setEmail(userDto.getEmail());
-        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        user.setPhoneNumber(userDto.getPhoneNumber());
-        user.setAccountType(accountType);
-        user.setEnabled(true);
-
-        if (!"EMPLOYEE".equalsIgnoreCase(accountType.getType())) {
-            user.setSurname(userDto.getSurname());
-            user.setAge(userDto.getAge());
+        try {
+            request.login(userDto.getEmail(), userDto.getPassword());
+        } catch (ServletException e) {
+            log.error(e.getMessage());
         }
-
-        log.debug("Создание объекта User из DTO для пользователя с email: {}", userDto.getEmail());
-        return user;
     }
+
 
 
     @Override
@@ -139,6 +159,16 @@ public class UserServiceImpl extends MethodClass implements UserService {
         return userId;
     }
 
+    @Override
+    public Page<UserDto> findAllUserEmployee(Pageable pageable) {
+        Page<User> users = userRepository.findAllUserEmployee(pageable);
+
+        if (users == null) {
+            throw  new UserServiceException("User not found");
+        }
+        return users.map(this::userDtos);
+    }
+
 
     @Override
     public UserDto getUserPhone(String phone) {
@@ -152,8 +182,8 @@ public class UserServiceImpl extends MethodClass implements UserService {
     @Override
     public Boolean userExists(String email) {
         log.info("Проверка существования пользователя с email: {}", email);
-        return userRepository.userExistsByEmail(email);
-        //TODO Логика что выводит существует ли такоей то пользователь по его id
+        return userRepository.existsByEmail(email);
+        //TODO Логика что выводит существует ли такоей то пользователь
     }
 
     @Override

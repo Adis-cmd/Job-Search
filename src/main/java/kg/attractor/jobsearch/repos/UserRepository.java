@@ -1,6 +1,8 @@
 package kg.attractor.jobsearch.repos;
 
 import kg.attractor.jobsearch.model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -19,9 +21,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findUserByPhoneNumber(String phoneNumber);
 
 
-    @Query(value = "select count(u) from User u where u.email = :email")
-    Boolean userExistsByEmail(String email);
-
     @Query(value = "select u.id from User u where u.email = :email")
     Long findUSerByEmail(String email);
 
@@ -34,4 +33,16 @@ public interface UserRepository extends JpaRepository<User, Long> {
     WHERE a.confirmation = true
     """)
     List<User> getUserByResponse();
+
+
+    Boolean existsByPhoneNumber(String phoneNumber);
+
+    Boolean existsByEmail(String email);
+
+ @Query(
+            value = "SELECT * FROM users u WHERE u.accountType_id = 1",
+            countQuery = "SELECT COUNT(*) FROM users u WHERE u.accountType_id = 1",
+            nativeQuery = true
+    )
+    Page<User> findAllUserEmployee(Pageable pageable);
 }
