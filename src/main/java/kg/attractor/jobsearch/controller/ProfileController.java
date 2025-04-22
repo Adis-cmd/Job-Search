@@ -12,6 +12,10 @@ import kg.attractor.jobsearch.service.ResumeService;
 import kg.attractor.jobsearch.service.UserService;
 import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,12 +38,18 @@ public class ProfileController {
     private final VacancyService vacancyService;
 
     @GetMapping
-    public String profile(Model model) {
+    public String profile(Model model , Pageable pageable) {
         String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         UserDto currentUser = userService.getUserEmail(currentUserEmail);
-        model.addAttribute("user", currentUser);
-        model.addAttribute("resumes", resumeService.getResumeByUserid(String.valueOf(currentUser.getId())));
-        model.addAttribute("vacancies", vacancyService.getVacancyByCreatorId(String.valueOf(currentUser.getId())));
+
+
+        Page<ResumeDto> resumePage = resumeService.getResumeByUserid(String.valueOf(currentUser.getId()), pageable);
+        Page<VacancyDto> vacancyPage = vacancyService.getVacancyByCreatorId(String.valueOf(currentUser.getId()), pageable);
+
+        model.addAttribute("page", currentUser);
+        model.addAttribute("resumePage",resumePage);
+        model.addAttribute("vacancyPage", vacancyPage);
+        model.addAttribute("url", "/profile");
         return "profile/profile";
     }
 
@@ -65,7 +75,11 @@ public class ProfileController {
 
         UserDto user = userService.getUserById(currentUser);
 
-        String userAvatar = userService.uploadingPhotos(file);
+        String userAvatar = user.getAvatar();
+        if (!file.isEmpty()) {
+            userAvatar = userService.uploadingPhotos(file);
+            editProfileDto.setAvatar(userAvatar);
+        }
 
         if (user.getAccountType() == 1) {
             boolean onlyIgnoredErrors = bindingResult.getFieldErrors().stream()
