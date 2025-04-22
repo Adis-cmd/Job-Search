@@ -114,4 +114,5 @@
             </#list>
         </div>
     </section>
+    <@p.pager url=url currentPage=page />
 </@main.layout>

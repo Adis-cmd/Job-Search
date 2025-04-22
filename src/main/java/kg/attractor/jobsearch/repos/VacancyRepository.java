@@ -46,8 +46,7 @@ public interface VacancyRepository extends JpaRepository<Vacancy, Long> {
     @Query(value = "select id from users u where u.email = ?", nativeQuery = true)
     Optional<Long> findUserIdByEmail(String email);
 
-    Page<Vacancy> findAllResumeByAuthorId_Id(Long authorIdId, Pageable pageable);
-
+    Page<Vacancy> findAllResumeByAuthorId_Id(Long authorId, Pageable pageable);
 
     @Query(value = "SELECT v " +
             " FROM vacancy v " +

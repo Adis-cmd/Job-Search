@@ -38,20 +38,24 @@ public class ProfileController {
     private final VacancyService vacancyService;
 
     @GetMapping
-    public String profile(Model model ,@PageableDefault(page = 0, size = 3, sort = "id",
+    public String profile(Model model, @PageableDefault(page = 0, size = 3, sort = "id",
             direction = Sort.Direction.ASC) Pageable pageable) {
         String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         UserDto currentUser = userService.getUserEmail(currentUserEmail);
 
         Page<ResumeDto> resumePage = resumeService.getResumeByUserid(String.valueOf(currentUser.getId()), pageable);
+
         if (resumePage.getTotalPages() > 0 && pageable.getPageNumber() >= resumePage.getTotalPages()) {
-            return "redirect:/resume?page=0&size=" + pageable.getPageSize();
+            return "redirect:/profile?page=0&size=" + pageable.getPageSize();
         }
 
         Page<VacancyDto> vacancyPage = vacancyService.getVacancyByCreatorId(String.valueOf(currentUser.getId()), pageable);
+        if (vacancyPage.getTotalPages() > 0 && pageable.getPageNumber() >= vacancyPage.getTotalPages()) {
+            return "redirect:/profile?page=0&size=" + pageable.getPageSize();
+        }
 
         model.addAttribute("page", currentUser);
-        model.addAttribute("resumePage",resumePage);
+        model.addAttribute("resumePage", resumePage);
         model.addAttribute("vacancyPage", vacancyPage);
         model.addAttribute("url", "/profile");
         return "profile/profile";
@@ -111,7 +115,6 @@ public class ProfileController {
 
         return "redirect:/profile";
     }
-
 
 
 }

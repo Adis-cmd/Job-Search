@@ -25,11 +25,16 @@ public class EmployeeController {
 
     @GetMapping
     public String allCompany(Model model,
-                             @PageableDefault(page = 0, size = 2, sort = "id",
+                             @PageableDefault(page = 0, size = 5, sort = "id",
                                      direction = Sort.Direction.ASC) Pageable pageable) {
         Page<UserDto> user = userService.findAllUserEmployee(pageable);
 
+        if (user.getTotalPages() > 0 && pageable.getPageNumber() >= user.getTotalPages()) {
+            return "redirect:/company?page=0&size=" + pageable.getPageSize();
+        }
+
         model.addAttribute("page", user);
+        model.addAttribute("url", "/company");
 
         return "company/allCompany";
     }
