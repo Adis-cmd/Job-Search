@@ -10,9 +10,6 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <link rel="stylesheet" href="/static/profileStyle.css">
         <link rel="stylesheet" href="/static/addResumeStyle.css">
-        <link rel="stylesheet" href="/static/editProfileStyle.css">
-        <link rel="stylesheet" href="/static/addVacancyStyle.css">
-        <link rel="stylesheet" href="/static/registerStyle.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
               integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
               crossorigin="anonymous">
@@ -49,18 +46,24 @@
     </style>
     </body>
     <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">Job Search</a>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="/">
+                <i class="bi bi-briefcase-fill fs-4 text-warning"></i>
+                <span class="fw-bold">Job Search</span>
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
                     <li class="nav-item">
-                        <a class="nav-link" href="/">Главная Страница</a>
+                        <a class="nav-link" href="/"><i class="bi bi-house-door-fill me-1"></i>Главная</a>
                     </li>
                     <#if SPRING_SECURITY_CONTEXT?? && SPRING_SECURITY_CONTEXT.authentication??>
                         <#assign user = SPRING_SECURITY_CONTEXT.authentication.principal>
@@ -68,23 +71,45 @@
                             <#assign roles = user.authorities?map(it -> it.authority)>
                             <#if !(roles?seq_contains("APPLICANT"))>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="/resume">Все Резюме</a>
+                                    <a class="nav-link" href="/resume">
+                                        <i class="bi bi-person-lines-fill me-1"></i>Все Резюме
+                                    </a>
+                                </li>
+                            </#if>
+                            <#if (roles?seq_contains("APPLICANT"))>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/company">
+                                        <i class="bi bi-card-list me-1"></i>Все Комании
+                                    </a>
                                 </li>
                             </#if>
                         </#if>
                     </#if>
                     <li class="nav-item">
-                        <a class="nav-link" href="/vacancy">Все Вакансии</a>
+                        <a class="nav-link" href="/vacancy">
+                            <i class="bi bi-card-list me-1"></i>Все Вакансии
+                        </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/profile">Профиль</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/auth/login">Войти</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/logout">Выйти</a>
-                    </li>
+                    <#if  SPRING_SECURITY_CONTEXT?? && SPRING_SECURITY_CONTEXT.authentication??>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/profile">
+                                <i class="bi bi-person-circle me-1"></i>Профиль
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-danger" href="/logout">
+                                <i class="bi bi-box-arrow-right me-1"></i>Выйти
+                            </a>
+                        </li>
+                    </#if>
+                    <#if !(SPRING_SECURITY_CONTEXT?? && SPRING_SECURITY_CONTEXT.authentication??)>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/auth/login">
+                                <i class="bi bi-box-arrow-in-right me-1"></i>Войти
+                            </a>
+                        </li>
+                    </#if>
                 </ul>
             </div>
         </div>
