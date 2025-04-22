@@ -39,7 +39,7 @@
                                     <img src="/users/photos/${userDto.avatar}" alt="Профильное фото" class="img-thumbnail" style="max-width: 150px;">
                                 </div>
                             </#if>
-                            <input type="file" class="form-control" id="avatar" name="file" accept=".jpg,.jpeg,.png">
+                            <input type="file" class="form-control" value="${userDto.avatar!'avatar.jpg'}" id="avatar" name="file" accept=".jpg,.jpeg,.png">
                         </div>
 
                         <div class="d-grid">
