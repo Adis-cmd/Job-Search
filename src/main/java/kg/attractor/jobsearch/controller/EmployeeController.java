@@ -39,6 +39,10 @@ public class EmployeeController {
             direction = Sort.Direction.ASC) Pageable pageable) {
         UserDto user = userService.findUserEmployeeById(id);
         Page<VacancyDto> vacancyDtos = vacancyService.getVacancyByCreatorId(String.valueOf(id), pageable);
+
+        if (vacancyDtos.getTotalPages() > 0 && pageable.getPageNumber() >= vacancyDtos.getTotalPages()) {
+            return "redirect:/company/info?page=0&size=" + pageable.getPageSize();
+        }
         model.addAttribute("user", user);
         model.addAttribute("vacancyDtos", vacancyDtos);
         return "company/infoCompany";
