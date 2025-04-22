@@ -6,14 +6,16 @@ import kg.attractor.jobsearch.service.CategoryService;
 import kg.attractor.jobsearch.service.UserService;
 import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -24,10 +26,30 @@ public class VacancyController {
     private final UserService userService;
 
     @GetMapping
-    public String getAllVacancies(Model model) {
-        List<VacancyDto> getAllVacancy = vacancyService.getVacancies();
+    public String getAllVacancies(Model model,
+                                  @PageableDefault(page = 0, size = 3, sort = "id",
+                                          direction = Sort.Direction.ASC)
+                                  Pageable pageable,
+                                  @RequestParam(required = false) String sort) {
 
-        model.addAttribute("vacancies", getAllVacancy);
+        String sortParam = "idAsc";
+        if (sort != null && !sort.isEmpty()) {
+            String[] sortParts = sort.split(",");
+            if (sortParts.length == 2) {
+                sortParam = sortParts[0] + (sortParts[1].equalsIgnoreCase("desc") ? "Desc" : "Asc");
+            }
+        }
+        Page<VacancyDto> getAllVacancy = vacancyService.getVacancies(pageable, sortParam);
+
+        if (getAllVacancy.getTotalPages() > 0 && pageable.getPageNumber() >= getAllVacancy.getTotalPages()) {
+            return "redirect:/vacancy?page=0&size=" + pageable.getPageSize();
+        }
+
+        model.addAttribute("page", getAllVacancy);
+        model.addAttribute("currentSort", sort != null ? sort : "");
+        model.addAttribute("category", categoryService.findCategoryByVacancy(getAllVacancy));
+        model.addAttribute("author", userService.findUserByVacancy(getAllVacancy));
+        model.addAttribute("url", "/vacancy");
         return "vacancy/allVacancy";
     }
 
@@ -77,6 +99,15 @@ public class VacancyController {
         model.addAttribute("vacancyDto", vacancyDto);
         return "vacancy/editVacancy";
 
+    }
+
+    @GetMapping("/info/{id}")
+    public String getVacancyById(@PathVariable Long id, Model model) {
+        VacancyDto vacancyDto = vacancyService.getVacancyById(String.valueOf(id));
+        model.addAttribute("vacancyDto", vacancyDto);
+        model.addAttribute("category", categoryService.findCategoryById(vacancyDto.getCategoryId()));
+        model.addAttribute("author", userService.getUserById(vacancyDto.getAuthorId()));
+        return "vacancy/info";
     }
 
 }

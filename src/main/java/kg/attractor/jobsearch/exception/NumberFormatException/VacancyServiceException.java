@@ -1,6 +1,8 @@
 package kg.attractor.jobsearch.exception.NumberFormatException;
 
-public class VacancyServiceException extends NumberFormatException {
+import java.util.NoSuchElementException;
+
+public class VacancyServiceException extends NoSuchElementException {
   public VacancyServiceException(String message) {
     super(message);
   }

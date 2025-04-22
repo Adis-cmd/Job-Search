@@ -40,10 +40,6 @@ public class VacancyControllerApi {
         return HttpStatus.OK;
     }
 
-    @GetMapping
-    public List<VacancyDto> getVacancies() {
-        return vacanciesService.getVacancies();
-    }
 
     @GetMapping("search/category/{categoryId}")
     public List<VacancyDto> allVacanciesCategory(@PathVariable("categoryId") String categoryId) {

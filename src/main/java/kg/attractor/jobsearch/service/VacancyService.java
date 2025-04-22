@@ -1,6 +1,8 @@
 package kg.attractor.jobsearch.service;
 
 import kg.attractor.jobsearch.dto.VacancyDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 
 import java.util.List;
@@ -14,7 +16,7 @@ public interface VacancyService {
 
     void createVacancies(VacancyDto vacanciesDto, Authentication authorId);
 
-    List<VacancyDto> getVacancies();
+    Page<VacancyDto> getVacancies(Pageable pageable, String sort);
 
     void deleteVacancies(String vacancyId, Authentication email);
 
@@ -24,5 +26,5 @@ public interface VacancyService {
 
     List<VacancyDto> getAllVacanciesIsActive();
 
-    List<VacancyDto> getVacancyByCreatorId(String creatorId);
+    Page<VacancyDto> getVacancyByCreatorId(String creatorId, Pageable pageable);
 }
