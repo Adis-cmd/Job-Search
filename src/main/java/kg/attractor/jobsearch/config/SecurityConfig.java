@@ -71,6 +71,7 @@ public class SecurityConfig {
                         .requestMatchers("/vacancies/search/category/**").hasAuthority("1")
                         .requestMatchers("/response/**").hasAuthority("1")
                         .requestMatchers("/users/employee/**").hasAuthority("1")
+                        .requestMatchers("/company/info/**").hasAuthority("APPLICANT")
                         .requestMatchers("/company/**").hasAuthority("APPLICANT")
                         .requestMatchers("/vacancy/info/**").authenticated()
                         .requestMatchers("/profile").authenticated()

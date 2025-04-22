@@ -122,7 +122,6 @@ public class UserServiceImpl extends MethodClass implements UserService {
     }
 
 
-
     @Override
     public List<UserDto> getUsers(String name) {
         log.info("Поиск всех пользователей с именем: {}", name);
@@ -164,9 +163,16 @@ public class UserServiceImpl extends MethodClass implements UserService {
         Page<User> users = userRepository.findAllUserEmployee(pageable);
 
         if (users == null) {
-            throw  new UserServiceException("User not found");
+            throw new UserServiceException("User not found");
         }
         return users.map(this::userDtos);
+    }
+
+    @Override
+    public UserDto findUserEmployeeById(Long id) {
+        User users = getEntityOrThrow(userRepository.findUserById(id), new UserServiceException("User not found"));
+
+        return userDtos(users);
     }
 
 

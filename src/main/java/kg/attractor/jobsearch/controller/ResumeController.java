@@ -31,14 +31,10 @@ public class ResumeController {
 
     @GetMapping
     public String getAllResume(Model model,
-                               @PageableDefault(page = 2, size = 5, sort = "id",
+                               @PageableDefault(page = 0, size = 3, sort = "id",
                                        direction = Sort.Direction.ASC)
                                Pageable pageable) {
         Page<ResumeDto> allResume = resumeService.getAllResumeIsActive(pageable);
-
-        if (allResume.getTotalPages() == 0 && pageable.getPageNumber() >= allResume.getTotalPages()) {
-            return "redirect:/resume?page=0&size=" + pageable.getPageSize();
-        }
         model.addAttribute("page", allResume);
         model.addAttribute("currentSort", pageable.getSort().toString());
         model.addAttribute("category", categoryService.findCategoryByResume(allResume));

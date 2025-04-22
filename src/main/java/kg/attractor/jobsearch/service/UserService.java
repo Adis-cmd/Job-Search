@@ -38,6 +38,8 @@ public interface UserService {
 
     Page<UserDto> findAllUserEmployee(Pageable pageable);
 
+    UserDto findUserEmployeeById(Long id);
+
     UserDto getUserPhone(String phone);
 
     Boolean userExists(String email);

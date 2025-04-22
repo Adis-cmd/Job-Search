@@ -105,7 +105,7 @@
                             <p><i class="bi bi-telephone-fill text-warning me-1"></i> ${company.phoneNumber}</p>
                         </div>
                         <div class="align-self-center">
-                            <a href="/company/view/${company.id}" class="btn btn-outline-primary">
+                            <a href="/company/info/${company.id}" class="btn btn-outline-primary">
                                 <i class="bi bi-eye me-1"></i> Посмотреть
                             </a>
                         </div>

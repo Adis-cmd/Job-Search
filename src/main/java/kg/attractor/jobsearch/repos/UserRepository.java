@@ -24,14 +24,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "select u.id from User u where u.email = :email")
     Long findUSerByEmail(String email);
 
-    @Query(value =  """
-    SELECT u
-    FROM User u
-    LEFT JOIN Resume r ON r.applicant = u
-    LEFT JOIN RespondedApplicant a ON a.resumeId = r
-    LEFT JOIN Vacancy v ON a.vacancyId = v
-    WHERE a.confirmation = true
-    """)
+    @Query(value = """
+            SELECT u
+            FROM User u
+            LEFT JOIN Resume r ON r.applicant = u
+            LEFT JOIN RespondedApplicant a ON a.resumeId = r
+            LEFT JOIN Vacancy v ON a.vacancyId = v
+            WHERE a.confirmation = true
+            """)
     List<User> getUserByResponse();
 
 
@@ -39,10 +39,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Boolean existsByEmail(String email);
 
- @Query(
+    @Query(
             value = "SELECT * FROM users u WHERE u.accountType_id = 1",
             countQuery = "SELECT COUNT(*) FROM users u WHERE u.accountType_id = 1",
             nativeQuery = true
     )
     Page<User> findAllUserEmployee(Pageable pageable);
+
+    @Query(value = "select * from users where accountType_id = 1 and id = :id", nativeQuery = true)
+    Optional<User> findUserById(Long id);
 }
