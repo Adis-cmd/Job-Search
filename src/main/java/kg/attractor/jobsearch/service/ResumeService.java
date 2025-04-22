@@ -1,6 +1,8 @@
 package kg.attractor.jobsearch.service;
 
 import kg.attractor.jobsearch.dto.ResumeDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -17,7 +19,7 @@ public interface ResumeService {
 
     List<ResumeDto> getResumeByCategoryId(String categoryId);
 
-    List<ResumeDto> getResumeByUserid(String userid);
+    Page<ResumeDto> getResumeByUserid(String userid, Pageable pageable);
 
-    List<ResumeDto> getAllResumeIsActive();
+    Page<ResumeDto> getAllResumeIsActive(Pageable pageable);
 }

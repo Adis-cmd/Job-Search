@@ -1,5 +1,6 @@
 package kg.attractor.jobsearch.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kg.attractor.jobsearch.dto.UserDto;
 import kg.attractor.jobsearch.service.UserService;
@@ -27,6 +28,7 @@ public class RegisterController {
     @PostMapping
     @ResponseStatus(HttpStatus.SEE_OTHER)
     public String register(@RequestParam(required = false) Long accountType,
+                           HttpServletRequest request,
                            @Valid UserDto userDto,
                            BindingResult bindingResult,
                            Model model) {
@@ -46,7 +48,7 @@ public class RegisterController {
             return "register/register";
         }
 
-        userService.registerUser(userDto, accountType);
+        userService.registerUser(userDto, accountType, request);
 
         return "redirect:/profile";
     }

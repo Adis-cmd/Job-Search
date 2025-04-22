@@ -15,6 +15,8 @@ import kg.attractor.jobsearch.service.CategoryService;
 import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -160,10 +162,18 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
     }
 
     @Override
-    public List<VacancyDto> getVacancies() {
+    public Page<VacancyDto> getVacancies(Pageable pageable, String sort) {
         log.info("Запрос всех вакансий");
-        List<Vacancy> vacancy = vacancyRepository.findAllVacancies();
-        return getVacancyDto(vacancy);
+        Page<Object[]> result = vacancyRepository.findAllActiveVacanciesSorted(sort, pageable);
+        if (result == null) {
+            throw new VacancyNotFoundException();
+        }
+        log.info("Получено {} вакансий", result.getTotalElements());
+        return result.map(row -> {
+            Vacancy vacancy = (Vacancy) row[0];
+            Long responseCount = ((Number) row[1]).longValue();
+            return vacancyDtos(vacancy, responseCount);
+        });
     }
 
 
@@ -216,10 +226,10 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
     }
 
     @Override
-    public List<VacancyDto> getVacancyByCreatorId(String creatorId) {
+    public Page<VacancyDto> getVacancyByCreatorId(String creatorId, Pageable pageable) {
         Long parseCreatorId = parseId(creatorId);
-        List<Vacancy> v = vacancyRepository.findAllResumeByAuthorId_Id(parseCreatorId);
-        return getVacancyDto(v);
+        Page<Vacancy> v = vacancyRepository.findAllResumeByAuthorId_Id(parseCreatorId, pageable);
+        return v.map(this::vacancyDtos);
     }
 
     private VacancyDto vacancyDtos(Vacancy v) {
@@ -227,15 +237,34 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
                 .id(v.getId())
                 .name(v.getName())
                 .description(v.getDescription())
-                .categoryId(v.getCategory().getId())
+                .categoryId(v.getCategory() != null ? v.getCategory().getId() : null)
                 .salary(v.getSalary())
                 .expFrom(v.getExpFrom())
                 .expTo(v.getExpTo())
                 .isActive(v.getIsActive())
-                .authorId(v.getAuthorId().getId())
+                .authorId(v.getAuthorId() != null ? v.getAuthorId().getId() : null)
                 .createdDate(v.getCreatedDate())
                 .updatedTime(v.getUpdatedTime())
                 .build();
     }
+
+    private VacancyDto vacancyDtos(Vacancy vacancy, Long responseCount) {
+        return VacancyDto.builder()
+                .id(vacancy.getId())
+                .name(vacancy.getName())
+                .description(vacancy.getDescription())
+                .salary(vacancy.getSalary())
+                .expFrom(vacancy.getExpFrom())
+                .expTo(vacancy.getExpTo())
+                .isActive(vacancy.getIsActive())
+                .categoryId(vacancy.getCategory().getId())
+                .authorId(vacancy.getAuthorId().getId())
+                .createdDate(vacancy.getCreatedDate())
+                .updatedTime(vacancy.getUpdatedTime())
+                .responseCount(responseCount)
+                .build();
+    }
+
+
 
 }

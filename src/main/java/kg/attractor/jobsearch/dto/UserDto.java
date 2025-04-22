@@ -1,6 +1,8 @@
 package kg.attractor.jobsearch.dto;
 
 import jakarta.validation.constraints.*;
+import kg.attractor.jobsearch.anotation.UniqueEmail;
+import kg.attractor.jobsearch.anotation.UniquePhoneNumber;
 import lombok.*;
 
 @Getter
@@ -22,12 +24,14 @@ public class UserDto {
     private Integer age;
     @NotBlank(message = "Email не может быть пустым")
     @Email(message = "Введите действительный email")
+    @UniqueEmail
     private String email;
     @NotBlank(message = "Пароль не должен быть пустым")
     @Size(min = 4, max = 120, message = "Пароль должен состоять из 4–120 строк.")
     private String password;
     @NotBlank
     @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Неверный формат телефонного номера")
+    @UniquePhoneNumber
     private String phoneNumber;
     private String avatar;
     private Long accountType;

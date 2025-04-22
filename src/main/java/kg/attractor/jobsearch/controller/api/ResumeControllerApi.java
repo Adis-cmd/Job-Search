@@ -17,9 +17,9 @@ public class ResumeControllerApi {
     private final ResumeService resumesService;
 
     @GetMapping("search")
-    public List<ResumeDto> search() {
-        return resumesService.getAllResumes();
-    }
+//    public List<ResumeDto> search() {
+//        return resumesService.getAllResumes();
+//    }
 
     @PostMapping("add")
     public HttpStatus addResumes(@Valid @RequestBody ResumeDto resumesDto, @RequestParam(name = "userId")  String userId) {
@@ -44,10 +44,6 @@ public class ResumeControllerApi {
         return resumesService.getResumeByCategoryId(categoryId);
     }
 
-    @GetMapping("user/{userId}")
-    public List<ResumeDto> getAllResumesByUserId(@PathVariable String userId) {
-        return resumesService.getResumeByUserid(userId);
-    }
 
     @GetMapping
     public ResumeDto getResumesById(@RequestParam(name = "id") String id) {

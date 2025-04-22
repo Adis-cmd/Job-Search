@@ -5,6 +5,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Getter
@@ -38,4 +39,17 @@ public class ResumeDto {
     private List<EducationInfoDto> educationInfos;
     @Valid
     private List<ContactInfoDto> contactInfos;
+
+
+    public String getFormattedCreatedDate() {
+        if (createdDate == null) return "";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+        return createdDate.format(formatter);
+    }
+
+    public String getFormattedUpdatedTime() {
+        if (updateTime == null) return "";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+        return updateTime.format(formatter);
+    }
 }

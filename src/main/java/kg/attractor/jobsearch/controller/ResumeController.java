@@ -6,6 +6,10 @@ import kg.attractor.jobsearch.service.CategoryService;
 import kg.attractor.jobsearch.service.ResumeService;
 import kg.attractor.jobsearch.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,9 +30,19 @@ public class ResumeController {
     private final UserService userService;
 
     @GetMapping
-    public String getAllResume(Model model) {
-        List<ResumeDto> allResume = resumeService.getAllResumeIsActive();
-        model.addAttribute("resumes", allResume);
+    public String getAllResume(Model model,
+                               @PageableDefault(page = 2, size = 5, sort = "id",
+                                       direction = Sort.Direction.ASC)
+                               Pageable pageable) {
+        Page<ResumeDto> allResume = resumeService.getAllResumeIsActive(pageable);
+
+        if (allResume.getTotalPages() == 0 && pageable.getPageNumber() >= allResume.getTotalPages()) {
+            return "redirect:/resume?page=0&size=" + pageable.getPageSize();
+        }
+        model.addAttribute("page", allResume);
+        model.addAttribute("currentSort", pageable.getSort().toString());
+        model.addAttribute("category", categoryService.findCategoryByResume(allResume));
+        model.addAttribute("url", "/resume");
         return "resume/allResume";
     }
 

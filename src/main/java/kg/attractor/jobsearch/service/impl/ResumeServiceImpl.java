@@ -12,6 +12,8 @@ import kg.attractor.jobsearch.service.ContactInfoService;
 import kg.attractor.jobsearch.service.ResumeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -180,11 +182,11 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
 
 
     @Override
-    public List<ResumeDto> getResumeByUserid(String userid) {
+    public Page<ResumeDto> getResumeByUserid(String userid, Pageable pageable) {
         Long parseUserId = parseId(userid);
         log.info("Поиск резюме для пользователя с ID: {}", parseUserId);
-        List<Resume> resume = resumeRepository.findAllResumeByApplicantId_Id(parseUserId);
-        return resumeDtos(resume);
+        Page<Resume> resume = resumeRepository.findAllResumeByApplicantId_Id(parseUserId, pageable);
+        return resume.map(this::resumeDtos);
         //TODO логика для поиска резюме по id пользователя
     }
 
@@ -210,8 +212,10 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
     }
 
     @Override
-    public List<ResumeDto> getAllResumeIsActive() {
-        List<Resume> resumes = resumeRepository.findAllResumeIsActive();
-        return resumeDtos(resumes);
+    public Page<ResumeDto> getAllResumeIsActive(Pageable pageable) {
+        Page<Resume> resumes = resumeRepository.findAllResumeIsActive(pageable);
+
+        return resumes.map(this::resumeDtos);
     }
+
 }

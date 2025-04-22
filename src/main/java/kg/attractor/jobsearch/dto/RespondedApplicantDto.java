@@ -11,9 +11,9 @@ import lombok.*;
 public class RespondedApplicantDto {
     private Long id;
     @NotNull(message = "ID резюме обязательна")
-    private ResumeDto resumeId;
+    private Long resumeId;
     @NotNull(message = "ID вакансии обязательна")
-    private VacancyDto vacancyId;
+    private Long vacancyId;
     @NotNull(message = "Статус подтверждения должен быть указан")
     private Boolean confirmation;
 }
