@@ -18,8 +18,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -67,10 +70,10 @@ public class ProfileController {
 
     @PostMapping("edit")
     public String editProfile(
-            @Valid EditProfileDto editProfileDto,
-            BindingResult bindingResult,
-            @RequestParam("file") MultipartFile file,
-            Model model) {
+            @Valid @ModelAttribute("userDto") EditProfileDto editProfileDto,
+            BindingResult bindingResult, Model model,
+            @RequestParam("file") MultipartFile file
+    ) {
         String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
         Long currentUser = userService.getUserId(currentUserEmail);
@@ -84,11 +87,17 @@ public class ProfileController {
         }
 
         if (user.getAccountType() == 1) {
-            boolean onlyIgnoredErrors = bindingResult.getFieldErrors().stream()
-                    .allMatch(error -> error.getField().equals("surname") || error.getField().equals("age"));
+            List<FieldError> errorsToKeep = bindingResult.getFieldErrors().stream()
+                    .filter(error -> !error.getField().equals("surname") && !error.getField().equals("age"))
+                    .toList();
 
-            if (onlyIgnoredErrors) {
-                bindingResult = new BeanPropertyBindingResult(editProfileDto, "editProfileDto");
+            if (errorsToKeep.isEmpty()) {
+            } else {
+                BindingResult finalBindingResult = new BeanPropertyBindingResult(editProfileDto, "editProfileDto");
+                for (FieldError e : errorsToKeep) {
+                    finalBindingResult.addError(e);
+                }
+                bindingResult = finalBindingResult;
             }
         }
         if (bindingResult.hasErrors()) {
@@ -109,12 +118,6 @@ public class ProfileController {
 
         return "redirect:/profile";
     }
-
-//    @GetMapping
-//    @ResponseBody
-//    public String test() {
-//        return "ProfileController работает!";
-//    }
 
 
 }

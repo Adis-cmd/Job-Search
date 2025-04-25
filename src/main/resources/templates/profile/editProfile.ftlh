@@ -9,11 +9,12 @@
                 <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
                        value="${(_csrf.token)!'csrf-token'}"/>
             </#if>
+
             <div class="form-group mb-3">
                 <label for="name">Имя</label>
                 <@spring.formInput "userDto.name", 'class="form-control form-control-lg"' />
                 <div class="text-danger">
-                    <@spring.showErrors "<br>" />
+                    <@spring.showErrors "userDto.name" "<br>" />
                 </div>
             </div>
 
@@ -22,7 +23,7 @@
                     <label for="surname">Фамилия</label>
                     <@spring.formInput "userDto.surname", 'class="form-control form-control-lg"' />
                     <div class="text-danger">
-                        <@spring.showErrors "<br>" />
+                        <@spring.showErrors "userDto.surname" "<br>" />
                     </div>
                 </div>
 
@@ -30,7 +31,7 @@
                     <label for="age">Возраст</label>
                     <@spring.formInput "userDto.age", 'class="form-control form-control-lg"' />
                     <div class="text-danger">
-                        <@spring.showErrors "<br>" />
+                        <@spring.showErrors "userDto.age" "<br>" />
                     </div>
                 </div>
             </#if>
@@ -43,8 +44,10 @@
                              style="max-width: 150px;">
                     </div>
                 </#if>
-                <input type="file" class="form-control" value="${userDto.avatar!'avatar.jpg'}" id="avatar" name="file"
-                       accept=".jpg,.jpeg,.png">
+                <input type="file" class="form-control" id="avatar" name="file" accept=".jpg,.jpeg,.png">
+                <div class="text-danger">
+                    <@spring.showErrors "file" "<br>" />
+                </div>
             </div>
 
             <div class="d-grid">
@@ -52,4 +55,5 @@
             </div>
         </form>
     </div>
+
 </@main.layout>
