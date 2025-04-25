@@ -5,9 +5,6 @@ import kg.attractor.jobsearch.dto.EditProfileDto;
 import kg.attractor.jobsearch.dto.ResumeDto;
 import kg.attractor.jobsearch.dto.UserDto;
 import kg.attractor.jobsearch.dto.VacancyDto;
-import kg.attractor.jobsearch.model.Resume;
-import kg.attractor.jobsearch.model.User;
-import kg.attractor.jobsearch.model.Vacancy;
 import kg.attractor.jobsearch.service.ResumeService;
 import kg.attractor.jobsearch.service.UserService;
 import kg.attractor.jobsearch.service.VacancyService;
@@ -21,13 +18,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -38,27 +30,29 @@ public class ProfileController {
     private final VacancyService vacancyService;
 
     @GetMapping
-    public String profile(Model model, @PageableDefault(page = 0, size = 3, sort = "id",
-            direction = Sort.Direction.ASC) Pageable pageable) {
+    public String profile(Model model, @PageableDefault(page = 0, size = 3) Pageable pageable) {
         String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         UserDto currentUser = userService.getUserEmail(currentUserEmail);
-
-        Page<ResumeDto> resumePage = resumeService.getResumeByUserid(String.valueOf(currentUser.getId()), pageable);
-
-        if (resumePage.getTotalPages() > 0 && pageable.getPageNumber() >= resumePage.getTotalPages()) {
-            return "redirect:/profile?page=0&size=" + pageable.getPageSize();
+        if (currentUser == null) {
+            throw new RuntimeException("User not found");
         }
 
+        Page<ResumeDto> resumePage = resumeService.getResumeByUserid(String.valueOf(currentUser.getId()), pageable);
         Page<VacancyDto> vacancyPage = vacancyService.getVacancyByCreatorId(String.valueOf(currentUser.getId()), pageable);
+
+        if (resumePage.getTotalPages() > 0 && pageable.getPageNumber() >= resumePage.getTotalPages()) {
+            return "redirect:/profile?page=" + (resumePage.getTotalPages() - 1) + "&size=" + pageable.getPageSize();
+        }
+
         if (vacancyPage.getTotalPages() > 0 && pageable.getPageNumber() >= vacancyPage.getTotalPages()) {
-            return "redirect:/profile?page=0&size=" + pageable.getPageSize();
+            return "redirect:/profile?page=" + (vacancyPage.getTotalPages() - 1) + "&size=" + pageable.getPageSize();
         }
 
         model.addAttribute("page", currentUser);
         model.addAttribute("resumePage", resumePage);
         model.addAttribute("vacancyPage", vacancyPage);
         model.addAttribute("url", "/profile");
-        return "profile/profile";
+        return "profile/profileUser";
     }
 
 
@@ -115,6 +109,12 @@ public class ProfileController {
 
         return "redirect:/profile";
     }
+
+//    @GetMapping
+//    @ResponseBody
+//    public String test() {
+//        return "ProfileController работает!";
+//    }
 
 
 }

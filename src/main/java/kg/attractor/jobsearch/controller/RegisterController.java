@@ -28,7 +28,6 @@ public class RegisterController {
     @PostMapping
     @ResponseStatus(HttpStatus.SEE_OTHER)
     public String register(@RequestParam(required = false) Long accountType,
-                           HttpServletRequest request,
                            @Valid UserDto userDto,
                            BindingResult bindingResult,
                            Model model) {
@@ -48,9 +47,9 @@ public class RegisterController {
             return "register/register";
         }
 
-        userService.registerUser(userDto, accountType, request);
+        userService.registerUser(userDto, accountType);
 
-        return "redirect:/profile";
+        return "redirect:/auth/login";
     }
 
 
