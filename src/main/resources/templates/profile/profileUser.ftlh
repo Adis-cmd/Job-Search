@@ -168,8 +168,8 @@
                     <#list resumePage.content as resume>
                         <div class="info-card">
                             <h3>${resume.name}</h3>
-                            <p>Создано: ${resume.createdDate}</p>
-                            <p>Обновлено: ${resume.updateTime}</p>
+                            <p>Создано: ${resume.formattedCreatedDate}</p>
+                            <p>Обновлено: ${resume.formattedUpdatedTime}</p>
                             <div class="actions">
                                 <a href="/resume/update/${resume.id}" class="btn small primary">Обновить</a>
                                 <a href="/resume/edit/${resume.id}" class="btn small outline">Редактировать</a>
