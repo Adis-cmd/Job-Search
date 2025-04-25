@@ -27,8 +27,6 @@ public interface VacancyService {
     List<VacancyDto> getAllVacancyByResponded();
 
 
-    Page<Vacancy> findByCategory(Category category, Pageable pageable);
-
     List<VacancyDto> getAllVacanciesIsActive();
 
     Page<VacancyDto> getVacancyByCreatorId(String creatorId, Pageable pageable);

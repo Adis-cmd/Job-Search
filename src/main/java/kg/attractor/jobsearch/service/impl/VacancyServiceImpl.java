@@ -26,7 +26,7 @@ import java.util.Objects;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class VacancyServiceImpl extends MethodClass implements VacancyService {
+public class VacancyServiceImpl extends MethodClass implements VacancyService{
 
     private final VacancyRepository vacancyRepository;
     private final UserServiceImpl userService;
@@ -205,11 +205,6 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
         return getVacancyDto(vacancies);
     }
 
-    @Override
-    public Page<Vacancy> findByCategory(Category category, Pageable pageable) {
-        return vacancyRepository.findByCategory(category, pageable);
-    }
-
     private List<VacancyDto> getVacancyDto(List<Vacancy> vacancies) {
         return vacancies.stream()
                 .map(this::vacancyDtos)
@@ -233,7 +228,7 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
         return v.map(this::vacancyDtos);
     }
 
-    private VacancyDto vacancyDtos(Vacancy v) {
+    public VacancyDto vacancyDtos(Vacancy v) {
         return VacancyDto.builder()
                 .id(v.getId())
                 .name(v.getName())

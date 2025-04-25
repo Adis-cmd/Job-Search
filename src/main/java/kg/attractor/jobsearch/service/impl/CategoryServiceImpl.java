@@ -8,7 +8,6 @@ import kg.attractor.jobsearch.model.Category;
 import kg.attractor.jobsearch.model.Vacancy;
 import kg.attractor.jobsearch.repos.CategoryRepository;
 import kg.attractor.jobsearch.service.CategoryService;
-import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +22,8 @@ import java.util.Optional;
 @Service
 public class CategoryServiceImpl extends MethodClass implements CategoryService {
     private final CategoryRepository repository;
-    private final VacancyService vacancyService;
+    private final VacancyQueryService vacancyService;
+    private final VacancyMapper vacancyMapper;
 
     @Override
     public Page<VacancyDto> getVacanciesByCategory(String categoryName, Pageable pageable) {
@@ -31,29 +31,13 @@ public class CategoryServiceImpl extends MethodClass implements CategoryService 
                 new RuntimeException("Категория не найдена: " + categoryName));
         Page<Vacancy> vacancies = vacancyService.findByCategory(category, pageable);
 
-        return vacancies.map(this::vacancyDtos);
+        return vacancies.map(vacancyMapper::toDto);
     }
 
     @Override
     public List<CategoryDto> getAllCategory() {
         List<Category> category = repository.findAll();
         return categoryDtoList(category);
-    }
-
-    private VacancyDto vacancyDtos(Vacancy v) {
-        return VacancyDto.builder()
-                .id(v.getId())
-                .name(v.getName())
-                .description(v.getDescription())
-                .categoryId(v.getCategory() != null ? v.getCategory().getId() : null)
-                .salary(v.getSalary())
-                .expFrom(v.getExpFrom())
-                .expTo(v.getExpTo())
-                .isActive(v.getIsActive())
-                .authorId(v.getAuthorId() != null ? v.getAuthorId().getId() : null)
-                .createdDate(v.getCreatedDate())
-                .updatedTime(v.getUpdatedTime())
-                .build();
     }
 
     private List<CategoryDto> categoryDtoList(List<Category> category) {
