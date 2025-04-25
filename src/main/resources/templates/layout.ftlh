@@ -98,11 +98,18 @@
                             </a>
                         </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link text-danger" href="/logout">
-                                <i class="bi bi-box-arrow-right me-1"></i>Выйти
-                            </a>
-                        </li>
+                        <#if _csrf??>
+                            <form action="/logout" method="post">
+                                <input type="hidden" name="${(_csrf.parameterName)!'csrf'}"
+                                       value="${(_csrf.token)!'--no-token--'}"/>
+                                <button type="submit" class="nav-link text-danger" id="logout">
+                                    <i class="bi bi-box-arrow-right me-1"></i>Выйти
+                                </button>
+                            </form>
+                        <#else>
+                            <a href="/logout" class="btn btn-outline-info m-2"
+                               id="logout">Logout</a>
+                        </#if>
                     </#if>
                     <#if !(SPRING_SECURITY_CONTEXT?? && SPRING_SECURITY_CONTEXT.authentication??)>
                         <li class="nav-item">
