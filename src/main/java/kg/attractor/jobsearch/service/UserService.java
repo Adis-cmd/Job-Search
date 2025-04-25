@@ -23,12 +23,14 @@ public interface UserService {
 
     void editUser(UserDto userDto, Long userId, String userAvatar);
 
-    void registerUser(UserDto userDto, Long accountTypeId, HttpServletRequest request);
+    void registerUser(UserDto userDto, Long accountTypeId);
 
     List<UserDto> getUsers(String name);
 
     UserDto getUserEmail(String email);
 
+
+    User getUserByEmail(String email);
 
     UserDto getUserById(Long id);
 
@@ -47,4 +49,6 @@ public interface UserService {
     List<UserDto> getUserByResponse();
 
     UserDto auxiliaryMethodUser(User user);
+
+    User findById(Long id);
 }

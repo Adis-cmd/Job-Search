@@ -7,8 +7,8 @@ import kg.attractor.jobsearch.exception.NoSuchElementException.CategoryNotFoundE
 import kg.attractor.jobsearch.model.Category;
 import kg.attractor.jobsearch.model.Vacancy;
 import kg.attractor.jobsearch.repos.CategoryRepository;
-import kg.attractor.jobsearch.repos.VacancyRepository;
 import kg.attractor.jobsearch.service.CategoryService;
+import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,13 +23,13 @@ import java.util.Optional;
 @Service
 public class CategoryServiceImpl extends MethodClass implements CategoryService {
     private final CategoryRepository repository;
-    private final VacancyRepository vacancyRepository;
+    private final VacancyService vacancyService;
 
     @Override
     public Page<VacancyDto> getVacanciesByCategory(String categoryName, Pageable pageable) {
         Category category = getEntityOrThrow(repository.findByName(categoryName),
                 new RuntimeException("Категория не найдена: " + categoryName));
-        Page<Vacancy> vacancies = vacancyRepository.findByCategory(category, pageable);
+        Page<Vacancy> vacancies = vacancyService.findByCategory(category, pageable);
 
         return vacancies.map(this::vacancyDtos);
     }
@@ -118,5 +118,17 @@ public class CategoryServiceImpl extends MethodClass implements CategoryService 
             }
         }
         return categoryDtos;
+    }
+
+    @Override
+    public Category findById(Long id) {
+        Category category = getEntityOrThrow(repository.findById(id), new CategoryNotFoundException());
+        return category;
+    }
+
+    @Override
+    public Long countId(Long id) {
+        Long count = repository.countById(id);
+        return count;
     }
 }

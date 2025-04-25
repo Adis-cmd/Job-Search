@@ -25,4 +25,8 @@ public interface CategoryService {
     List<CategoryDto> findCategoryByResume(Page<ResumeDto> resumes);
 
     List<CategoryDto> findCategoryByVacancy(Page<VacancyDto> vacancyDtoList);
+
+    Category findById(Long id);
+
+    Long countId(Long id);
 }

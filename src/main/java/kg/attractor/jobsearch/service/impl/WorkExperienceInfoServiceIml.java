@@ -1,9 +1,12 @@
 package kg.attractor.jobsearch.service.impl;
 
 import kg.attractor.jobsearch.dao.WorkExperienceInfoDao;
+import kg.attractor.jobsearch.dto.ResumeDto;
 import kg.attractor.jobsearch.dto.WorkExperienceInfoDto;
 import kg.attractor.jobsearch.exception.NoSuchElementException.WorkExperienceInfoException;
+import kg.attractor.jobsearch.model.Resume;
 import kg.attractor.jobsearch.model.WorkExperienceInfo;
+import kg.attractor.jobsearch.repos.WorkExperienceInfoRepository;
 import kg.attractor.jobsearch.service.WorkExperienceInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,20 +17,20 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class WorkExperienceInfoServiceIml extends MethodClass implements WorkExperienceInfoService {
-    private final WorkExperienceInfoDao workExperienceInfoDao;
+    private final WorkExperienceInfoRepository workExperienceInfoRepository;
 
     @Override
     public WorkExperienceInfoDto getWorkExperienceInfoById(String workId) {
         Long parse = parseId(workId);
         WorkExperienceInfo work =
-                getEntityOrThrow(workExperienceInfoDao.getWorkExperienceInfoById(parse),
+                getEntityOrThrow(workExperienceInfoRepository.findById(parse),
                         new WorkExperienceInfoException());
         return workDto(work);
     }
 
     @Override
     public List<WorkExperienceInfoDto> getAllWorkExperienceInfo() {
-        List<WorkExperienceInfo> weid = workExperienceInfoDao.getAllWorkExperienceInfo();
+        List<WorkExperienceInfo> weid = workExperienceInfoRepository.findAll();
 
         return workListToDto(weid);
     }
@@ -42,7 +45,7 @@ public class WorkExperienceInfoServiceIml extends MethodClass implements WorkExp
         w.setPosition(wDto.getPosition());
         w.setResponsibilities(wDto.getResponsibilities());
 
-        workExperienceInfoDao.createWorkExperienceInfo(w);
+        workExperienceInfoRepository.saveAndFlush(w);
     }
 
     private WorkExperienceInfoDto workDto(WorkExperienceInfo work) {
@@ -61,5 +64,22 @@ public class WorkExperienceInfoServiceIml extends MethodClass implements WorkExp
                 .map(this::workDto)
                 .filter(Objects::nonNull)
                 .toList();
+    }
+
+    @Override
+    public void saveWorkExperiences(ResumeDto dto, Resume resume) {
+        if (dto.getWorkExperiences() == null) return;
+
+        dto.getWorkExperiences().forEach(info -> {
+            WorkExperienceInfo work = WorkExperienceInfo.builder()
+                    .resumeId(resume)
+                    .years(info.getYears())
+                    .companyName(info.getCompanyName())
+                    .position(info.getPosition())
+                    .responsibilities(info.getResponsibilities())
+                    .build();
+
+            workExperienceInfoRepository.saveAndFlush(work);
+        });
     }
 }

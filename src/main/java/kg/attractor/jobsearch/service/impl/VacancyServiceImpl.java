@@ -8,13 +8,12 @@ import kg.attractor.jobsearch.exception.NumberFormatException.VacancyServiceExce
 import kg.attractor.jobsearch.model.Category;
 import kg.attractor.jobsearch.model.User;
 import kg.attractor.jobsearch.model.Vacancy;
-import kg.attractor.jobsearch.repos.CategoryRepository;
-import kg.attractor.jobsearch.repos.UserRepository;
 import kg.attractor.jobsearch.repos.VacancyRepository;
 import kg.attractor.jobsearch.service.CategoryService;
 import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -30,9 +29,8 @@ import java.util.Objects;
 public class VacancyServiceImpl extends MethodClass implements VacancyService {
 
     private final VacancyRepository vacancyRepository;
-    private final CategoryRepository categoryRepository;
-    private final UserRepository userRepository;
     private final UserServiceImpl userService;
+    @Lazy
     private final CategoryService categoryService;
 
     @Override
@@ -77,7 +75,7 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
 
 
     private void validateVacancyDto(VacancyDto dto) {
-        if (dto.getCategoryId() == null || categoryRepository.countById(dto.getCategoryId()) <= 0) {
+        if (dto.getCategoryId() == null || categoryService.countId(dto.getCategoryId()) <= 0) {
             throw new CategoryNotFoundException();
         }
 
@@ -96,8 +94,7 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
 
 
     private void updateVacancyFromDto(Vacancy vacancy, VacancyDto dto) {
-        Category category = getEntityOrThrow(categoryRepository.findById(dto.getCategoryId()),
-                new CategoryNotFoundException());
+        Category category = categoryService.findById(dto.getCategoryId());
 
         vacancy.setName(dto.getName());
 
@@ -121,7 +118,7 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
     public void createVacancies(VacancyDto vacanciesDto, Authentication authentication) {
         String userEmail = authentication.getName();
         log.info("Создание вакансии для автора с email: {}", userEmail);
-        User user = getEntityOrThrow(userRepository.findByEmail(userEmail), new UserNotFoundException());
+        User user = userService.getUserByEmail(userEmail);
         Vacancy v = auxiliaryMethod(vacanciesDto);
         v.setAuthorId(user);
         v.setCreatedDate(LocalDateTime.now());
@@ -136,8 +133,7 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
         Vacancy v = new Vacancy();
         v.setName(vacanciesDto.getName());
         v.setDescription(vacanciesDto.getDescription());
-        v.setCategory(getEntityOrThrow(categoryRepository.findById(vacanciesDto.getCategoryId()),
-                new CategoryNotFoundException()));
+        v.setCategory(categoryService.findById(vacanciesDto.getCategoryId()));
         v.setSalary(vacanciesDto.getSalary());
         v.setIsActive(vacanciesDto.getIsActive() != null ? vacanciesDto.getIsActive() : true);
 
@@ -209,6 +205,11 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
         return getVacancyDto(vacancies);
     }
 
+    @Override
+    public Page<Vacancy> findByCategory(Category category, Pageable pageable) {
+        return vacancyRepository.findByCategory(category, pageable);
+    }
+
     private List<VacancyDto> getVacancyDto(List<Vacancy> vacancies) {
         return vacancies.stream()
                 .map(this::vacancyDtos)
@@ -264,7 +265,6 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
                 .responseCount(responseCount)
                 .build();
     }
-
 
 
 }

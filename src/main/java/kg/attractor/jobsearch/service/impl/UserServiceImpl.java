@@ -1,14 +1,12 @@
 package kg.attractor.jobsearch.service.impl;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
 import kg.attractor.jobsearch.dao.UserDao;
 import kg.attractor.jobsearch.dto.UserDto;
 import kg.attractor.jobsearch.dto.VacancyDto;
 import kg.attractor.jobsearch.exception.NumberFormatException.UserServiceException;
 import kg.attractor.jobsearch.model.User;
-import kg.attractor.jobsearch.repos.AccountTypeRepository;
 import kg.attractor.jobsearch.repos.UserRepository;
+import kg.attractor.jobsearch.service.AccountTypeService;
 import kg.attractor.jobsearch.service.UserService;
 import kg.attractor.jobsearch.util.FileUtil;
 import lombok.RequiredArgsConstructor;
@@ -32,16 +30,15 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl extends MethodClass implements UserService {
 
-    private final UserDao userDao;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-    private final AccountTypeRepository accountTypeRepository;
+    private final AccountTypeService accountTypeService;
 
 
     @Override
     public List<UserDto> searchSuccessfulApplicants(Long vacancyId) {
         log.info("Поиск успешных кандидатов для вакансии с ID: {}", vacancyId);
-        List<User> users = userDao.getApplicantsWhoRespondedToVacancy(vacancyId);
+        List<User> users = userRepository.getApplicantsWhoRespondedToVacancy(vacancyId);
         //TODO логика для поиска откликнувшихся соискателей на вакансию
         return userDto(users);
     }
@@ -88,7 +85,7 @@ public class UserServiceImpl extends MethodClass implements UserService {
     }
 
     @Transactional
-    public void registerUser(UserDto userDto, Long accountTypeId, HttpServletRequest request) {
+    public void registerUser(UserDto userDto, Long accountTypeId) {
         User user = new User();
 
         if (userRepository.existsByPhoneNumber(userDto.getEmail())) {
@@ -111,14 +108,9 @@ public class UserServiceImpl extends MethodClass implements UserService {
             user.setAvatar("avatarForApplicant.jpg");
         }
         user.setEnabled(true);
-        user.setAccountType(accountTypeRepository.findById(accountTypeId).orElseThrow());
+        user.setAccountType(accountTypeService.findById(accountTypeId));
 
         userRepository.save(user);
-        try {
-            request.login(userDto.getEmail(), userDto.getPassword());
-        } catch (ServletException e) {
-            log.error(e.getMessage());
-        }
     }
 
 
@@ -138,6 +130,11 @@ public class UserServiceImpl extends MethodClass implements UserService {
                 new UserServiceException("Не найден пользователь с такой почтой"));
         return userDtos(user);
         //TODO Логика для поиска пользователя по его email
+    }
+    @Override
+    public User getUserByEmail(String email) {
+        return getEntityOrThrow(userRepository.findByEmail(email),
+                new UserServiceException("Email not found"));
     }
 
     @Override
@@ -231,6 +228,11 @@ public class UserServiceImpl extends MethodClass implements UserService {
                 .password(user.getEmail())
                 .avatar(user.getAvatar())
                 .build();
+    }
+
+    @Override
+    public User findById(Long id) {
+        return getEntityOrThrow(userRepository.findById(id), new UserServiceException("User not found"));
     }
 
 

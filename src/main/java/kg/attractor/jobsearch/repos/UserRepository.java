@@ -48,4 +48,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = "select * from users where accountType_id = 1 and id = :id", nativeQuery = true)
     Optional<User> findUserById(Long id);
+
+    @Query(nativeQuery = true,
+            value = "SELECT u.* FROM USERS u " +
+                    "JOIN RESUMES r ON u.ID = r.APPLICANTID " +
+                    "JOIN APPLICATIONS a ON r.ID = a.RESUME_ID " +
+                    "WHERE a.JOB_ID = ?")
+    List<User> getApplicantsWhoRespondedToVacancy(Long id);
 }

@@ -1,6 +1,8 @@
 package kg.attractor.jobsearch.service;
 
 import kg.attractor.jobsearch.dto.VacancyDto;
+import kg.attractor.jobsearch.model.Category;
+import kg.attractor.jobsearch.model.Vacancy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -23,6 +25,9 @@ public interface VacancyService {
     List<VacancyDto> getAllVacanciesCategory(String categoryId);
 
     List<VacancyDto> getAllVacancyByResponded();
+
+
+    Page<Vacancy> findByCategory(Category category, Pageable pageable);
 
     List<VacancyDto> getAllVacanciesIsActive();
 

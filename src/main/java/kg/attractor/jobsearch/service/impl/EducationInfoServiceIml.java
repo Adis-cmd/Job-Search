@@ -2,8 +2,11 @@ package kg.attractor.jobsearch.service.impl;
 
 import kg.attractor.jobsearch.dao.EducationInfoDao;
 import kg.attractor.jobsearch.dto.EducationInfoDto;
+import kg.attractor.jobsearch.dto.ResumeDto;
 import kg.attractor.jobsearch.exception.NoSuchElementException.EducationInfoException;
 import kg.attractor.jobsearch.model.EducationInfo;
+import kg.attractor.jobsearch.model.Resume;
+import kg.attractor.jobsearch.repos.EducationInfoRepository;
 import kg.attractor.jobsearch.service.EducationInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,18 +17,18 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class EducationInfoServiceIml extends MethodClass implements EducationInfoService {
-    private final EducationInfoDao educationInfoDao;
+    private final EducationInfoRepository educationInfoRepository;
 
     @Override
     public List<EducationInfoDto> getAllEducationInfo() {
-        List<EducationInfo> ed = educationInfoDao.getAllEducationInfo();
+        List<EducationInfo> ed = educationInfoRepository.findAll();
         return eduDtoList(ed);
     }
 
     @Override
     public EducationInfoDto getEducationInfoById(String educationInfoId) {
         Long parseId = parseId(educationInfoId);
-        EducationInfo educationInfo = getEntityOrThrow(educationInfoDao.getEducationInfoById(parseId),
+        EducationInfo educationInfo = getEntityOrThrow(educationInfoRepository.findById(parseId),
                 new EducationInfoException());
 
         return eduDto(educationInfo);
@@ -42,7 +45,7 @@ public class EducationInfoServiceIml extends MethodClass implements EducationInf
         educationInfo.setEndDate(educationInfoDto.getEndDate());
         educationInfo.setDegree(educationInfoDto.getDegree());
 
-        educationInfoDao.createEducationInfo(educationInfo);
+        educationInfoRepository.saveAndFlush(educationInfo);
     }
 
     private List<EducationInfoDto> eduDtoList(List<EducationInfo> educationInfo) {
@@ -62,5 +65,24 @@ public class EducationInfoServiceIml extends MethodClass implements EducationInf
                 .endDate(educationInfo.getEndDate())
                 .degree(educationInfo.getDegree())
                 .build();
+    }
+
+    @Override
+    public void saveEducationInfos(ResumeDto dto, Resume resume) {
+        if (dto.getEducationInfos() == null) return;
+
+        dto.getEducationInfos().forEach(info -> {
+            EducationInfo edu = EducationInfo.builder()
+                    .resumeId(resume)
+                    .institution(info.getInstitution())
+                    .program(info.getProgram())
+                    .startDate(info.getStartDate())
+                    .endDate(info.getEndDate())
+                    .degree(info.getDegree())
+                    .build();
+
+            educationInfoRepository.saveAndFlush(edu);
+
+        });
     }
 }
