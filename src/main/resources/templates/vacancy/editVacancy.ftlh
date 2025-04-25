@@ -60,12 +60,6 @@
             margin-right: 10px;
         }
 
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 60px;
-            height: 34px;
-        }
 
         .switch input {
             opacity: 0;
@@ -73,10 +67,6 @@
             height: 0;
         }
 
-        .switch-label {
-            margin-left: 10px;
-            vertical-align: middle;
-        }
 
         .buttons {
             text-align: center;
@@ -104,6 +94,10 @@
     <#if vacancyDto??>
         <div class="card">
             <form method="post" action="/vacancy/edit/${vacancyDto.id!''}">
+                <#if _csrf??>
+                    <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                           value="${(_csrf.token)!'csrf-token'}"/>
+                </#if>
                 <input type="hidden" name="id" value="${vacancyDto.id!''}">
 
                 <div class="form-group">

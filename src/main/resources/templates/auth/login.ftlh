@@ -61,9 +61,11 @@
     <section class="login-wrapper">
         <div class="login-card">
             <h3 class="text-center text-light">Вход в аккаунт</h3>
-
             <form id="login-form" action="/auth/login" method="post">
-
+                <#if _csrf??>
+                    <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                           value="${(_csrf.token)!'csrf-token'}"/>
+                </#if>
                 <div class="mb-4">
                     <label for="email" class="form-label">Email</label>
                     <input type="email" id="email" name="username" class="form-control form-control-lg" placeholder="Введите email" required>

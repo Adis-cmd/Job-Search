@@ -68,11 +68,17 @@
             <h3 class="text-center text-light">Создать аккаунт</h3>
 
             <form method="post" action="/register">
-                <input type="hidden" name="userDto.accountType.id" value="${accountType!''}" />
+                <input type="hidden" name="userDto.accountType.id" value="${accountType!''}"/>
+                <#if _csrf??>
+                    <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                           value="${(_csrf.token)!'csrf-token'}"/>
+                </#if>
 
                 <div class="mb-4">
                     <label for="accountType" class="form-label">Тип аккаунта</label>
-                    <select id="accountType" name="accountType" required onchange="location.href='/register?accountType='+this.value" class="form-control form-control-lg">
+                    <select id="accountType" name="accountType" required
+                            onchange="location.href='/register?accountType='+this.value"
+                            class="form-control form-control-lg">
                         <option value="" disabled selected>-- выберите тип аккаунта --</option>
                         <option value="1" <#if accountType == '1'>selected</#if>>Работодатель</option>
                         <option value="2" <#if accountType == '2'>selected</#if>>Соискатель</option>

@@ -100,7 +100,7 @@
                     </div>
                 </#list>
             </div>
-            <@p.pager url="/info/${user.id}" currentPage=vacancyDtos />
         </div>
     </div>
+    <@p.pager url=url currentPage=vacancyDtos />
 </@main.layout>

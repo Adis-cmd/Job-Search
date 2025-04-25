@@ -5,6 +5,10 @@
         <h1>Редактирование резюме</h1>
 
         <form method="post" action="/resume/edit/${resumeDto.id}">
+            <#if _csrf??>
+                <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                       value="${(_csrf.token)!'csrf-token'}"/>
+            </#if>
             <input type="hidden" name="id" value="${resumeDto.id!''}">
             <div class="form-group">
                 <label for="name">Название резюме:</label>
@@ -20,13 +24,17 @@
                 <select id="categoryId" name="categoryId" class="form-control">
                     <option value="">Выберите категорию</option>
                     <#list category as cat>
-                        <option <#if (resumeDto.categoryId?? && resumeDto.categoryId == cat.id)>selected</#if>>${cat.name}</option>
+                        <option value="${cat.id}"
+                                <#if (resumeDto.categoryId?? && resumeDto.categoryId == cat.id)>selected</#if>>
+                            ${cat.name}
+                        </option>
                     </#list>
                 </select>
                 <div class="error-block">
                     <@spring.showErrors "<br>" "custom-error" />
                 </div>
             </div>
+
 
             <div class="form-group">
                 <label for="salary">Ожидаемый уровень оклада:</label>
@@ -39,10 +47,12 @@
                 <label>Статус вакансии:</label>
                 <div>
                     <label>
-                        <input type="radio" name="isActive" value="true" <#if resumeDto.isActive?? && resumeDto.isActive == true>checked</#if>> Активно
+                        <input type="radio" name="isActive" value="true"
+                               <#if resumeDto.isActive?? && resumeDto.isActive == true>checked</#if>> Активно
                     </label>
                     <label>
-                        <input type="radio" name="isActive" value="false" <#if resumeDto.isActive?? && resumeDto.isActive == false>checked</#if>> Не активно
+                        <input type="radio" name="isActive" value="false"
+                               <#if resumeDto.isActive?? && resumeDto.isActive == false>checked</#if>> Не активно
                     </label>
                     <div class="error-block">
                         <@spring.showErrors "<br>" "custom-error" />

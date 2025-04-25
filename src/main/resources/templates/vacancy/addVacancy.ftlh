@@ -91,7 +91,10 @@
 
     <div class="card">
         <form method="post" action="/vacancy/add">
-
+            <#if _csrf??>
+                <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                       value="${(_csrf.token)!'csrf-token'}"/>
+            </#if>
             <div class="form-group">
                 <label for="name">Название вакансии:</label>
                 <@spring.formInput "vacancyDto.name" 'id="name" class="form-control form-control-lg"' />
@@ -105,7 +108,8 @@
                 <select id="categoryId" name="categoryId" class="form-control">
                     <option value="" selected disabled>Выберите категорию</option>
                     <#list category as cat>
-                        <option value="${cat.id}" <#if (vacancyDto.categoryId?? && vacancyDto.categoryId == cat.id)>selected</#if>>${cat.name}</option>
+                        <option value="${cat.id}"
+                                <#if (vacancyDto.categoryId?? && vacancyDto.categoryId == cat.id)>selected</#if>>${cat.name}</option>
                     </#list>
                 </select>
                 <div class="error-block">
@@ -133,7 +137,8 @@
                 <label>Требуемый опыт:</label>
                 <div class="experience-input">
                     <label for="expFrom">От</label>
-                    <@spring.formInput "vacancyDto.expFrom" 'id="expFrom" type="number" style="width: 60px;" min="0" step="1"' /> <div class="error-block">
+                    <@spring.formInput "vacancyDto.expFrom" 'id="expFrom" type="number" style="width: 60px;" min="0" step="1"' />
+                    <div class="error-block">
                         <@spring.showErrors "<br>" "custom-error" />
                     </div>
                     <label for="expTo">До</label>
@@ -148,10 +153,12 @@
                 <label>Статус вакансии:</label>
                 <div>
                     <label>
-                        <input type="radio" name="isActive" value="true" <#if vacancyDto.isActive?? && vacancyDto.isActive == true>checked</#if>> Активно
+                        <input type="radio" name="isActive" value="true"
+                               <#if vacancyDto.isActive?? && vacancyDto.isActive == true>checked</#if>> Активно
                     </label>
                     <label>
-                        <input type="radio" name="isActive" value="false" <#if vacancyDto.isActive?? && vacancyDto.isActive == false>checked</#if>> Не активно
+                        <input type="radio" name="isActive" value="false"
+                               <#if vacancyDto.isActive?? && vacancyDto.isActive == false>checked</#if>> Не активно
                     </label>
                     <div class="error-block">
                         <@spring.showErrors "<br>" "custom-error" />

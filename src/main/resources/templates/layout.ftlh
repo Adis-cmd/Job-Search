@@ -69,6 +69,7 @@
                         <#assign user = SPRING_SECURITY_CONTEXT.authentication.principal>
                         <#if user??>
                             <#assign roles = user.authorities?map(it -> it.authority)>
+                            <#assign userName = user.getUsername()>
                             <#if !(roles?seq_contains("APPLICANT"))>
                                 <li class="nav-item">
                                     <a class="nav-link" href="/resume">
