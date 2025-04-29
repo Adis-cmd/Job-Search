@@ -1,5 +1,8 @@
 <#import "../layout.ftlh" as main>
 <@main.layout>
+    <#assign user = SPRING_SECURITY_CONTEXT.authentication.principal>
+    <#assign roles = user.authorities?map(it -> it.authority)>
+    <#assign userName = user.getUsername()>
     <style>
         body {
             color: #f8f9fa;
@@ -79,16 +82,24 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <p><i class="bi bi-building me-2 text-warning"></i><strong>Компания:</strong> ${author.name}</p>
-                    <p><i class="bi bi-currency-dollar me-2 text-success"></i><strong>Зарплата:</strong> ${vacancyDto.salary}</p>
+                    <p>
+                        <i class="bi bi-currency-dollar me-2 text-success"></i><strong>Зарплата:</strong> ${vacancyDto.salary}
+                    </p>
                     <p><i class="bi bi-folder-fill me-2 text-warning"></i><strong>Категория:</strong>
                         ${category.name}</p>
                 </div>
 
                 <div class="col-md-6 mb-3">
-                    <p><i class="bi bi-bar-chart-fill me-2 text-warning"></i><strong>Опыт от:</strong> ${vacancyDto.expFrom} лет</p>
-                    <p><i class="bi bi-bar-chart me-2 text-warning"></i><strong>Опыт до:</strong> ${vacancyDto.expTo} лет</p>
-                    <p><i class="bi bi-calendar-plus me-2 text-info"></i><strong>Создано:</strong> ${vacancyDto.formattedCreatedDate}</p>
-                    <p><i class="bi bi-clock-history me-2 text-info"></i><strong>Обновлено:</strong> ${vacancyDto.formattedUpdatedTime}</p>
+                    <p><i class="bi bi-bar-chart-fill me-2 text-warning"></i><strong>Опыт
+                            от:</strong> ${vacancyDto.expFrom} лет</p>
+                    <p><i class="bi bi-bar-chart me-2 text-warning"></i><strong>Опыт до:</strong> ${vacancyDto.expTo}
+                        лет</p>
+                    <p>
+                        <i class="bi bi-calendar-plus me-2 text-info"></i><strong>Создано:</strong> ${vacancyDto.formattedCreatedDate}
+                    </p>
+                    <p>
+                        <i class="bi bi-clock-history me-2 text-info"></i><strong>Обновлено:</strong> ${vacancyDto.formattedUpdatedTime}
+                    </p>
                     <p><i class="bi bi-circle-fill me-2 text-warning"></i><strong>Статус:</strong>
                         <span class="badge ${vacancyDto.isActive?then('bg-success', 'bg-secondary')}">
                             ${vacancyDto.isActive?then('Активна', 'Не активна')}
@@ -105,10 +116,12 @@
             </div>
         </div>
 
-        <div class="mt-4 d-flex justify-content-center">
-            <a href="/responded/${vacancyDto.id}" class="btn btn-outline-primary">
-                <i class="bi bi-send-fill me-2"></i> Откликнуться
-            </a>
-        </div>
+        <#if roles?seq_contains("APPLICANT")>
+            <div class="mt-4 d-flex justify-content-center">
+                <a href="/responded/${vacancyDto.id}" class="btn btn-outline-primary">
+                    <i class="bi bi-send-fill me-2"></i> Откликнуться
+                </a>
+            </div>
+        </#if>
     </section>
 </@main.layout>

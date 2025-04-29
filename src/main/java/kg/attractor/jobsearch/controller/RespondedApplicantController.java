@@ -74,9 +74,13 @@ public class RespondedApplicantController {
         String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         UserDto currentUser = userService.getUserEmail(currentUserEmail);
 
-//        Page<ResumeDto> resumeDto = resumeService.getResumeByUserid(String.valueOf(currentUser.getId()), pageable);
         Page<RespondedApplicantDto> respondedApplicantDto =
                 respondedApplicantService.getAllRespondedApplicants(currentUser.getId(), pageable);
+
+        if (respondedApplicantDto.getTotalPages() > 0 && pageable.getPageNumber() >= respondedApplicantDto.getTotalPages()) {
+            return "redirect:/responded/info?page=0&size=" + pageable.getPageSize();
+        }
+
 
         model.addAttribute("page", respondedApplicantDto);
         model.addAttribute("url", "info");
