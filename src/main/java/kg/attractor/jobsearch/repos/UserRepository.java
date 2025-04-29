@@ -55,4 +55,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
                     "JOIN APPLICATIONS a ON r.ID = a.RESUME_ID " +
                     "WHERE a.JOB_ID = ?")
     List<User> getApplicantsWhoRespondedToVacancy(Long id);
+
+    Optional<User> findUserByResetPasswordToken(String resetPasswordToken);
+
 }

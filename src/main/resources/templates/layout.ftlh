@@ -91,7 +91,7 @@
                             <i class="bi bi-card-list me-1"></i>Все Вакансии
                         </a>
                     </li>
-                    <#if  SPRING_SECURITY_CONTEXT?? && SPRING_SECURITY_CONTEXT.authentication??>
+                    <#if SPRING_SECURITY_CONTEXT?? && SPRING_SECURITY_CONTEXT.authentication??>
                         <li class="nav-item">
                             <a class="nav-link" href="/profile">
                                 <i class="bi bi-person-circle me-1"></i>Профиль
@@ -102,15 +102,13 @@
                             <form action="/logout" method="post">
                                 <input type="hidden" name="${(_csrf.parameterName)!'csrf'}"
                                        value="${(_csrf.token)!'--no-token--'}"/>
-                                <button type="submit" class="nav-link text-danger" id="logout">
+                                <button type="submit" class="btn  nav-link text-danger d-inline-flex align-items-center" id="logout">
                                     <i class="bi bi-box-arrow-right me-1"></i>Выйти
                                 </button>
                             </form>
-                        <#else>
-                            <a href="/logout" class="btn btn-outline-info m-2"
-                               id="logout">Logout</a>
                         </#if>
                     </#if>
+
                     <#if !(SPRING_SECURITY_CONTEXT?? && SPRING_SECURITY_CONTEXT.authentication??)>
                         <li class="nav-item">
                             <a class="nav-link" href="/auth/login">

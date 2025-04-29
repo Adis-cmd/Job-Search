@@ -1,6 +1,7 @@
 package kg.attractor.jobsearch.service.impl;
 
-import kg.attractor.jobsearch.dao.UserDao;
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import kg.attractor.jobsearch.dto.UserDto;
 import kg.attractor.jobsearch.dto.VacancyDto;
 import kg.attractor.jobsearch.exception.NumberFormatException.UserServiceException;
@@ -8,6 +9,7 @@ import kg.attractor.jobsearch.model.User;
 import kg.attractor.jobsearch.repos.UserRepository;
 import kg.attractor.jobsearch.service.AccountTypeService;
 import kg.attractor.jobsearch.service.UserService;
+import kg.attractor.jobsearch.util.CommonUtilities;
 import kg.attractor.jobsearch.util.FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,10 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.io.UnsupportedEncodingException;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -33,6 +33,7 @@ public class UserServiceImpl extends MethodClass implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final AccountTypeService accountTypeService;
+    private final EmailServiceImpl emailService;
 
 
     @Override
@@ -131,6 +132,7 @@ public class UserServiceImpl extends MethodClass implements UserService {
         return userDtos(user);
         //TODO Логика для поиска пользователя по его email
     }
+
     @Override
     public User getUserByEmail(String email) {
         return getEntityOrThrow(userRepository.findByEmail(email),
@@ -233,6 +235,37 @@ public class UserServiceImpl extends MethodClass implements UserService {
     @Override
     public User findById(Long id) {
         return getEntityOrThrow(userRepository.findById(id), new UserServiceException("User not found"));
+    }
+
+    private void updateResetPasswordToken(String token, String email) {
+        User user = getEntityOrThrow(userRepository.findByEmail(email),
+                new UserServiceException("User not found"));
+        user.setResetPasswordToken(token);
+        userRepository.saveAndFlush(user);
+    }
+
+    @Override
+    public void makeResetPasswordToken(HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
+        String email = request.getParameter("email");
+        String token = UUID.randomUUID().toString();
+        updateResetPasswordToken(token, email);
+        String resetPasswordLink = CommonUtilities.getSiteURL(request) + "/auth/reset_password?token=" + token;
+        emailService.sendEmail(email, resetPasswordLink);
+    }
+
+
+    @Override
+    public User getUserByResetPasswordToken(String token) {
+        return getEntityOrThrow(userRepository.findUserByResetPasswordToken(token),
+                new UserServiceException("User not found"));
+    }
+
+    @Override
+    public void updatePassword(User user, String password) {
+        String encodedPassword = passwordEncoder.encode(password);
+        user.setPassword(encodedPassword);
+        user.setResetPasswordToken(null);
+        userRepository.saveAndFlush(user);
     }
 
 
