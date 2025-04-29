@@ -33,8 +33,11 @@ public class ResumeDto {
     private Boolean isActive = true;
     private LocalDateTime createdDate;
     private LocalDateTime updateTime;
+    @Valid
     private List<WorkExperienceInfoDto> workExperiences;
+    @Valid
     private List<EducationInfoDto> educationInfos;
+    @Valid
     private List<ContactInfoDto> contactInfos;
 
 

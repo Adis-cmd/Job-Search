@@ -3,7 +3,7 @@ package kg.attractor.jobsearch.service.impl;
 import kg.attractor.jobsearch.dto.ResumeDto;
 import kg.attractor.jobsearch.exception.NumberFormatException.ResumeServiceException;
 import kg.attractor.jobsearch.model.Resume;
-import kg.attractor.jobsearch.repos.*;
+import kg.attractor.jobsearch.repos.ResumeRepository;
 import kg.attractor.jobsearch.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -38,6 +39,7 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
     }
 
     @Override
+    @Transactional
     public void createResumes(ResumeDto resumesDto, String userId) {
         log.info("Создание резюме для пользователя с ID: {}", userId);
         Long userParse = parseId(userId);
@@ -56,10 +58,39 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
 
         log.info("Резюме успешно создано с ID: {}", savedResume.getId());
 
-        educationInfoService.saveEducationInfos(resumesDto, savedResume);
-        workExperienceInfoService.saveWorkExperiences(resumesDto, savedResume);
-        contactInfoService.saveContactInfos(resumesDto, savedResume);
+        if (hasValidEducationInfos(resumesDto)) {
+            educationInfoService.saveEducationInfos(resumesDto, savedResume);
+        }
+
+        if (hasValidWorkExperiences(resumesDto)) {
+            workExperienceInfoService.saveWorkExperiences(resumesDto, savedResume);
+        }
+
+        if (hasValidContactInfos(resumesDto)) {
+            contactInfoService.saveContactInfos(resumesDto, savedResume);
+        }
     }
+
+    private boolean hasValidEducationInfos(ResumeDto dto) {
+        return dto.getEducationInfos() != null
+                && dto.getEducationInfos().stream()
+                .anyMatch(info -> info.getInstitution() != null && !info.getInstitution().isBlank());
+    }
+
+    private boolean hasValidWorkExperiences(ResumeDto dto) {
+        return dto.getWorkExperiences() != null
+                && dto.getWorkExperiences().stream()
+                .anyMatch(info -> info.getCompanyName() != null && !info.getCompanyName().isBlank());
+    }
+
+    private boolean hasValidContactInfos(ResumeDto dto) {
+        return dto.getContactInfos() != null
+                && dto.getContactInfos().stream()
+                .anyMatch(info -> info.getValue() != null && !info.getValue().isBlank());
+    }
+
+
+
 
 
     @Override
@@ -90,6 +121,7 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
 
 
     @Override
+    @Transactional
     public void editResume(ResumeDto resumesDto, String resumeId) {
         Long parsedResumeId = parseId(resumeId);
         log.info("Редактирование резюме с ID: {}", parsedResumeId);

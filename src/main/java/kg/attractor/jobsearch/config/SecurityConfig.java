@@ -24,8 +24,14 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/auth/login")
                         .loginProcessingUrl("/auth/login")
-                        .defaultSuccessUrl("/profile", true)
-                        .failureUrl("/auth/login?error=true")
+                        .successHandler((request, response, authentication) -> {
+                            String role = authentication.getAuthorities().toString();
+                            if (role.contains("EMPLOYEE")) {
+                                response.sendRedirect("/resume");
+                            } else if (role.contains("APPLICANT")) {
+                                response.sendRedirect("/vacancy");
+                            }
+                        }).failureUrl("/auth/login?error=true")
                         .permitAll())
                 .logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
@@ -50,6 +56,7 @@ public class SecurityConfig {
                         .requestMatchers("/company/info/**").hasAuthority("APPLICANT")
                         .requestMatchers("/company/**").hasAuthority("APPLICANT")
                         .requestMatchers("/vacancy/info/**").authenticated()
+                        .requestMatchers("/responded/**").hasAuthority("APPLICANT")
                         .requestMatchers("/profile").authenticated()
                         .anyRequest().permitAll()
                 );
