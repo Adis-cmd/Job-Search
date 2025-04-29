@@ -3,6 +3,8 @@ package kg.attractor.jobsearch.service;
 import kg.attractor.jobsearch.dto.EducationInfoDto;
 import kg.attractor.jobsearch.dto.ResumeDto;
 import kg.attractor.jobsearch.model.Resume;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -14,4 +16,6 @@ public interface EducationInfoService {
     void createEducationInfo(EducationInfoDto educationInfoDto);
 
     void saveEducationInfos(ResumeDto dto, Resume resume);
+
+    Page<EducationInfoDto> getEducationInfoById(Long resumeId, Pageable pageable);
 }

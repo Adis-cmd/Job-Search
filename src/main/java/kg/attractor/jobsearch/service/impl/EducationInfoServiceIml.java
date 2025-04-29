@@ -1,6 +1,5 @@
 package kg.attractor.jobsearch.service.impl;
 
-import kg.attractor.jobsearch.dao.EducationInfoDao;
 import kg.attractor.jobsearch.dto.EducationInfoDto;
 import kg.attractor.jobsearch.dto.ResumeDto;
 import kg.attractor.jobsearch.exception.NoSuchElementException.EducationInfoException;
@@ -9,6 +8,8 @@ import kg.attractor.jobsearch.model.Resume;
 import kg.attractor.jobsearch.repos.EducationInfoRepository;
 import kg.attractor.jobsearch.service.EducationInfoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -84,5 +85,12 @@ public class EducationInfoServiceIml extends MethodClass implements EducationInf
             educationInfoRepository.saveAndFlush(edu);
 
         });
+    }
+
+    @Override
+    public Page<EducationInfoDto> getEducationInfoById(Long resumeId, Pageable pageable) {
+        Page<EducationInfo> educationInfo = educationInfoRepository.findByResumeId(resumeId, pageable);
+
+        return  educationInfo.map(this::eduDto);
     }
 }
