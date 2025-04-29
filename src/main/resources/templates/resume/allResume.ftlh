@@ -135,7 +135,7 @@
                         </div>
 
                         <div class="d-flex align-self-md-center">
-                            <a href="/resume/view/${resume.id}" class="btn btn-outline-primary btn-sm">
+                            <a href="/resume/info/${resume.id}" class="btn btn-outline-primary btn-sm">
                                 <i class="bi bi-eye me-1"></i> Посмотреть
                             </a>
                         </div>

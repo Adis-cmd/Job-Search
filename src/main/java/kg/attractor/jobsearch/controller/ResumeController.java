@@ -2,9 +2,7 @@ package kg.attractor.jobsearch.controller;
 
 import jakarta.validation.Valid;
 import kg.attractor.jobsearch.dto.ResumeDto;
-import kg.attractor.jobsearch.service.CategoryService;
-import kg.attractor.jobsearch.service.ResumeService;
-import kg.attractor.jobsearch.service.UserService;
+import kg.attractor.jobsearch.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,8 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.List;
-
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("resume")
@@ -28,6 +24,8 @@ public class ResumeController {
     private final ResumeService resumeService;
     private final CategoryService categoryService;
     private final UserService userService;
+    private final WorkExperienceInfoService workExperienceInfoService;
+    private final EducationInfoService educationInfoService;
 
     @GetMapping
     public String getAllResume(Model model,
@@ -87,6 +85,18 @@ public class ResumeController {
         }
         resumeService.editResume(resumeDto, resumeId);
         return "redirect:/profile";
+    }
+
+    @GetMapping("info/{resumeId}")
+    public String getResumeInfo(@PathVariable("resumeId") Long resumeId, Model model, @PageableDefault(page = 0, size = 3) Pageable pageable) {
+        ResumeDto resumeDto = resumeService.getResumeById(String.valueOf(resumeId));
+        model.addAttribute("category", categoryService.findCategoryById(resumeDto.getCategoryId()));
+        model.addAttribute("resumeDto", resumeDto);
+        model.addAttribute("applicant", userService.getUserById(resumeDto.getApplicantId()));
+        model.addAttribute("workExperiences", workExperienceInfoService.getWorkExperienceInfoByResumeId(resumeDto.getId(), pageable));
+        model.addAttribute("educationInfos", educationInfoService.getEducationInfoById(resumeDto.getId(), pageable));
+        model.addAttribute("url", "/resume/info/" + resumeDto.getId());
+        return "resume/info";
     }
 
 }

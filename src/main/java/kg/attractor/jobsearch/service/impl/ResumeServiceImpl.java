@@ -1,16 +1,13 @@
 package kg.attractor.jobsearch.service.impl;
 
 import kg.attractor.jobsearch.dto.ResumeDto;
-import kg.attractor.jobsearch.exception.NoSuchElementException.CategoryNotFoundException;
 import kg.attractor.jobsearch.exception.NumberFormatException.ResumeServiceException;
-import kg.attractor.jobsearch.model.ContactInfo;
-import kg.attractor.jobsearch.model.EducationInfo;
 import kg.attractor.jobsearch.model.Resume;
-import kg.attractor.jobsearch.model.WorkExperienceInfo;
 import kg.attractor.jobsearch.repos.*;
 import kg.attractor.jobsearch.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -29,6 +27,7 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
     private final UserService userService;
     private final CategoryService categoryService;
     private final ContactInfoService contactInfoService;
+    private final ModelMapper modelMapper = new ModelMapper();
 
     @Override
     public List<ResumeDto> getAllResumes() {
@@ -63,22 +62,6 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
     }
 
 
-    private Resume buildResumeEntity(ResumeDto dto) {
-        return Resume.builder()
-                .name(dto.getName())
-                .category(categoryService.findById(dto.getCategoryId()))
-                .salary(dto.getSalary())
-                .isActive(dto.getIsActive())
-                .build();
-    }
-
-
-
-
-
-
-
-
     @Override
     public void deleteResumes(String resumeId) {
         Long parseResumeId = parseId(resumeId);
@@ -97,6 +80,14 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
         return resumeDtos(resumes);
         //TODO метод для поиска резюме по его id
     }
+
+    @Override
+    public Optional<Resume> findResumeById(Long resumeId) {
+        Resume resumes = getEntityOrThrow(resumeRepository.findById(resumeId),
+                new ResumeServiceException("Не найденно резюме с таким id"));
+        return Optional.of(resumes);
+    }
+
 
     @Override
     public void editResume(ResumeDto resumesDto, String resumeId) {
@@ -134,7 +125,6 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
         return resume.map(this::resumeDtos);
         //TODO логика для поиска резюме по id пользователя
     }
-
 
     private ResumeDto resumeDtos(Resume resume) {
         return ResumeDto.builder()
