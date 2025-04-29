@@ -17,6 +17,8 @@ import javax.sql.DataSource;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+    private final SuccessHandler successHandler;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -24,14 +26,8 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/auth/login")
                         .loginProcessingUrl("/auth/login")
-                        .successHandler((request, response, authentication) -> {
-                            String role = authentication.getAuthorities().toString();
-                            if (role.contains("EMPLOYEE")) {
-                                response.sendRedirect("/resume");
-                            } else if (role.contains("APPLICANT")) {
-                                response.sendRedirect("/vacancy");
-                            }
-                        }).failureUrl("/auth/login?error=true")
+                        .successHandler(successHandler)
+                        .failureUrl("/auth/login?error=true")
                         .permitAll())
                 .logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
