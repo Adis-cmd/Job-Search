@@ -1,7 +1,10 @@
 package kg.attractor.jobsearch.dto;
 
 import jakarta.validation.constraints.NotNull;
+import kg.attractor.jobsearch.model.Resume;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -11,9 +14,9 @@ import lombok.*;
 public class RespondedApplicantDto {
     private Long id;
     @NotNull(message = "ID резюме обязательна")
-    private Long resumeId;
+    private ResumeDto resumeId;
     @NotNull(message = "ID вакансии обязательна")
-    private Long vacancyId;
+    private VacancyDto vacancyId;
     @NotNull(message = "Статус подтверждения должен быть указан")
     private Boolean confirmation;
 }

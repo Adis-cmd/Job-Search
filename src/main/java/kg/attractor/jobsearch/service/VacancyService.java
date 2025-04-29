@@ -8,9 +8,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface VacancyService {
     VacancyDto getVacancyById(String vacancyId);
+
+    Optional<Vacancy> findVacancyById(Long vacancyId);
 
     void editVacancies(VacancyDto vacanciesDto, String vacancyId, String email);
 
@@ -30,4 +33,6 @@ public interface VacancyService {
     List<VacancyDto> getAllVacanciesIsActive();
 
     Page<VacancyDto> getVacancyByCreatorId(String creatorId, Pageable pageable);
+
+    Vacancy converToVacancy(VacancyDto vacancyDto);
 }

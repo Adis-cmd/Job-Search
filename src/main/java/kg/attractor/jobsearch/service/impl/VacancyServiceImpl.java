@@ -13,6 +13,7 @@ import kg.attractor.jobsearch.service.CategoryService;
 import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,14 +23,16 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class VacancyServiceImpl extends MethodClass implements VacancyService{
+public class VacancyServiceImpl extends MethodClass implements VacancyService {
 
     private final VacancyRepository vacancyRepository;
     private final UserServiceImpl userService;
+    private final ModelMapper modelMapper = new ModelMapper();
     @Lazy
     private final CategoryService categoryService;
 
@@ -41,6 +44,13 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService{
         log.info("Вакансия с ID: {} найдена", vacancyId);
         return vacancyDtos(vacancy);
     }
+
+    @Override
+    public Optional<Vacancy> findVacancyById(Long vacancyId) {
+        Vacancy vacancy = getEntityOrThrow(vacancyRepository.findVacancyById(vacancyId), new VacancyNotFoundException());
+        return Optional.of(vacancy);
+    }
+
 
     @Override
     public void editVacancies(VacancyDto dto, String vacancyId, String email) {
@@ -261,5 +271,9 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService{
                 .build();
     }
 
+    @Override
+    public Vacancy converToVacancy(VacancyDto vacancyDto) {
+        return modelMapper.map(vacancyDto, Vacancy.class);
+    }
 
 }
