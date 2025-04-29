@@ -1,6 +1,5 @@
 package kg.attractor.jobsearch.service.impl;
 
-import kg.attractor.jobsearch.dao.WorkExperienceInfoDao;
 import kg.attractor.jobsearch.dto.ResumeDto;
 import kg.attractor.jobsearch.dto.WorkExperienceInfoDto;
 import kg.attractor.jobsearch.exception.NoSuchElementException.WorkExperienceInfoException;
@@ -9,6 +8,8 @@ import kg.attractor.jobsearch.model.WorkExperienceInfo;
 import kg.attractor.jobsearch.repos.WorkExperienceInfoRepository;
 import kg.attractor.jobsearch.service.WorkExperienceInfoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -81,5 +82,12 @@ public class WorkExperienceInfoServiceIml extends MethodClass implements WorkExp
 
             workExperienceInfoRepository.saveAndFlush(work);
         });
+    }
+
+
+    @Override
+    public Page<WorkExperienceInfoDto> getWorkExperienceInfoByResumeId(Long resumeId, Pageable pageable) {
+        Page<WorkExperienceInfo> workExperienceInfo = workExperienceInfoRepository.getWorkExperienceInfoByResumeId(resumeId, pageable);
+        return workExperienceInfo.map(this::workDto);
     }
 }
