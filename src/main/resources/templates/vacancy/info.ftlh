@@ -68,6 +68,13 @@
     <section class="container py-5">
         <h2 class="mb-4 text-center text-warning fw-bold">${vacancyDto.name}</h2>
 
+        <!-- Блок для отображения ошибок -->
+        <#if error??>
+            <div class="alert alert-danger" role="alert">
+                ${error}
+            </div>
+        </#if>
+
         <div class="card glass-card p-4 shadow-lg">
             <div class="row">
                 <div class="col-md-6 mb-3">
@@ -99,8 +106,8 @@
         </div>
 
         <div class="mt-4 d-flex justify-content-center">
-            <a href="/vacancy/respond/${vacancyDto.id}" class="btn btn-outline-primary">
-                <i class="bi bi-send-fill me-2"></i>Откликнуться
+            <a href="/responded/${vacancyDto.id}" class="btn btn-outline-primary">
+                <i class="bi bi-send-fill me-2"></i> Откликнуться
             </a>
         </div>
     </section>

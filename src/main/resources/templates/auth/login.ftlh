@@ -77,7 +77,7 @@
                 </div>
 
                 <div class="d-flex justify-content-end mb-3">
-                    <a href="/auth/forgot-password" class="small text-muted">Забыли пароль?</a>
+                    <a href="/auth/forgot_password" class="small text-muted">Забыли пароль?</a>
                 </div>
 
                 <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">

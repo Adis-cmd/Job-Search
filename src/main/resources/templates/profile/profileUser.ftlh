@@ -1,203 +1,224 @@
 <#import "../layout.ftlh" as main>
 <#import "../page.ftlh" as p>
-<@main.layout>
-    <style>
-        body {
-            color: #f8f9fa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
 
-        .profile-container {
-            max-width: 1000px;
-            margin: 3rem auto;
-            padding: 2rem;
-            background: rgba(33, 37, 41, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 0 20px rgba(245, 197, 24, 0.15);
-        }
+<#if SPRING_SECURITY_CONTEXT?? && SPRING_SECURITY_CONTEXT.authentication??>
+    <#assign user = SPRING_SECURITY_CONTEXT.authentication.principal>
+    <#if user??>
+        <#assign roles = user.authorities?map(it -> it.authority)>
+        <#assign userName = user.getUsername()>
 
-        .profile-card {
-            display: flex;
-            align-items: center;
-            margin-bottom: 2rem;
-            gap: 2rem;
-            background-color: #1f1f1f;
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: 0 0 20px rgba(245, 197, 24, 0.15);
-        }
+        <@main.layout>
+            <style>
+                body {
+                    color: #f8f9fa;
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                }
 
-        .profile-avatar img {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid #f5c518;
-            box-shadow: 0 0 10px #f5c51844;
-        }
+                .profile-container {
+                    max-width: 1000px;
+                    margin: 3rem auto;
+                    padding: 2rem;
+                    background: rgba(33, 37, 41, 0.95);
+                    border-radius: 20px;
+                    box-shadow: 0 0 20px rgba(245, 197, 24, 0.15);
+                }
 
-        .profile-details h1 {
-            font-size: 2rem;
-            color: #f5c518;
-            margin-bottom: 0.5rem;
-        }
+                .profile-card {
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 2rem;
+                    gap: 2rem;
+                    background-color: #1f1f1f;
+                    border-radius: 20px;
+                    padding: 2rem;
+                    box-shadow: 0 0 20px rgba(245, 197, 24, 0.15);
+                }
 
-        .muted-text {
-            color: #ced4da;
-            margin-bottom: 1rem;
-        }
+                .profile-avatar img {
+                    width: 120px;
+                    height: 120px;
+                    border-radius: 50%;
+                    object-fit: cover;
+                    border: 3px solid #f5c518;
+                    box-shadow: 0 0 10px #f5c51844;
+                }
 
-        .btn {
-            padding: 0.5rem 1rem;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: 0.3s;
-            display: inline-block;
-            margin-top: 0.5rem;
-        }
+                .profile-details h1 {
+                    font-size: 2rem;
+                    color: #f5c518;
+                    margin-bottom: 0.5rem;
+                }
 
-        .btn.primary {
-            background-color: #f5c518;
-            color: #212529;
-            box-shadow: 0 0 10px #f5c51866;
-        }
+                .muted-text {
+                    color: #ced4da;
+                    margin-bottom: 1rem;
+                }
 
-        .btn.outline {
-            border: 2px solid #f5c518;
-            background-color: transparent;
-            color: #f5c518;
-        }
+                .btn {
+                    padding: 0.5rem 1rem;
+                    border-radius: 12px;
+                    text-decoration: none;
+                    font-weight: 600;
+                    transition: 0.3s;
+                    display: inline-block;
+                    margin-top: 0.5rem;
+                }
 
-        .btn.outline:hover,
-        .btn.primary:hover {
-            box-shadow: 0 0 12px #f5c51899;
-            transform: translateY(-2px);
-        }
+                .btn.primary {
+                    background-color: #f5c518;
+                    color: #212529;
+                    box-shadow: 0 0 10px #f5c51866;
+                }
 
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 3rem;
-            margin-bottom: 1.5rem;
-        }
+                .btn.outline {
+                    border: 2px solid #f5c518;
+                    background-color: transparent;
+                    color: #f5c518;
+                }
 
-        .section-header h2 {
-            color: #f5c518;
-            font-size: 1.5rem;
-        }
+                .btn.outline:hover,
+                .btn.primary:hover {
+                    box-shadow: 0 0 12px #f5c51899;
+                    transform: translateY(-2px);
+                }
 
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-        }
+                .section-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-top: 3rem;
+                    margin-bottom: 1.5rem;
+                }
 
-        .info-card {
-            background-color: #1f1f1f;
-            border: 1px solid rgba(245, 197, 24, 0.2);
-            border-radius: 12px;
-            padding: 1.2rem;
-            transition: 0.3s;
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
-        }
+                .section-header h2 {
+                    color: #f5c518;
+                    font-size: 1.5rem;
+                }
 
-        .info-card h3 {
-            color: #f5c518;
-            margin-bottom: 0.5rem;
-        }
+                .card-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                    gap: 1.5rem;
+                }
 
-        .info-card p {
-            color: #ced4da;
-            margin: 0.3rem 0;
-        }
+                .info-card {
+                    background-color: #1f1f1f;
+                    border: 1px solid rgba(245, 197, 24, 0.2);
+                    border-radius: 12px;
+                    padding: 1.2rem;
+                    transition: 0.3s;
+                    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+                }
 
-        .info-card .actions {
-            margin-top: 1rem;
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
+                .info-card h3 {
+                    color: #f5c518;
+                    margin-bottom: 0.5rem;
+                }
 
-        .btn.small {
-            font-size: 0.85rem;
-            padding: 0.4rem 0.8rem;
-        }
+                .info-card p {
+                    color: #ced4da;
+                    margin: 0.3rem 0;
+                }
 
-        @media (max-width: 768px) {
-            .profile-card {
-                flex-direction: column;
-                align-items: flex-start;
-            }
+                .info-card .actions {
+                    margin-top: 1rem;
+                    display: flex;
+                    gap: 0.5rem;
+                    flex-wrap: wrap;
+                }
 
-            .section-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
+                .btn.small {
+                    font-size: 0.85rem;
+                    padding: 0.4rem 0.8rem;
+                }
 
-            .profile-avatar img {
-                width: 100px;
-                height: 100px;
-            }
-        }
-    </style>
+                @media (max-width: 768px) {
+                    .profile-card {
+                        flex-direction: column;
+                        align-items: flex-start;
+                    }
 
-    <div class="profile-container">
-        <div class="profile-card">
-            <div class="profile-avatar">
-                <img src="users/photos/${page.avatar}" alt="Профильное фото">
-            </div>
-            <div class="profile-details">
-                <h1>${page.name} <#if page.surname??>${page.surname}</#if></h1>
-                <#if page.age??>
-                    <p class="muted-text">${page.age} года</p>
-                </#if>
-                <a href="/profile/edit" class="btn outline">Редактировать</a>
-            </div>
-        </div>
+                    .section-header {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 1rem;
+                    }
 
-        <div class="profile-sections">
-            <#if page.surname??>
-                <div class="section-header">
-                    <h2>Мои резюме</h2>
-                    <a href="/resume/add" class="btn primary">Создать резюме</a>
-                </div>
-                <div class="card-grid">
-                    <#list resumePage.content as resume>
-                        <div class="info-card">
-                            <h3>${resume.name}</h3>
-                            <p>Создано: ${resume.formattedCreatedDate}</p>
-                            <p>Обновлено: ${resume.formattedUpdatedTime}</p>
-                            <div class="actions">
-                                <a href="/resume/update/${resume.id}" class="btn small primary">Обновить</a>
-                                <a href="/resume/edit/${resume.id}" class="btn small outline">Редактировать</a>
+                    .profile-avatar img {
+                        width: 100px;
+                        height: 100px;
+                    }
+                }
+            </style>
+
+            <div class="profile-container">
+                <div class="profile-card">
+                    <div class="profile-avatar">
+                        <img src="users/photos/${page.avatar}" alt="Профильное фото">
+                    </div>
+                    <div class="profile-details">
+                        <h1>${page.name} <#if page.surname??>${page.surname}</#if></h1>
+                        <#if page.age??>
+                            <p class="muted-text">${page.age} года</p>
+                        </#if>
+                        <a href="/profile/edit" class="btn outline">Редактировать</a>
+                        <#if roles?seq_contains("APPLICANT")>
+                            <div style="margin-top: 0.5rem;">
+                                <a href="/responded/info" class="btn outline">Мои отклики</a>
                             </div>
+                        </#if>
+                    </div>
+                </div>
+
+                <div class="profile-sections">
+
+                    <#if roles?seq_contains("APPLICANT")>
+                        <div class="section-header">
+                            <h2>Мои резюме</h2>
+                            <a href="/resume/add" class="btn primary">Создать резюме</a>
                         </div>
-                    </#list>
-                </div>
-                <@p.pager url=url currentPage=resumePage />
-            <#else>
-                <div class="section-header">
-                    <h2>Мои вакансии</h2>
-                    <a href="/vacancy/add" class="btn primary">Создать вакансию</a>
-                </div>
-                <div class="card-grid">
-                    <#list vacancyPage.content as vacancy>
-                        <div class="info-card">
-                            <h3>${vacancy.name}</h3>
-                            <p>Создано: ${vacancy.formattedCreatedDate}</p>
-                            <p>Обновлено: ${vacancy.formattedUpdatedTime}</p>
-                            <div class="actions">
-                                <a href="/vacancy/update/${vacancy.id}" class="btn small primary">Обновить</a>
-                                <a href="/vacancy/edit/${vacancy.id}" class="btn small outline">Редактировать</a>
-                            </div>
+                        <div class="card-grid">
+                            <#list resumePage.content as resume>
+                                <div class="info-card">
+                                    <h3>${resume.name}</h3>
+                                    <p>Создано: ${resume.formattedCreatedDate}</p>
+                                    <p>Обновлено: ${resume.formattedUpdatedTime}</p>
+                                    <div class="actions">
+                                        <a href="/resume/update/${resume.id}" class="btn small primary">Обновить</a>
+                                        <a href="/resume/edit/${resume.id}" class="btn small outline">Редактировать</a>
+                                    </div>
+                                </div>
+                            </#list>
                         </div>
-                    </#list>
+                        <@p.pager url=url currentPage=resumePage />
+                    </#if>
+
+                    <#if roles?seq_contains("EMPLOYEE")>
+                        <div class="section-header">
+                            <h2>Мои вакансии</h2>
+                            <a href="/vacancy/add" class="btn primary">Создать вакансию</a>
+                        </div>
+                        <div class="card-grid">
+                            <#list vacancyPage.content as vacancy>
+                                <div class="info-card">
+                                    <h3>${vacancy.name}</h3>
+                                    <p>Создано: ${vacancy.formattedCreatedDate}</p>
+                                    <p>Обновлено: ${vacancy.formattedUpdatedTime}</p>
+                                    <div class="actions">
+                                        <a href="/vacancy/update/${vacancy.id}" class="btn small primary">Обновить</a>
+                                        <a href="/vacancy/edit/${vacancy.id}"
+                                           class="btn small outline">Редактировать</a>
+                                    </div>
+                                </div>
+                            </#list>
+                        </div>
+                        <@p.pager url=url currentPage=vacancyPage />
+                    </#if>
+
                 </div>
-                <@p.pager url=url currentPage=vacancyPage />
-            </#if>
-        </div>
-    </div>
-</@main.layout>
+            </div>
+
+        </@main.layout>
+    </#if>
+</#if>
+
