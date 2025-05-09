@@ -1,5 +1,5 @@
 <#import "layout.ftlh" as main>
-<@main.layout>
+<@main.layout ; sping>
     <style>
         body {
             background-color: #212529;
@@ -77,7 +77,7 @@
         }
     </style>
     <section class="container py-5">
-        <h2 class="mb-4 text-center fw-bold" style="color: #f5c518;">Почему выбирают нас</h2>
+        <h2 class="mb-4 text-center fw-bold" style="color: #f5c518;"><@sping.message "index.h2.header" /></h2>
 
         <div id="featureCarousel" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
@@ -87,9 +87,8 @@
                         <img src="https://images.unsplash.com/photo-1510511459019-5dda7724fd87?auto=format&fit=crop&w=800&q=80"
                              class="card-img-top" alt="Security">
                         <div class="card-body">
-                            <h5 class="card-title text-warning">Безопасность на первом месте</h5>
-                            <p class="card-text">Мы защищаем данные пользователей, используя современные технологии
-                                безопасности и шифрования.</p>
+                            <h5 class="card-title text-warning"><@sping.message "index.carousel.title" /></h5>
+                            <p class="card-text"><@sping.message "index.carousel.text" /></p>
                         </div>
                     </div>
                 </div>
@@ -99,9 +98,8 @@
                         <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=80"
                              class="card-img-top" alt="AI Matching">
                         <div class="card-body">
-                            <h5 class="card-title text-warning">Умный подбор вакансий</h5>
-                            <p class="card-text">Искусственный интеллект анализирует резюме и предлагает наиболее
-                                подходящие вакансии для каждого кандидата.</p>
+                            <h5 class="card-title text-warning"><@sping.message "index.carousel.title.vacancy" /></h5>
+                            <p class="card-text"><@sping.message "index.carousel.text.vacancy" /></p>
                         </div>
                     </div>
                 </div>
@@ -111,9 +109,8 @@
                         <img src="https://images.unsplash.com/photo-1593642532400-2682810df593?auto=format&fit=crop&w=800&q=80"
                              class="card-img-top" alt="Mobile Friendly">
                         <div class="card-body">
-                            <h5 class="card-title text-warning">Мобильность и удобство</h5>
-                            <p class="card-text">Наш сайт адаптирован под все устройства — ищи работу в любом месте и в
-                                любое время.</p>
+                            <h5 class="card-title text-warning"><@sping.message "index.carousel.body.title" /></h5>
+                            <p class="card-text"><@sping.message "index.carousel.body.text" /></p>
                         </div>
                     </div>
                 </div>
@@ -137,8 +134,8 @@
                     <img src="https://images.pexels.com/photos/3184303/pexels-photo-3184303.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
                          class="card-img-top" alt="Companies">
                     <div class="card-body">
-                        <h5 class="card-title text-warning">500+ компаний</h5>
-                        <p class="card-text">Работают с нами ежедневно, публикуя лучшие вакансии по всей стране.</p>
+                        <h5 class="card-title text-warning"><@sping.message "index.card.title.companies" /></h5>
+                        <p class="card-text"><@sping.message "index.card.text.companies" /></p>
                     </div>
                 </div>
             </div>
@@ -147,18 +144,19 @@
                     <img src="https://images.pexels.com/photos/3184307/pexels-photo-3184307.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
                          class="card-img-top" alt="Applicants">
                     <div class="card-body">
-                        <h5 class="card-title text-warning">10 000+ соискателей</h5>
-                        <p class="card-text">Нашли работу с нашей помощью. Ищем индивидуальный подход для каждого.</p>
+                        <h5 class="card-title text-warning"><@sping.message "index.cart.title.applicants" /></h5>
+                        <p class="card-text"><@sping.message "index.cart.text.applicants" /></p>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="card p-4 h-100">
-                    <img src="https://images.pexels.com/photos/3184311/pexels-photo-3184311.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" class="card-img-top"
+                    <img src="https://images.pexels.com/photos/3184311/pexels-photo-3184311.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
+                         class="card-img-top"
                          alt="Vacancies">
                     <div class="card-body">
-                        <h5 class="card-title text-warning">100+ новых вакансий</h5>
-                        <p class="card-text">Каждый день добавляются свежие предложения от топовых работодателей.</p>
+                        <h5 class="card-title text-warning"><@sping.message "index.cart.title.vacancies" /></h5>
+                        <p class="card-text"><@sping.message "index.cart.text.vacancies" /></p>
                     </div>
                 </div>
             </div>
@@ -167,8 +165,8 @@
 
     <footer>
         <div class="container">
-            <p>© ${.now?string["yyyy"]} JobSearch — Все права защищены.</p>
-            <p>Мы в соцсетях:
+            <p>© ${.now?string["yyyy"]} <@sping.message "index.footer.rights" /> </p>
+            <p><@sping.message "index.footer.social" />>:
                 <a href="#" style="color:#f5c518;">VK</a> |
                 <a href="#" style="color:#f5c518;">Instagram</a> |
                 <a href="#" style="color:#f5c518;">Telegram</a>

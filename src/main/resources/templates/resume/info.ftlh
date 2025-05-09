@@ -1,6 +1,6 @@
 <#import "../layout.ftlh" as main>
 <#import "../page.ftlh" as p>
-<@main.layout>
+<@main.layout ; spring>
     <style>
         body {
             color: #f8f9fa;
@@ -82,17 +82,18 @@
         <div class="card glass-card p-4 shadow-lg">
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <p><i class="bi bi-person-fill me-2 text-warning"></i><strong>Имя кандидата:</strong> ${applicant.name}</p>
-                    <p><i class="bi bi-currency-dollar me-2 text-success"></i><strong>Желаемая зарплата:</strong> ${resumeDto.salary}</p>
-                    <p><i class="bi bi-folder-fill me-2 text-warning"></i><strong>Категория резюме:</strong> ${category.name}</p>
+                    <p><i class="bi bi-person-fill me-2 text-warning"></i><strong><@spring.message "resume.info.applicantName"/>:</strong> ${applicant.name}</p>
+                    <p><i class="bi bi-currency-dollar me-2 text-success"></i><strong><@spring.message "resume.info.salary"/>:</strong> ${resumeDto.salary}</p>
+                    <p><i class="bi bi-folder-fill me-2 text-warning"></i><strong><@spring.message "resume.info.category"/>:</strong> ${category.name}</p>
                 </div>
 
                 <div class="col-md-6 mb-3">
-                    <p><i class="bi bi-calendar-plus me-2 text-info"></i><strong>Дата создания:</strong> ${resumeDto.formattedCreatedDate}</p>
-                    <p><i class="bi bi-clock-history me-2 text-info"></i><strong>Последнее обновление:</strong> ${resumeDto.formattedUpdatedTime}</p>
-                    <p><i class="bi bi-circle-fill me-2 text-warning"></i><strong>Статус:</strong>
+                    <p><i class="bi bi-calendar-plus me-2 text-info"></i><strong><@spring.message "resume.info.created"/>:</strong> ${resumeDto.formattedCreatedDate}</p>
+                    <p><i class="bi bi-clock-history me-2 text-info"></i><strong><@spring.message "resume.info.updated"/>:</strong> ${resumeDto.formattedUpdatedTime}</p>
+                    <p><i class="bi bi-circle-fill me-2 text-warning"></i><strong><@spring.message "resume.info.status"/>:</strong>
                         <span class="badge ${resumeDto.isActive?then('bg-success', 'bg-secondary')}">
-                            ${resumeDto.isActive?then('Активно', 'Не активно')}
+                            ${resumeDto.isActive?then(springMacroRequestContext.getMessage("vacancy.info.active"),
+                            springMacroRequestContext.getMessage("vacancy.info.noActive"))}
                         </span>
                     </p>
                 </div>
@@ -101,17 +102,17 @@
             <hr class="my-4 border-warning">
 
             <div>
-                <h4 class="text-warning"><i class="bi bi-info-circle me-2"></i>Опыт работы</h4>
+                <h4 class="text-warning"><i class="bi bi-info-circle me-2"></i><@spring.message "resume.info.workExperience"/></h4>
                 <#if workExperiences?? && (workExperiences?size > 0)>
                     <#list workExperiences.content as work>
-                        <p class="work-item"><strong>Компания:</strong> ${work.companyName}</p>
-                        <p><strong>Должность:</strong> ${work.position}</p>
-                        <p><strong>Обязанности:</strong> ${work.responsibilities}</p>
-                        <p><strong>Работал:</strong> ${work.years}
+                        <p class="work-item"><strong><@spring.message "resume.info.workCompany"/>:</strong> ${work.companyName}</p>
+                        <p><strong><@spring.message "resume.info.workPosition"/>:</strong> ${work.position}</p>
+                        <p><strong><@spring.message "resume.info.workResponsibilities"/>:</strong> ${work.responsibilities}</p>
+                        <p><strong><@spring.message "resume.info.workYears"/>:</strong> ${work.years}
                             <#if work.years == 1>
-                                год
+                                <@spring.message "resume.info.year"/>
                             <#else>
-                                года
+                                <@spring.message "resume.info.years"/>
                             </#if>
                         </p>
                         <hr class="border-secondary">
@@ -119,7 +120,7 @@
 
 
                 <#else>
-                    <p>Нет данных об опыте работы.</p>
+                    <p><@spring.message "resume.info.workNotFound"/>.</p>
                 </#if>
                 <@p.pager url=url currentPage=workExperiences />
             </div>
@@ -127,17 +128,17 @@
             <hr class="my-4 border-warning">
 
             <div>
-                <h4 class="text-warning"><i class="bi bi-mortarboard-fill me-2"></i>Образование</h4>
+                <h4 class="text-warning"><i class="bi bi-mortarboard-fill me-2"></i><@spring.message "resume.info.education"/></h4>
                 <#if educationInfos?? && (educationInfos?size > 0)>
                     <#list educationInfos.content as edu>
-                        <p class="education-item"><strong>Учебное заведение:</strong> ${edu.institution}</p>
-                        <p><strong>Программа обучения:</strong> ${edu.program}</p>
-                        <p><strong>Степень:</strong> ${edu.degree}</p>
-                        <p><strong>Период обучения:</strong> ${edu.startDate} — ${edu.endDate}</p>
+                        <p class="education-item"><strong><@spring.message "resume.info.educationInstitution"/>:</strong> ${edu.institution}</p>
+                        <p><strong><@spring.message "resume.info.educationProgram"/>:</strong> ${edu.program}</p>
+                        <p><strong><@spring.message "resume.info.educationDegree"/>:</strong> ${edu.degree}</p>
+                        <p><strong><@spring.message "resume.info.educationDate"/>:</strong> ${edu.startDate} — ${edu.endDate}</p>
                         <hr class="border-secondary">
                     </#list>
                 <#else>
-                    <p>Нет данных об образовании.</p>
+                    <p><@spring.message "resume.info.educationNotFound"/>.</p>
                 </#if>
                 <@p.pager url=url currentPage=educationInfos />
             </div>
@@ -145,7 +146,7 @@
 
         <div class="mt-4 d-flex justify-content-center gap-3">
             <a href="/chat/start/${resumeDto.applicantId}" class="btn btn-outline-primary">
-                <i class="bi bi-chat-dots-fill me-2"></i> Начать чат
+                <i class="bi bi-chat-dots-fill me-2"></i> <@spring.message "resume.info.startChat"/>
             </a>
         </div>
     </section>

@@ -1,6 +1,6 @@
 <#import "../layout.ftlh" as main>
 <#import "../page.ftlh" as p>
-<@main.layout>
+<@main.layout ; spring>
     <style>
         .responded-container {
             max-width: 1000px;
@@ -63,21 +63,20 @@
             <#list page.content as respondedApplicant>
                 <div class="responded-card">
                     <div class="responded-vacancy">
-                        <h3>Вакансия: ${respondedApplicant.vacancyId.name}</h3>
-                        <p class="muted-text">Резюме: ${respondedApplicant.resumeId.name}</p>
-                        <p class="muted-text">Статус:
+                        <h3>   <@spring.message "responded.info.vacancy"/>: ${respondedApplicant.vacancyId.name}</h3>
+                        <p class="muted-text">   <@spring.message "responded.info.resume"/>: ${respondedApplicant.resumeId.name}</p>
+                        <p class="muted-text">   <@spring.message "responded.info.status"/>:
                             <#if respondedApplicant.confirmation>
-                                Подтвержден
+                                <@spring.message "responded.info.confirmed"/>
                             <#else>
-                                Не подтвержден
-                            </#if>
+                                <@spring.message "responded.info.noConfirmed"/>                            </#if>
                         </p>
-                        <a href="/vacancy/info/${respondedApplicant.vacancyId.id}" class="btn outline">Перейти к вакансии</a>
+                        <a href="/vacancy/info/${respondedApplicant.vacancyId.id}" class="btn outline"><@spring.message "responded.info.button"/></a>
                     </div>
                 </div>
             </#list>
         <#else>
-            <p>У вас нет откликов.</p>
+            <p><@spring.message "responded.info.noResponded" />.</p>
         </#if>
     </div>
     <@p.pager url=url currentPage=page />

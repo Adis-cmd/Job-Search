@@ -1,6 +1,6 @@
 <#import "../layout.ftlh" as main>
 <#import "../page.ftlh" as p>
-<@main.layout>
+<@main.layout ; spring>
     <style>
         body {
             color: #f8f9fa;
@@ -80,22 +80,22 @@
             <div class="company-info">
                 <h1>${user.name}</h1>
                 <#if user.email??>
-                    <p class="muted-text">Email: ${user.email}</p>
+                    <p class="muted-text"><@spring.message "company.info.email"/>: ${user.email}</p>
                 </#if>
                 <#if user.phone??>
-                    <p class="muted-text">Телефон: ${user.phoneNumber}</p>
+                    <p class="muted-text"><@spring.message "company.info.phone"/>: ${user.phoneNumber}</p>
                 </#if>
             </div>
         </div>
 
         <div>
-            <div class="section-header">Вакансии компании</div>
+            <div class="section-header"><@spring.message "company.info.vacancy"/></div>
             <div class="vacancy-grid">
                 <#list vacancyDtos.content as vacancy>
                     <div class="vacancy-card">
                         <h3>${vacancy.name}</h3>
-                        <p>Создано: ${vacancy.formattedCreatedDate}</p>
-                        <p>Обновлено: ${vacancy.formattedUpdatedTime}</p>
+                        <p><@spring.message "company.info.vacancyCreated"/>: ${vacancy.formattedCreatedDate}</p>
+                        <p><@spring.message "company.info.vacancyUpdated"/>: ${vacancy.formattedUpdatedTime}</p>
                         <p>${vacancy.description?truncate(120, "...")}</p>
                     </div>
                 </#list>

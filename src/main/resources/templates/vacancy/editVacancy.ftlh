@@ -89,7 +89,7 @@
         }
     </style>
 
-    <h1>Редактирование вакансии:</h1>
+    <h1><@spring.message "vacancy.edit.title"/>:</h1>
 
     <#if vacancyDto??>
         <div class="card">
@@ -101,7 +101,7 @@
                 <input type="hidden" name="id" value="${vacancyDto.id!''}">
 
                 <div class="form-group">
-                    <label for="name">Название вакансии:</label>
+                    <label for="name"><@spring.message "vacancy.edit.name"/>:</label>
                     <@spring.formInput "vacancyDto.name" 'id="name" placeholder="Введите название" class="form-control"' />
                     <div class="error-block">
                         <@spring.showErrors "<br>" "custom-error" />
@@ -109,7 +109,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="description">Описание вакансии:</label>
+                    <label for="description"><@spring.message "vacancy.edit.description"/>:</label>
                     <@spring.formTextarea "vacancyDto.description" 'id="description" rows="5" class="form-control"' />
                     <div class="error-block">
                         <@spring.showErrors "<br>" "custom-error" />
@@ -117,9 +117,9 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="categoryId">Категория:</label>
+                    <label for="categoryId"><@spring.message "vacancy.edit.category"/>:</label>
                     <select id="categoryId" name="categoryId" class="form-control">
-                        <option value="" selected disabled>Выберите категорию</option>
+                        <option value="" selected disabled><@spring.message "vacancy.edit.selected"/></option>
                         <#list category as cat>
                             <option value="${cat.id}"
                                     <#if (vacancyDto.categoryId?? && vacancyDto.categoryId == cat.id)>selected</#if>>${cat.name}</option>
@@ -131,7 +131,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="salary">Заработная плата:</label>
+                    <label for="salary"><@spring.message "vacancy.edit.salary"/>:</label>
                     <@spring.formInput "vacancyDto.salary" 'id="salary" placeholder="Введите оклад" class="form-control"' />
                     <div class="error-block">
                         <@spring.showErrors "vacancyDto.salary" "custom-error" />
@@ -139,11 +139,11 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Требуемый опыт:</label>
+                    <label><@spring.message "vacancy.edit.exp"/>:</label>
                     <div class="experience-input">
-                        <label for="expFrom">От</label>
+                        <label for="expFrom"><@spring.message "vacancy.edit.expFrom"/></label>
                         <@spring.formInput "vacancyDto.expFrom" 'id="expFrom" type="number" min="0" step="1" class="form-control-sm" style="width:60px;"' />
-                        <label for="expTo">До</label>
+                        <label for="expTo"><@spring.message "vacancy.edit.expTo"/></label>
                         <@spring.formInput "vacancyDto.expTo" 'id="expTo" type="number" min="0" step="1" class="form-control-sm" style="width:60px;"' />
                     </div>
                     <div class="error-block">
@@ -153,15 +153,15 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Статус вакансии:</label>
+                    <label><@spring.message "vacancy.edit.status"/>:</label>
                     <div>
                         <label>
                             <input type="radio" name="isActive" value="true"
-                                   <#if vacancyDto.isActive?? && vacancyDto.isActive == true>checked</#if>> Активно
+                                   <#if vacancyDto.isActive?? && vacancyDto.isActive == true>checked</#if>> <@spring.message "vacancy.edit.statusActive"/>
                         </label>
                         <label>
                             <input type="radio" name="isActive" value="false"
-                                   <#if vacancyDto.isActive?? && vacancyDto.isActive == false>checked</#if>> Не активно
+                                   <#if vacancyDto.isActive?? && vacancyDto.isActive == false>checked</#if>> <@spring.message "vacancy.edit.statusDisable"/>
                         </label>
                         <div class="error-block">
                             <@spring.showErrors "<br>" "custom-error" />
@@ -170,12 +170,12 @@
                 </div>
 
                 <div class="buttons">
-                    <button type="submit" class="btn">Сохранить изменение</button>
+                    <button type="submit" class="btn"><@spring.message "vacancy.edit.button"/></button>
                 </div>
             </form>
         </div>
     <#else>
-        <p>Вакансия не найдена.</p>
+        <p><@spring.message "vacancy.edit.notFound"/>.</p>
     </#if>
 
 </@main.layout>

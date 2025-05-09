@@ -65,7 +65,7 @@
 
     <section class="register-wrapper">
         <div class="register-card">
-            <h3 class="text-center text-light">Создать аккаунт</h3>
+            <h3 class="text-center text-light"><@spring.message "register.title" /></h3>
 
             <form method="post" action="/register">
                 <input type="hidden" name="userDto.accountType.id" value="${accountType!''}"/>
@@ -75,19 +75,19 @@
                 </#if>
 
                 <div class="mb-4">
-                    <label for="accountType" class="form-label">Тип аккаунта</label>
+                    <label for="accountType" class="form-label"><@spring.message "register.accountType" /></label>
                     <select id="accountType" name="accountType" required
                             onchange="location.href='/register?accountType='+this.value"
                             class="form-control form-control-lg">
-                        <option value="" disabled selected>-- выберите тип аккаунта --</option>
-                        <option value="1" <#if accountType == '1'>selected</#if>>Работодатель</option>
-                        <option value="2" <#if accountType == '2'>selected</#if>>Соискатель</option>
+                        <option value="" disabled selected>-- <@spring.message "register.accountType.type" /> --</option>
+                        <option value="1" <#if accountType == '1'>selected</#if>><@spring.message "register.accountType.employee" /></option>
+                        <option value="2" <#if accountType == '2'>selected</#if>><@spring.message "register.accountType.applicant" /></option>
                     </select>
                 </div>
 
                 <#if accountType == "1" || accountType == "2">
                     <div class="mb-4">
-                        <label for="firstName" class="form-label">Имя</label>
+                        <label for="firstName" class="form-label"><@spring.message "register.name" /></label>
                         <@spring.formInput "userDto.name" 'id="form3Example3cg" class="form-control form-control-lg"' />
                         <div class="error-block">
                             <@spring.showErrors "<br>" "custom-error" />
@@ -96,7 +96,7 @@
 
                     <#if accountType == "2">
                         <div class="mb-4">
-                            <label for="surname" class="form-label">Фамилия</label>
+                            <label for="surname" class="form-label"><@spring.message "register.surname" /></label>
                             <@spring.formInput "userDto.surname" 'id="form3Example3cg" class="form-control form-control-lg"' />
                             <div class="error-block">
                                 <@spring.showErrors "<br>" "custom-error" />
@@ -104,7 +104,7 @@
                         </div>
 
                         <div class="mb-4">
-                            <label for="age" class="form-label">Возраст</label>
+                            <label for="age" class="form-label"><@spring.message "register.age" /></label>
                             <@spring.formInput "userDto.age" 'id="form3Example3cg" class="form-control form-control-lg"' />
                             <div class="error-block">
                                 <@spring.showErrors "<br>" "custom-error" />
@@ -113,7 +113,7 @@
                     </#if>
 
                     <div class="mb-4">
-                        <label for="email" class="form-label">Email</label>
+                        <label for="email" class="form-label"><@spring.message "login.register.email" /></label>
                         <@spring.formInput "userDto.email" 'id="form3Example3cg" class="form-control form-control-lg"' />
                         <div class="error-block">
                             <@spring.showErrors "<br>" "custom-error" />
@@ -121,15 +121,15 @@
                     </div>
 
                     <div class="mb-4">
-                        <label for="password" class="form-label">Пароль</label>
-                        <@spring.formInput "userDto.password" 'id="form3Example3cg" class="form-control form-control-lg"' />
+                        <label for="password" class="form-label"><@spring.message "login.register.password" /></label>
+                        <@spring.formPasswordInput "userDto.password" 'id="form3Example3cg" class="form-control form-control-lg"' />
                         <div class="error-block">
                             <@spring.showErrors "<br>" "custom-error" />
                         </div>
                     </div>
 
                     <div class="mb-4">
-                        <label for="phone" class="form-label">Номер телефона</label>
+                        <label for="phone" class="form-label"><@spring.message "register.phoneNumber" /></label>
                         <@spring.formInput "userDto.phoneNumber" 'id="form3Example3cg" class="form-control form-control-lg"' />
                         <div class="error-block">
                             <@spring.showErrors "<br>" "custom-error" />
@@ -137,14 +137,14 @@
                     </div>
 
                     <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
-                        Зарегистрироваться
+                        <@spring.message "login.register" />
                     </button>
                 </#if>
             </form>
 
             <p class="text-center mt-3">
-                Уже есть аккаунт?
-                <a href="/auth/login" class="text-decoration-none fw-semibold">Войти</a>
+                <@spring.message "register.noaccount" />
+                <a href="/auth/login" class="text-decoration-none fw-semibold"><@spring.message "login.register.button" /></a>
             </p>
         </div>
     </section>

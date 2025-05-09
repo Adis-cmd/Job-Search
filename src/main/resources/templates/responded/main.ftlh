@@ -1,6 +1,6 @@
 <#import "../layout.ftlh" as main>
 <#import "../page.ftlh" as p>
-<@main.layout>
+<@main.layout ; spring>
     <style>
         body {
             color: #f8f9fa;
@@ -50,7 +50,7 @@
 
     <section class="container py-5">
 
-        <h2 class="mb-5 text-center fw-bold">Отклик на вакансию</h2>
+        <h2 class="mb-5 text-center fw-bold"><@spring.message "responded.main.title"/></h2>
 
         <div class="card glass-card w-100 border-0 shadow-sm mb-5">
             <div class="card-body p-4">
@@ -61,10 +61,10 @@
             </div>
         </div>
 
-        <h2 class="mb-4">Ваши резюме:</h2>
+        <h2 class="mb-4"><@spring.message "responded.main.resume"/>:</h2>
 
         <#if page?size == 0>
-            <p>У вас пока нет резюме для отклика.</p>
+            <p><@spring.message "responded.main.notFoundResume"/>.</p>
         <#else>
             <div class="d-flex flex-column gap-4">
                 <#list page.content as res>
@@ -74,9 +74,9 @@
                                 <h4 class="card-title mb-3">
                                     <i class="bi bi-person-fill me-2"></i>${res.name}
                                 </h4>
-                                <p><strong>Дата создания:</strong> ${res.formattedCreatedDate}</p>
-                                <p><strong>Категория:</strong> ${category.name}</p>
-                                <p><strong>Заработная плата:</strong> ${res.salary}</p>
+                                <p><strong><@spring.message "responded.main.createdDate"/>:</strong> ${res.formattedCreatedDate}</p>
+                                <p><strong><@spring.message "responded.main.category"/>:</strong> ${category.name}</p>
+                                <p><strong><@spring.message "responded.main.salary"/>:</strong> ${res.salary}</p>
                             </div>
                             <div class="align-self-md-center">
                                 <form method="post" action="/responded/send">
@@ -92,10 +92,10 @@
                                             </#if>
                                     >
                                         <#if !(respondedResumeIds?seq_contains(res.id))>
-                                            <i class="bi bi-send me-1"></i> Откликнуться этим резюме
+                                            <i class="bi bi-send me-1"></i> <@spring.message "responded.main.respond"/>
                                         <#else>
                                             <p class="text-success fw-semibold">
-                                                <i class="bi bi-check-circle-fill me-1"></i> Уже откликались
+                                                <i class="bi bi-check-circle-fill me-1"></i> <@spring.message "responded.main.respondTrue"/>
                                             </p>
                                         </#if>
                                     </button>

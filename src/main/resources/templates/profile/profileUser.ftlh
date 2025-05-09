@@ -7,7 +7,7 @@
         <#assign roles = user.authorities?map(it -> it.authority)>
         <#assign userName = user.getUsername()>
 
-        <@main.layout>
+        <@main.layout ; spring>
             <style>
                 body {
                     color: #f8f9fa;
@@ -154,17 +154,18 @@
             <div class="profile-container">
                 <div class="profile-card">
                     <div class="profile-avatar">
-                        <img src="users/photos/${page.avatar}" alt="Профильное фото">
+                        <img src="<#if page.avatar?starts_with('http')>${page.avatar}<#else>users/photos/${page.avatar}</#if>"
+                             alt="Профильное фото">
                     </div>
                     <div class="profile-details">
                         <h1>${page.name} <#if page.surname??>${page.surname}</#if></h1>
                         <#if page.age??>
-                            <p class="muted-text">${page.age} года</p>
+                            <p class="muted-text">${page.age} <@spring.message "profile.age" /></p>
                         </#if>
-                        <a href="/profile/edit" class="btn outline">Редактировать</a>
+                        <a href="/profile/edit" class="btn outline"><@spring.message "profile.edit"/></a>
                         <#if roles?seq_contains("APPLICANT")>
                             <div style="margin-top: 0.5rem;">
-                                <a href="/responded/info" class="btn outline">Мои отклики</a>
+                                <a href="/responded/info" class="btn outline"><@spring.message "profile.responded"/></a>
                             </div>
                         </#if>
                     </div>
@@ -174,18 +175,18 @@
 
                     <#if roles?seq_contains("APPLICANT")>
                         <div class="section-header">
-                            <h2>Мои резюме</h2>
-                            <a href="/resume/add" class="btn primary">Создать резюме</a>
+                            <h2><@spring.message "profile.resume"/></h2>
+                            <a href="/resume/add" class="btn primary"><@spring.message "profile.created.resume"/></a>
                         </div>
                         <div class="card-grid">
                             <#list resumePage.content as resume>
                                 <div class="info-card">
                                     <h3>${resume.name}</h3>
-                                    <p>Создано: ${resume.formattedCreatedDate}</p>
-                                    <p>Обновлено: ${resume.formattedUpdatedTime}</p>
+                                    <p><@spring.message "profile.created.resume.vacancy.date"/> ${resume.formattedCreatedDate}</p>
+                                    <p><@spring.message "profile.updated.resume.vacancy.date"/> ${resume.formattedUpdatedTime}</p>
                                     <div class="actions">
-                                        <a href="/resume/update/${resume.id}" class="btn small primary">Обновить</a>
-                                        <a href="/resume/edit/${resume.id}" class="btn small outline">Редактировать</a>
+                                        <a href="/resume/update/${resume.id}" class="btn small primary"><@spring.message "profile.updated.resume"/></a>
+                                        <a href="/resume/edit/${resume.id}" class="btn small outline"><@spring.message "profile.edit"/></a>
                                     </div>
                                 </div>
                             </#list>
@@ -195,19 +196,19 @@
 
                     <#if roles?seq_contains("EMPLOYEE")>
                         <div class="section-header">
-                            <h2>Мои вакансии</h2>
-                            <a href="/vacancy/add" class="btn primary">Создать вакансию</a>
+                            <h2><@spring.message "profile.vacancy"/></h2>
+                            <a href="/vacancy/add" class="btn primary"><@spring.message "profile.created.vacancy"/></a>
                         </div>
                         <div class="card-grid">
                             <#list vacancyPage.content as vacancy>
                                 <div class="info-card">
                                     <h3>${vacancy.name}</h3>
-                                    <p>Создано: ${vacancy.formattedCreatedDate}</p>
-                                    <p>Обновлено: ${vacancy.formattedUpdatedTime}</p>
+                                    <p><@spring.message "profile.created.resume.vacancy.date"/>: ${vacancy.formattedCreatedDate}</p>
+                                    <p><@spring.message "profile.updated.resume.vacancy.date"/>: ${vacancy.formattedUpdatedTime}</p>
                                     <div class="actions">
                                         <a href="/vacancy/update/${vacancy.id}" class="btn small primary">Обновить</a>
                                         <a href="/vacancy/edit/${vacancy.id}"
-                                           class="btn small outline">Редактировать</a>
+                                           class="btn small outline"><@spring.message "profile.edit"/></a>
                                     </div>
                                 </div>
                             </#list>

@@ -1,5 +1,5 @@
 <#import "../layout.ftlh" as main>
-<@main.layout>
+<@main.layout ; spring>
     <#assign user = SPRING_SECURITY_CONTEXT.authentication.principal>
     <#assign roles = user.authorities?map(it -> it.authority)>
     <#assign userName = user.getUsername()>
@@ -71,7 +71,6 @@
     <section class="container py-5">
         <h2 class="mb-4 text-center text-warning fw-bold">${vacancyDto.name}</h2>
 
-        <!-- Блок для отображения ошибок -->
         <#if error??>
             <div class="alert alert-danger" role="alert">
                 ${error}
@@ -81,28 +80,28 @@
         <div class="card glass-card p-4 shadow-lg">
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <p><i class="bi bi-building me-2 text-warning"></i><strong>Компания:</strong> ${author.name}</p>
+                    <p><i class="bi bi-building me-2 text-warning"></i><strong><@spring.message "vacancy.info.company"/>:</strong> ${author.name}</p>
                     <p>
-                        <i class="bi bi-currency-dollar me-2 text-success"></i><strong>Зарплата:</strong> ${vacancyDto.salary}
+                        <i class="bi bi-currency-dollar me-2 text-success"></i><strong><@spring.message "vacancy.info.salary"/>:</strong> ${vacancyDto.salary}
                     </p>
-                    <p><i class="bi bi-folder-fill me-2 text-warning"></i><strong>Категория:</strong>
+                    <p><i class="bi bi-folder-fill me-2 text-warning"></i><strong><@spring.message "vacancy.info.category"/>:</strong>
                         ${category.name}</p>
                 </div>
 
                 <div class="col-md-6 mb-3">
-                    <p><i class="bi bi-bar-chart-fill me-2 text-warning"></i><strong>Опыт
-                            от:</strong> ${vacancyDto.expFrom} лет</p>
-                    <p><i class="bi bi-bar-chart me-2 text-warning"></i><strong>Опыт до:</strong> ${vacancyDto.expTo}
-                        лет</p>
+                    <p><i class="bi bi-bar-chart-fill me-2 text-warning"></i><strong><@spring.message "vacancy.info.expFrom"/>:</strong> ${vacancyDto.expFrom}
+                        <@spring.message "vacancy.info.years"/></p>
+                    <p><i class="bi bi-bar-chart me-2 text-warning"></i><strong><@spring.message "vacancy.info.expTo"/>:</strong> ${vacancyDto.expTo}
+                        <@spring.message "vacancy.info.years"/></p>
                     <p>
-                        <i class="bi bi-calendar-plus me-2 text-info"></i><strong>Создано:</strong> ${vacancyDto.formattedCreatedDate}
+                        <i class="bi bi-calendar-plus me-2 text-info"></i><strong><@spring.message "vacancy.info.created"/>:</strong> ${vacancyDto.formattedCreatedDate}
                     </p>
                     <p>
-                        <i class="bi bi-clock-history me-2 text-info"></i><strong>Обновлено:</strong> ${vacancyDto.formattedUpdatedTime}
+                        <i class="bi bi-clock-history me-2 text-info"></i><strong><@spring.message "vacancy.info.updated"/>:</strong> ${vacancyDto.formattedUpdatedTime}
                     </p>
-                    <p><i class="bi bi-circle-fill me-2 text-warning"></i><strong>Статус:</strong>
+                    <p><i class="bi bi-circle-fill me-2 text-warning"></i><strong><@spring.message "vacancy.info.status"/>:</strong>
                         <span class="badge ${vacancyDto.isActive?then('bg-success', 'bg-secondary')}">
-                            ${vacancyDto.isActive?then('Активна', 'Не активна')}
+                            ${vacancyDto.isActive?then(springMacroRequestContext.getMessage("vacancy.info.active"), springMacroRequestContext.getMessage("vacancy.info.noActive"))}
                         </span>
                     </p>
                 </div>
@@ -111,7 +110,7 @@
             <hr class="my-4 border-warning">
 
             <div>
-                <h4 class="text-warning"><i class="bi bi-info-circle me-2"></i>Описание вакансии</h4>
+                <h4 class="text-warning"><i class="bi bi-info-circle me-2"></i><@spring.message "vacancy.info.description"/></h4>
                 <p>${vacancyDto.description}</p>
             </div>
         </div>
@@ -119,7 +118,7 @@
         <#if roles?seq_contains("APPLICANT")>
             <div class="mt-4 d-flex justify-content-center">
                 <a href="/responded/${vacancyDto.id}" class="btn btn-outline-primary">
-                    <i class="bi bi-send-fill me-2"></i> Откликнуться
+                    <i class="bi bi-send-fill me-2"></i> <@spring.message "vacancy.info.responded"/>
                 </a>
             </div>
         </#if>
