@@ -1,40 +1,58 @@
-
-
 spring:
-    application:
-        name: JobSearch
-    mvc:
-        static-path-pattern: /static/**
-    freemarker:
-        expose-session-attributes: true
-    datasource:
-        url: jdbc:h2:./db/JobSearch;AUTO_SERVER=TRUE
-        username: adis
-        password: asdf
-        driver-class-name: org.h2.Driver
-    liquibase:
-        change-log: classpath:/db/changelog/master.yaml
+  application:
+    name: JobSearch
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 20MB
+  mvc:
+    static-path-pattern: /static/**
+  freemarker:
+    expose-session-attributes: true
+  datasource:
+    url: jdbc:h2:./db/JobSearch;AUTO_SERVER=TRUE
+    username: adis
+    password: asdf
+    driver-class-name: org.h2.Driver
+  liquibase:
+    change-log: classpath:/db/changelog/master.yaml
 
-    mail:
-        host: smtp.gmail.com
-        username: piv4484@gmail.com
-        password: "tjek oisw kwxv jhty"
-        port: 587
-        properties:
-            mail:
-                smtp:
-                    auth: true
-                    starttls:
-                        enable: true
-                        required: true
+  mail:
+    host: smtp.gmail.com
+    username: piv4484@gmail.com
+    password: "tjek oisw kwxv jhty"
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
+  #  ========== OAuth2.0 Config
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 242080879398-ecem0tdelqf2l5fdb1c2aggdnudrnlqa.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - email
+              - profile
+#  ========== OAuth2.0 Config
+
 
 logging:
-    level:
-        root: info
-        org:
-        springframework:
-            security: debug
-    file:
-        path: logs
+  level:
+    root: info
+    org:
+    springframework:
+      security: debug
+  file:
+    path: logs
 server:
-    port: 8099
+  port: 8099
