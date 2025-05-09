@@ -295,4 +295,13 @@ public class UserServiceImpl extends MethodClass implements UserService {
     }
 
 
+    @Transactional
+    @Override
+    public void updateUserLanguage(String email, String lang) {
+        User user = getUserByEmail(email);
+        user.setLanguage(lang);
+        userRepository.save(user);
+    }
+
+
 }

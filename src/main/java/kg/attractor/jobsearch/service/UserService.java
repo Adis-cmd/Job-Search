@@ -8,6 +8,7 @@ import kg.attractor.jobsearch.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.UnsupportedEncodingException;
@@ -65,4 +66,7 @@ public interface UserService {
     User getUserByResetPasswordToken(String token);
 
     void updatePassword(User user, String password);
+
+    @Transactional
+    void updateUserLanguage(String email, String lang);
 }
