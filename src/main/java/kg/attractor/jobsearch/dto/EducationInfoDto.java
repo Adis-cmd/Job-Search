@@ -15,18 +15,18 @@ import java.time.LocalDate;
 public class EducationInfoDto {
     private Long id;
     private Long resumeId;
-    @NotBlank(message = "Учебное заведение обязательно для заполнения")
-    @Size(max = 100, message = "Название учебного заведения не должно превышать 100 символов")
+    @NotBlank(message = "{education.info.nullInstitution}")
+    @Size(max = 100, message = "{education.info.nullInstitutionSize}")
     private String institution;
-    @NotBlank(message = "Название программы обязательно")
-    @Size(max = 100, message = "Название программы не должно превышать 100 символов")
+    @NotBlank(message = "{education.info.nullProgram}")
+    @Size(max = 100, message = "{education.info.nullProgramSize}")
     private String program;
-    @NotNull(message = "Дата начала обучения обязательна")
-    @PastOrPresent(message = "Дата начала должна быть в прошлом или настоящем")
+    @NotNull(message = "{education.info.nullStartDate}")
+    @PastOrPresent(message = "{education.info.startDatePresent}")
     private LocalDate startDate;
-    @PastOrPresent(message = "Дата окончания должна быть в прошлом или настоящем")
+    @PastOrPresent(message = "{education.info.endDatePresent}")
     private LocalDate endDate;
-    @NotBlank(message = "Степень обязательна")
-    @Size(max = 50, message = "Название степени не должно превышать 50 символов")
+    @NotBlank(message = "{education.info.nullDegree}")
+    @Size(max = 50, message = "{education.info.nullDegreeSize}")
     private String degree;
 }

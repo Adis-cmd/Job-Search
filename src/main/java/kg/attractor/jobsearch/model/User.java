@@ -42,4 +42,6 @@ public class User {
     private Boolean enabled;
     @Column(name = "reset_password_token")
     private String resetPasswordToken;
+    @Column(name = "language")
+    private String language;
 }
