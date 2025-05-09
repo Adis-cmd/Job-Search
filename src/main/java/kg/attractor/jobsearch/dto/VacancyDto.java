@@ -15,29 +15,29 @@ import java.time.format.DateTimeFormatter;
 @ExperienceRangeValid
 public class VacancyDto {
     private Long id;
-    @NotBlank(message = "Название вакансии не может быть пустым")
+    @NotBlank(message = "{vacancy.valid.nullName}")
     @Pattern(
             regexp = "^[\\p{L}\\d .,!?—-]+$",
-            message = "Допустимы буквы, цифры, пробелы и знаки .,!?—-"
+            message = "{resume.valid.patternName}"
     )
-    @Size(min = 1, max = 100)
+    @Size(min = 1, max = 100, message = "{vacancy.valid.sizeRange}")
     private String name;
-    @NotBlank(message = "Описание обязательное поле")
-    @Size(min = 1, max = 255)
+    @NotBlank(message = "{vacancy.valid.nullDescription}")
+    @Size(min = 1, max = 255 , message = "{vacancy.valid.sizeRange}")
     @Pattern(
             regexp = "^[\\p{L}\\d .,!?—-]+$",
-            message = "Допустимы буквы, цифры, пробелы и знаки .,!?—-"
+            message = "{resume.valid.patternName}"
     )
     private String description;
-    @NotNull(message = "Нужно выбрать категорию")
+    @NotNull(message = "{vacancy.valid.nullCategory}")
     private Long categoryId;
-    @NotNull(message = "Зарплата обязательна для заполнения")
-    @DecimalMin(value = "100", message = "Зарплата не может быть меньше 100")
-    @DecimalMax(value = "1000000000.0", message = "Максимальная зарплата: 1 000 000 000")
+    @NotNull(message = "{vacancy.valid.nullSalary}")
+    @DecimalMin(value = "100", message = "{resume.valid.salaryMin}")
+    @DecimalMax(value = "1000000000.0", message = "{resume.valid.salaryMax}")
     private Double salary;
-    @NotNull(message = "Опыт от обязателен")
+    @NotNull(message = "{vacancy.valid.nullExpFrom}")
     private Integer expFrom;
-    @NotNull(message = "Опыт до обязателен")
+    @NotNull(message = "{vacancy.valid.nullExpTo}")
     private Integer expTo;
     Boolean isActive = true;
     private Long authorId;

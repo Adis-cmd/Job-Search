@@ -1,6 +1,5 @@
 package kg.attractor.jobsearch.dto;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
@@ -16,20 +15,20 @@ import java.util.List;
 public class ResumeDto {
     private Long id;
     private Long applicantId;
-    @NotBlank(message = "Название резюме не может быть пустым")
-    @Size(min = 1, max = 100)
+    @NotBlank(message = "{resume.valid.nullName}")
+    @Size(min = 1, max = 100 , message = "{vacancy.valid.sizeRange}")
     @Pattern(
             regexp = "^[\\p{L}\\d .,!?—-]+$",
-            message = "Допустимы буквы, цифры, пробелы и знаки .,!?—-"
+            message = "{resume.valid.patternName}"
     )
     private String name;
-    @NotNull(message = "Категория не может быть пустым")
+    @NotNull(message = "{resume.valid.nullCategory}")
     private Long categoryId;
-    @NotNull(message = "Зарплата обязательна для заполнения")
-    @DecimalMin(value = "100", message = "Зарплата не может быть меньше 100")
-    @DecimalMax(value = "1000000000.0", message = "Максимальная зарплата: 1 000 000 000")
+    @NotNull(message = "{resume.valid.nullSalary}")
+    @DecimalMin(value = "100", message = "{resume.valid.salaryMin}")
+    @DecimalMax(value = "1000000000.0", message = "{resume.valid.salaryMax}")
     private Double salary;
-    @NotNull(message = "Статус активности должен быть указан")
+    @NotNull(message = "{resume.valid.nullIsActive}")
     private Boolean isActive = true;
     private LocalDateTime createdDate;
     private LocalDateTime updateTime;

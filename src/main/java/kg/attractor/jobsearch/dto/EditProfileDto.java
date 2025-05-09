@@ -18,7 +18,6 @@ public class EditProfileDto {
 
     private String surname;
 
-    @NotNull(message = "Данное поле не может быть пустым")
     private Integer age;
 
     private String avatar;
