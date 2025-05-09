@@ -77,11 +77,11 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
 
         Long count = vacancyRepository.countOwnedVacancy(id, authorId);
         if (count <= 0) {
-            throw new VacancyNotFoundException("Эта вакансия не принадлежит вам");
+            throw new VacancyNotFoundException("{vacancy.service.countOwned}");
         }
 
         return vacancyRepository.findById(id)
-                .orElseThrow(() -> new VacancyNotFoundException("Вакансия не найдена по ID: " + id));
+                .orElseThrow(() -> new VacancyNotFoundException("{vacancy.service.notFoundById}: " + id));
     }
 
 
@@ -91,15 +91,15 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
         }
 
         if (dto.getExpFrom() == null || dto.getExpFrom() < 0) {
-            throw new VacancyServiceException("Начальный опыт работы не может быть отрицательным.");
+            throw new VacancyServiceException("{experience.valid.from}.");
         }
 
         if (dto.getExpTo() == null || dto.getExpTo() < 0) {
-            throw new VacancyServiceException("Конечный опыт работы не может быть отрицательным.");
+            throw new VacancyServiceException("{experience.valid.toNegative}.");
         }
 
         if (dto.getExpFrom() > dto.getExpTo()) {
-            throw new VacancyServiceException("Начальный опыт не может быть больше конечного.");
+            throw new VacancyServiceException("{experience.valid.fromAndTo}.");
         }
     }
 
@@ -148,21 +148,7 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
         v.setCategory(categoryService.findById(vacanciesDto.getCategoryId()));
         v.setSalary(vacanciesDto.getSalary());
         v.setIsActive(vacanciesDto.getIsActive() != null ? vacanciesDto.getIsActive() : true);
-
-        if (vacanciesDto.getExpFrom() == null || vacanciesDto.getExpFrom() < 0) {
-            log.error("Ошибка: Начальный опыт работы не может быть отрицательным. ExpFrom: {}", vacanciesDto.getExpFrom());
-            throw new VacancyServiceException("Начальный опыт работы не может быть отрицательным.");
-        }
-
-        if (vacanciesDto.getExpTo() == null || vacanciesDto.getExpTo() < 0) {
-            log.error("Ошибка: Конечный опыт работы не может быть отрицательным. ExpTo: {}", vacanciesDto.getExpTo());
-            throw new VacancyServiceException("Конечный опыт работы не может быть отрицательным.");
-        }
-
-        if (vacanciesDto.getExpFrom() > vacanciesDto.getExpTo()) {
-            log.error("Ошибка: Начало опыта работы не может быть больше конца. ExpFrom: {}, ExpTo: {}", vacanciesDto.getExpFrom(), vacanciesDto.getExpTo());
-            throw new VacancyServiceException("Начало опыта работы не может быть больше конца.");
-        }
+        validateVacancyDto(vacanciesDto);
         v.setExpFrom(vacanciesDto.getExpFrom());
         v.setExpTo(vacanciesDto.getExpTo());
         log.debug("Создание вакансии: {}", v);
@@ -194,7 +180,7 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
         Long authorId = getEntityOrThrow(vacancyRepository.findUserIdByEmail(email), new UserNotFoundException());
 
         if (vacancyRepository.countOwnedVacancy(parceLong, authorId) <= 0) {
-            throw new VacancyNotFoundException("Эта вакансия не принадлежит вам");
+            throw new VacancyNotFoundException("{vacancy.service.countOwned}");
         }
 
         vacancyRepository.deleteById(parceLong);

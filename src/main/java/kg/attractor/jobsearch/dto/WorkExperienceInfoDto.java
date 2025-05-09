@@ -11,17 +11,17 @@ import lombok.*;
 public class WorkExperienceInfoDto {
     private Long id;
     private Long resumeId;
-    @NotNull(message = "Робочий опыт не должен быть пустым")
-    @Min(value = 0,  message = "Опыт работы не может быть отрицательным")
-    @Max(value = 50, message = "Опыт работы не может превышать 50 лет")
+    @NotNull(message = "{work.info.nullYears}")
+    @Min(value = 0,  message = "{work.info.min}")
+    @Max(value = 50, message = "{work.info.max}")
     private Integer years;
-    @NotBlank(message = "Название компании обязательно")
-    @Size(min = 5, max = 150, message = "Название компании должно быть от 5 до 150 символов")
+    @NotBlank(message = "{work.info.company}")
+    @Size(min = 5, max = 150, message = "{work.info.companySize}")
     private String companyName;
-    @NotBlank(message = "Должность обязательна")
-    @Size(min = 1, max = 50, message = "Должность должна быть от 2 до 50 символов")
+    @NotBlank(message = "{work.info.position}")
+    @Size(min = 1, max = 50, message = "{work.info.positionSize}")
     private String position;
-    @NotBlank(message = "Обязанности должны быть заполнены")
-    @Size(min = 10, max = 550, message = "Описание обязанностей должно быть от 10 до 550 символов")
+    @NotBlank(message = "{work.info.responsibilities}")
+    @Size(min = 10, max = 550, message = "{work.info.responsibilitiesSize}")
     private String responsibilities;
 }

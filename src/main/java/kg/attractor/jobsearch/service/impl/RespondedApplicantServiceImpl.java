@@ -29,10 +29,10 @@ public class RespondedApplicantServiceImpl extends MethodClass implements Respon
     @Override
     public Boolean responseVacancies(Long vacancyId, Long resumeId) {
         Vacancy vacancy = getEntityOrThrow(vacancyService.findVacancyById(vacancyId),
-                new VacancyServiceException("Vacancy not found"));
+                new VacancyServiceException("{vacancy.service.notFound}"));
 
         Resume resume = getEntityOrThrow(resumeService.findResumeById(resumeId),
-                new ResumeServiceException("Resume not found"));
+                new ResumeServiceException("{resume.service.notFound}"));
 
         if (repository.existsByVacancyIdAndResumeId(vacancy, resume)) {
             return false;

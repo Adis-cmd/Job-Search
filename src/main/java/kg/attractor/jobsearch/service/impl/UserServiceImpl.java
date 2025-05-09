@@ -35,6 +35,10 @@ public class UserServiceImpl extends MethodClass implements UserService {
     private final AccountTypeService accountTypeService;
     private final EmailServiceImpl emailService;
 
+    @Override
+    public void save(User user) {
+        userRepository.save(user);
+    }
 
     @Override
     public List<UserDto> searchSuccessfulApplicants(Long vacancyId) {
@@ -58,6 +62,12 @@ public class UserServiceImpl extends MethodClass implements UserService {
         return result;
     }
 
+    @Override
+    public String userLanguage(String email) {
+        User user = getEntityOrThrow(userRepository.findByEmail(email), new UserServiceException("{user.service.notFound}"));
+        return user.getLanguage();
+    }
+
 
     @Override
     public String uploadingPhotos(MultipartFile file) {
@@ -77,7 +87,7 @@ public class UserServiceImpl extends MethodClass implements UserService {
     public void editUser(UserDto userDto, Long userId, String avatar) {
         log.info("Редактирование профиля пользователя с ID: {}", userId);
         User user = getEntityOrThrow(userRepository.findById(userId),
-                new UserServiceException("User not found"));
+                new UserServiceException("{user.service.notFound}"));
         user.setName(userDto.getName());
         user.setSurname(userDto.getSurname());
         user.setAge(userDto.getAge());
@@ -90,11 +100,11 @@ public class UserServiceImpl extends MethodClass implements UserService {
         User user = new User();
 
         if (userRepository.existsByPhoneNumber(userDto.getEmail())) {
-            throw new UserServiceException("Есть пользователь с таким номером телефона");
+            throw new UserServiceException("{user.service.phoneNumber}");
         }
 
         if (userRepository.existsByEmail(userDto.getEmail())) {
-            throw new UserServiceException("Есть пользотель с таким Email");
+            throw new UserServiceException("{user.service.email}");
         }
 
         user.setName(userDto.getName());
@@ -109,9 +119,25 @@ public class UserServiceImpl extends MethodClass implements UserService {
             user.setAvatar("avatarForApplicant.jpg");
         }
         user.setEnabled(true);
+        user.setLanguage(userDto.getLanguage());
         user.setAccountType(accountTypeService.findById(accountTypeId));
 
         userRepository.save(user);
+    }
+
+    @Override
+    public void registerGoogleUser(UserDto userDto, Long accountTypeId, String email) {
+        User user = getEntityOrThrow(userRepository.findByEmail(email),
+                new UserServiceException("{user.service.notFound}"));
+        user.setName(userDto.getName());
+        user.setSurname(userDto.getSurname());
+        user.setAge(userDto.getAge());
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        user.setEmail(email);
+        user.setPhoneNumber(userDto.getPhoneNumber());
+        user.setAccountType(accountTypeService.findById(accountTypeId));
+
+        userRepository.saveAndFlush(user);
     }
 
 
@@ -128,7 +154,7 @@ public class UserServiceImpl extends MethodClass implements UserService {
     public UserDto getUserEmail(String email) {
         log.info("Поиск пользователя с email: {}", email);
         User user = getEntityOrThrow(userRepository.findByEmail(email),
-                new UserServiceException("Не найден пользователь с такой почтой"));
+                new UserServiceException("{user.service.emailNotFound}"));
         return userDtos(user);
         //TODO Логика для поиска пользователя по его email
     }
@@ -136,14 +162,14 @@ public class UserServiceImpl extends MethodClass implements UserService {
     @Override
     public User getUserByEmail(String email) {
         return getEntityOrThrow(userRepository.findByEmail(email),
-                new UserServiceException("Email not found"));
+                new UserServiceException("{user.service.emailNotFound}"));
     }
 
     @Override
     public UserDto getUserById(Long id) {
         log.info("Поиск пользователя с id: {}", id);
         User user = getEntityOrThrow(userRepository.findById(id),
-                new UserServiceException("Не найден пользователь с таким id"));
+                new UserServiceException("{user.service.idNotFound}"));
         return userDtos(user);
         //TODO Логика для поиска пользователя по его email
     }
@@ -152,7 +178,7 @@ public class UserServiceImpl extends MethodClass implements UserService {
     public Long getUserId(String email) {
         Long userId = userRepository.findUSerByEmail(email);
         if (userId == null || userId == 0) {
-            throw new UserServiceException("Нету пользователя с таким Email");
+            throw new UserServiceException("{user.service.emailNotFound}");
         }
         return userId;
     }
@@ -162,7 +188,7 @@ public class UserServiceImpl extends MethodClass implements UserService {
         Page<User> users = userRepository.findAllUserEmployee(pageable);
 
         if (users == null) {
-            throw new UserServiceException("User not found");
+            throw new UserServiceException("{user.service.notFound}");
         }
         return users.map(this::userDtos);
     }
@@ -179,7 +205,7 @@ public class UserServiceImpl extends MethodClass implements UserService {
     public UserDto getUserPhone(String phone) {
         log.info("Поиск пользователя с номером телефона: {}", phone);
         User user = getEntityOrThrow(userRepository.findUserByPhoneNumber(phone),
-                new UserServiceException("Не найден пользователь с таким номером"));
+                new UserServiceException("{user.service.phoneNumberNotFound}"));
         return userDtos(user);
         //TODO Логика для поиска пользователя по его телефону
     }
@@ -239,7 +265,7 @@ public class UserServiceImpl extends MethodClass implements UserService {
 
     private void updateResetPasswordToken(String token, String email) {
         User user = getEntityOrThrow(userRepository.findByEmail(email),
-                new UserServiceException("User not found"));
+                new UserServiceException("{user.service.notFound}"));
         user.setResetPasswordToken(token);
         userRepository.saveAndFlush(user);
     }
@@ -257,7 +283,7 @@ public class UserServiceImpl extends MethodClass implements UserService {
     @Override
     public User getUserByResetPasswordToken(String token) {
         return getEntityOrThrow(userRepository.findUserByResetPasswordToken(token),
-                new UserServiceException("User not found"));
+                new UserServiceException("{user.service.notFound}"));
     }
 
     @Override
