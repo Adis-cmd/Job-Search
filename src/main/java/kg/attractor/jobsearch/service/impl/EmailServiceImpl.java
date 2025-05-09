@@ -22,7 +22,7 @@ public class EmailServiceImpl {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
 
-        mimeMessageHelper.setFrom(emailFrom, "Movie Review Support");
+        mimeMessageHelper.setFrom(emailFrom, "Job Search Support");
         mimeMessageHelper.setTo(to);
 
         String subject = "Here s the link to reset password";

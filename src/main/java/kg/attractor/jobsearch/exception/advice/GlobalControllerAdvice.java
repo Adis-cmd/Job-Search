@@ -13,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
@@ -50,5 +51,15 @@ public class GlobalControllerAdvice {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponseBody> validationHandler(MethodArgumentNotValidException ex) {
         return new ResponseEntity<>(errorService.makeResponse(ex.getBindingResult()), HttpStatus.BAD_REQUEST);
+    }
+
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public String handleMaxSizeException(Model model, HttpServletRequest request) {
+        model.addAttribute("status", HttpStatus.REQUEST_ENTITY_TOO_LARGE);
+        model.addAttribute("reason",
+                "Файл слишком большой. Максимальный размер файла: 10MB");
+        model.addAttribute("details", request.getRequestURI());
+        return "errors/error";
     }
 }

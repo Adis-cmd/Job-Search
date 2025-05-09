@@ -22,28 +22,28 @@ public class ExperienceRangeValidator implements ConstraintValidator<ExperienceR
 
         if (from < 0) {
             context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate("Начальный опыт не может быть отрицательным")
+            context.buildConstraintViolationWithTemplate("{experience.valid.from}")
                     .addPropertyNode("expFrom").addConstraintViolation();
             valid = false;
         }
 
         if (to > 50) {
             context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate("Конечный опыт не может быть больше 70")
+            context.buildConstraintViolationWithTemplate("{experience.valid.to}")
                     .addPropertyNode("expTo").addConstraintViolation();
             valid = false;
         }
 
         if (to < 0) {
             context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate("Конечный опыт не может быть отрицательным")
+            context.buildConstraintViolationWithTemplate("{experience.valid.toNegative}")
                     .addPropertyNode("expTo").addConstraintViolation();
             valid = false;
         }
 
         if (from > to) {
             context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate("Начальный опыт не может быть больше конечного")
+            context.buildConstraintViolationWithTemplate("{experience.valid.fromAndTo}")
                     .addPropertyNode("expFrom").addConstraintViolation();
             valid = false;
         }

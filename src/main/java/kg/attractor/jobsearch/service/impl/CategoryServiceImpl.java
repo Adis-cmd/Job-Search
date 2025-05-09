@@ -106,13 +106,11 @@ public class CategoryServiceImpl extends MethodClass implements CategoryService 
 
     @Override
     public Category findById(Long id) {
-        Category category = getEntityOrThrow(repository.findById(id), new CategoryNotFoundException());
-        return category;
+        return getEntityOrThrow(repository.findById(id), new CategoryNotFoundException());
     }
 
     @Override
     public Long countId(Long id) {
-        Long count = repository.countById(id);
-        return count;
+        return repository.countById(id);
     }
 }
