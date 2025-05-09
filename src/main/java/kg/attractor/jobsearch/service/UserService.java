@@ -14,10 +14,14 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 public interface UserService {
+    void save(User user);
+
     List<UserDto> searchSuccessfulApplicants(Long vacancyId);
 
 
     List<UserDto> findUserByVacancy(Page<VacancyDto> dto);
+
+    String userLanguage(String email);
 
     String uploadingPhotos(MultipartFile file);
 
@@ -26,6 +30,8 @@ public interface UserService {
     void editUser(UserDto userDto, Long userId, String userAvatar);
 
     void registerUser(UserDto userDto, Long accountTypeId);
+
+    void registerGoogleUser(UserDto userDto, Long accountTypeId, String email);
 
     List<UserDto> getUsers(String name);
 

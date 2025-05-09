@@ -1,5 +1,8 @@
 package kg.attractor.jobsearch.config;
 
+import kg.attractor.jobsearch.service.UserService;
+import kg.attractor.jobsearch.service.impl.AuthUserDetailsService;
+import kg.attractor.jobsearch.service.impl.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -7,20 +10,20 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
-import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final SuccessHandler successHandler;
+    private final AuthUserDetailsService authUserDetailsService;
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuthSuccessHandler oAuthSuccessHandler;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, UserService userService) throws Exception {
         http
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 .formLogin(form -> form
@@ -55,7 +58,12 @@ public class SecurityConfig {
                         .requestMatchers("/responded/**").hasAuthority("APPLICANT")
                         .requestMatchers("/profile").authenticated()
                         .anyRequest().permitAll()
-                );
+                )
+                .oauth2Login(oauth -> oauth
+                        .loginPage("/auth/login")
+                        .userInfoEndpoint(userConfig -> userConfig
+                                .userService(customOAuth2UserService))
+                        .successHandler(oAuthSuccessHandler));
         return http.build();
     }
 }

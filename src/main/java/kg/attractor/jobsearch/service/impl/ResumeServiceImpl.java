@@ -107,7 +107,7 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
         Long parseResumeId = parseId(resumeId);
         log.info("Поиск резюме с ID: {}", parseResumeId);
         Resume resumes = getEntityOrThrow(resumeRepository.findById(parseResumeId),
-                new ResumeServiceException("Не найденно резюме с таким id"));
+                new ResumeServiceException("{resume.service.notFoundById}"));
         return resumeDtos(resumes);
         //TODO метод для поиска резюме по его id
     }
@@ -115,7 +115,7 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
     @Override
     public Optional<Resume> findResumeById(Long resumeId) {
         Resume resumes = getEntityOrThrow(resumeRepository.findById(resumeId),
-                new ResumeServiceException("Не найденно резюме с таким id"));
+                new ResumeServiceException("{resume.service.notFoundById}"));
         return Optional.of(resumes);
     }
 
@@ -127,7 +127,7 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
         log.info("Редактирование резюме с ID: {}", parsedResumeId);
 
         Resume existingResume = getEntityOrThrow(resumeRepository.findById(parsedResumeId),
-                new ResumeServiceException("Резюме с ID " + parsedResumeId + " не найдено"));
+                new ResumeServiceException("{resume.service.notFoundById}"));
 
         existingResume.setName(resumesDto.getName());
         existingResume.setCategory(categoryService.findById(resumesDto.getCategoryId()));
