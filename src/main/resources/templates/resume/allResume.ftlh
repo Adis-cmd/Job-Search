@@ -1,8 +1,7 @@
 <#import "../layout.ftlh" as main>
 <#import "../page.ftlh" as p>
-<@main.layout>
+<@main.layout ; spring>
 
-    <title>Все Резюме</title>
 
     <style>
         body {
@@ -100,7 +99,7 @@
     </style>
 
     <section class="container py-5">
-        <h2 class="mb-5 fw-bold">Список всех резюме</h2>
+        <h2 class="mb-5 fw-bold"><@spring.message "allResume.title" /></h2>
 
         <div class="d-flex flex-column gap-4">
             <#list page.content as resume>
@@ -113,30 +112,30 @@
                             </h4>
 
                             <p>
-                                <i class="bi bi-cash-coin me-1 text-warning"></i><strong>Зарплата:</strong> ${resume.salary}
+                                <i class="bi bi-cash-coin me-1 text-warning"></i><strong><@spring.message "allVacancy.salary" /></strong> ${resume.salary}
                             </p>
                             <p>
-                                <i class="bi bi-circle-fill me-1 text-warning"></i><strong>Статус:</strong>
+                                <i class="bi bi-circle-fill me-1 text-warning"></i><strong><@spring.message "allResume.status" /></strong>
                                 <span class="badge ${resume.isActive?then('bg-success', 'bg-secondary')}">
                                     ${resume.isActive?then('Активна', 'Не активна')}
                                 </span>
                             </p>
                             <p>
-                                <i class="bi bi-calendar-plus me-1 text-warning"></i><strong>Создано:</strong> ${resume.formattedCreatedDate}
+                                <i class="bi bi-calendar-plus me-1 text-warning"></i><strong><@spring.message "allResume.create" /></strong> ${resume.formattedCreatedDate}
                             </p>
                             <p>
-                                <i class="bi bi-clock-history me-1 text-warning"></i><strong>Обновлено:</strong> ${resume.formattedUpdatedTime}
+                                <i class="bi bi-clock-history me-1 text-warning"></i><strong><@spring.message "allResume.update" />:</strong> ${resume.formattedUpdatedTime}
                             </p>
 
                             <#assign currentCategory = category?filter(c -> c.id == resume.categoryId)?first>
                             <p>
-                                <i class="bi bi-folder-fill me-1 text-warning"></i><strong>Категория:</strong> ${currentCategory.name}
+                                <i class="bi bi-folder-fill me-1 text-warning"></i><strong><@spring.message "allVacancy.category" />:</strong> ${currentCategory.name}
                             </p>
                         </div>
 
                         <div class="d-flex align-self-md-center">
                             <a href="/resume/info/${resume.id}" class="btn btn-outline-primary btn-sm">
-                                <i class="bi bi-eye me-1"></i> Посмотреть
+                                <i class="bi bi-eye me-1"></i> <@spring.message "allResume.view" />
                             </a>
                         </div>
                     </div>

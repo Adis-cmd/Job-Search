@@ -8,10 +8,10 @@
                value="${(_csrf.token)!'csrf-token'}"/>
     </#if>
     <div class="resume-container">
-        <h1>Создание резюме</h1>
+        <h1><@spring.message "resume.created.title"/></h1>
 
         <div class="form-group">
-            <label for="name">Название резюме:</label>
+            <label for="name"><@spring.message "resume.created.name"/>:</label>
             <@spring.formInput "resumeDto.name" 'id="name" class="form-control form-control-lg"' />
             <div class="error-block">
                 <@spring.showErrors "<br>" "custom-error" />
@@ -19,21 +19,18 @@
         </div>
 
         <div class="form-group">
-            <label for="categoryId">Категория:</label>
+            <label for="categoryId"><@spring.message "resume.created.category"/>:</label>
             <select id="categoryId" name="categoryId" class="form-control">
-                <option value="">Выберите категорию</option>
+                <option value=""><@spring.message "resume.select.category"/></option>
                 <#list category as cat>
                     <option value="${cat.id}"
                             <#if (resumeDto.categoryId?? && resumeDto.categoryId == cat.id)>selected</#if>>${cat.name}</option>
                 </#list>
             </select>
-            <div class="error-block">
-                <@spring.showErrors "<br>" "custom-error" />
-            </div>
         </div>
 
         <div class="form-group">
-            <label for="salary">Ожидаемый уровень оклада:</label>
+            <label for="salary"><@spring.message "resume.created.salary"/>:</label>
             <@spring.formInput "resumeDto.salary" 'id="salary" class="form-control"' />
             <div class="error-block">
                 <@spring.showErrors "<br>" "custom-error" />
@@ -41,7 +38,7 @@
         </div>
 
         <div class="form-group">
-            <label>Опыт работы:</label>
+            <label><@spring.message "resume.created.experience"/>:</label>
             <@spring.formInput "resumeDto.workExperiences[0].years" 'placeholder="Год работы" class="form-control"' />
             <div class="error-block">
                 <@spring.showErrors "<br>" "custom-error" />
@@ -61,7 +58,7 @@
         </div>
 
         <div class="form-group">
-            <label>Образование:</label>
+            <label><@spring.message "resume.created.education"/>:</label>
             <@spring.formInput "resumeDto.educationInfos[0].institution" 'placeholder="Учебное заведение" class="form-control"' />
             <div class="error-block">
                 <@spring.showErrors "<br>" "custom-error" />
@@ -75,14 +72,14 @@
                 <@spring.showErrors "<br>" "custom-error" />
             </div>
             <div class="form-group">
-                <label>Дата начала обучения:</label>
+                <label><@spring.message "resume.created.education.startDate"/>:</label>
                 <input type="date" name="educationInfos[0].startDate" placeholder="Дата начала" class="form-control"/>
                 <div class="error-block">
                     <@spring.showErrors "<br>" "custom-error" />
                 </div>
             </div>
             <div class="form-group">
-                <label>Дата окончания обучения:</label>
+                <label><@spring.message "resume.created.education.endDate"/>:</label>
                 <input type="date" name="educationInfos[0].endDate" placeholder="Дата окончания" class="form-control"/>
                 <div class="error-block">
                     <@spring.showErrors "<br>" "custom-error" />
@@ -92,7 +89,7 @@
         </div>
 
         <div class="form-group">
-            <label>Контактная информация:</label>
+            <label><@spring.message "resume.created.contactInfo"/>:</label>
 
             <input type="hidden" name="contactInfos[0].typeId" value="1"/>
             <@spring.formInput "resumeDto.contactInfos[0].value" 'placeholder="+996 999 555 555" class="form-control"' />
@@ -128,7 +125,7 @@
 
 
         <div class="form-group">
-            <label>Статус вакансии:</label>
+            <label><@spring.message "resume.created.status"/>:</label>
             <div>
                 <label>
                     <input type="radio" name="isActive" value="true"
@@ -145,7 +142,7 @@
         </div>
 
         <div class="form-group">
-            <button type="submit" class="submit-button">Отправить</button>
+            <button type="submit" class="submit-button"><@spring.message "resume.created.button"/></button>
         </div>
 
     </div>

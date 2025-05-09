@@ -87,7 +87,8 @@
         }
     </style>
 
-    <h1>Создание вакансии:</h1>
+    <h1><@spring.message "vacancy.created.title"/>:</h1>
+
 
     <div class="card">
         <form method="post" action="/vacancy/add">
@@ -96,7 +97,7 @@
                        value="${(_csrf.token)!'csrf-token'}"/>
             </#if>
             <div class="form-group">
-                <label for="name">Название вакансии:</label>
+                <label for="name"><@spring.message "vacancy.created.name"/>:</label>
                 <@spring.formInput "vacancyDto.name" 'id="name" class="form-control form-control-lg"' />
                 <div class="error-block">
                     <@spring.showErrors "<br>" "custom-error" />
@@ -104,9 +105,9 @@
             </div>
 
             <div class="form-group">
-                <label for="categoryId">Категория:</label>
+                <label for="categoryId"><@spring.message "resume.created.category"/>:</label>
                 <select id="categoryId" name="categoryId" class="form-control">
-                    <option value="" selected disabled>Выберите категорию</option>
+                    <option value="" selected disabled><@spring.message "resume.select.category"/></option>
                     <#list category as cat>
                         <option value="${cat.id}"
                                 <#if (vacancyDto.categoryId?? && vacancyDto.categoryId == cat.id)>selected</#if>>${cat.name}</option>
@@ -118,7 +119,7 @@
             </div>
 
             <div class="form-group">
-                <label for="salary">Заработная плата:</label>
+                <label for="salary"><@spring.message "vacancy.created.salary"/>:</label>
                 <@spring.formInput "vacancyDto.salary" 'id="salary" class="form-control"' />
                 <div class="error-block">
                     <@spring.showErrors "<br>" "custom-error" />
@@ -126,7 +127,7 @@
             </div>
 
             <div class="form-group">
-                <label for="description">Описание вакансии:</label>
+                <label for="description"><@spring.message "vacancy.created.description"/>:</label>
                 <@spring.formTextarea "vacancyDto.description" 'id="description" rows="5" class="form-control"' />
                 <div class="error-block">
                     <@spring.showErrors "<br>" "custom-error" />
@@ -134,14 +135,14 @@
             </div>
 
             <div class="form-group">
-                <label>Требуемый опыт:</label>
+                <label><@spring.message "vacancy.created.exp"/>:</label>
                 <div class="experience-input">
-                    <label for="expFrom">От</label>
+                    <label for="expFrom"><@spring.message "vacancy.created.from"/></label>
                     <@spring.formInput "vacancyDto.expFrom" 'id="expFrom" type="number" style="width: 60px;" min="0" step="1"' />
                     <div class="error-block">
                         <@spring.showErrors "<br>" "custom-error" />
                     </div>
-                    <label for="expTo">До</label>
+                    <label for="expTo"><@spring.message "vacancy.created.to"/></label>
                     <@spring.formInput "vacancyDto.expTo" 'id="expTo" type="number" style="width: 60px;" min="0" step="1"' />
                     <div class="error-block">
                         <@spring.showErrors "<br>" "custom-error" />
@@ -150,7 +151,7 @@
             </div>
 
             <div class="form-group">
-                <label>Статус вакансии:</label>
+                <label><@spring.message "vacancy.created.status"/>:</label>
                 <div>
                     <label>
                         <input type="radio" name="isActive" value="true"
@@ -167,7 +168,7 @@
             </div>
 
             <div class="buttons">
-                <button type="submit" class="btn">Опубликовать</button>
+                <button type="submit" class="btn"><@spring.message "vacancy.created.button"/></button>
             </div>
         </form>
     </div>

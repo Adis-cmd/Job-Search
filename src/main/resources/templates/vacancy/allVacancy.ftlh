@@ -1,6 +1,6 @@
 <#import "../layout.ftlh" as main>
 <#import "../page.ftlh" as p>
-<@main.layout>
+<@main.layout ; spring>
     <style>
         body {
             color: #f8f9fa;
@@ -74,22 +74,22 @@
         }    </style>
 
     <section class="container py-5">
-        <h2 class="mb-5 text-center fw-bold">Вакансии</h2>
+        <h2 class="mb-5 text-center fw-bold"><@spring.message "allVacancy.title" /></h2>
 
         <div class="sort-by d-flex justify-content-end mb-4">
-            <label for="sortOptions" class="me-2 align-self-center">Сортировать по:</label>
+            <label for="sortOptions" class="me-2 align-self-center"><@spring.message "allVacancy.sort.title" /></label>
             <select id="sortOptions" name="sort" class="form-select w-auto bg-dark text-warning border-warning"
                     onchange="window.location.href=this.value;">
-                <option disabled selected hidden>Выберите способ</option>
-                <option value="${url}?page=${page.number}&size=${page.size}&sort=createdDate,desc">Сначала новые
+                <option disabled selected hidden><@spring.message "allVacancy.sort.text" /></option>
+                <option value="${url}?page=${page.number}&size=${page.size}&sort=createdDate,desc"><@spring.message "allVacancy.sort.new" />
                 </option>
-                <option value="${url}?page=${page.number}&size=${page.size}&sort=createdDate,asc">Сначала старые
+                <option value="${url}?page=${page.number}&size=${page.size}&sort=createdDate,asc"><@spring.message "allVacancy.sort.old" />
                 </option>
-                <option value="${url}?page=${page.number}&size=${page.size}&sort=salary,desc">Высокая зарплата</option>
-                <option value="${url}?page=${page.number}&size=${page.size}&sort=salary,asc">Низкая зарплата</option>
-                <option value="${url}?page=${page.number}&size=${page.size}&sort=responseCount,asc">Меньше откликов
+                <option value="${url}?page=${page.number}&size=${page.size}&sort=salary,desc"><@spring.message "allVacancy.sort.highSalary" /></option>
+                <option value="${url}?page=${page.number}&size=${page.size}&sort=salary,asc"><@spring.message "allVacancy.sort.lowSalary" /></option>
+                <option value="${url}?page=${page.number}&size=${page.size}&sort=responseCount,asc"><@spring.message "allVacancy.sort.fewerResponses" />
                 </option>
-                <option value="${url}?page=${page.number}&size=${page.size}&sort=responseCount,desc">Больше откликов
+                <option value="${url}?page=${page.number}&size=${page.size}&sort=responseCount,desc"><@spring.message "allVacancy.sort.moreResponses" />
                 </option>
             </select>
         </div>
@@ -105,20 +105,20 @@
 
                             <#assign currentAuthor = author?filter(u -> u.id == vacancy.authorId)?first>
                             <p>
-                                <i class="bi bi-building me-1 text-warning"></i><strong>Компания:</strong> ${currentAuthor.name}
+                                <i class="bi bi-building me-1 text-warning"></i><strong><@spring.message "allVacancy.company" /></strong> ${currentAuthor.name}
                             </p>
                             <p>
-                                <i class="bi bi-currency-dollar me-1 text-success"></i><strong>Зарплата:</strong> ${vacancy.salary}
+                                <i class="bi bi-currency-dollar me-1 text-success"></i><strong><@spring.message "allVacancy.salary" /></strong> ${vacancy.salary}
                             </p>
                             <#assign vacancyCategory = category?filter(c -> c.id == vacancy.categoryId)?first>
                             <p>
-                                <i class="bi bi-folder-fill me-1 text-warning"></i><strong>Категория:</strong> ${vacancyCategory.name}
+                                <i class="bi bi-folder-fill me-1 text-warning"></i><strong><@spring.message "allVacancy.category" /></strong> ${vacancyCategory.name}
                             </p>
                         </div>
 
                         <div class="d-flex align-self-md-center">
                             <a href="/vacancy/info/${vacancy.id}" class="btn btn-outline-primary btn-sm">
-                                <i class="bi bi-eye me-1"></i> Подробнее
+                                <i class="bi bi-eye me-1"></i> <@spring.message "allVacancy.info" />
                             </a>
                         </div>
                     </div>

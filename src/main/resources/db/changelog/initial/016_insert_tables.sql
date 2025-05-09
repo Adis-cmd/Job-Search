@@ -1,10 +1,10 @@
-INSERT INTO users (name, surname, age, email, password, phoneNumber, avatar, accountType_id, enabled)
+INSERT INTO users (name, surname, age, email, password, phoneNumber, avatar, accountType_id, enabled, language)
 VALUES ('Иван', 'Иванов', 30, 'ivan.ivanov@jobseeker.com', '$2a$10$kCmu5DZuEmuyklf9kPEyJ.WT2Kgb6zOp4y7LC4D.oqLkAXmkcnPiu
 ', '123-456-7890', 'ivan_avatar.jpg',
-        (SELECT id FROM account_type WHERE TYPE LIKE 'APPLICANT'), true),
+        (SELECT id FROM account_type WHERE TYPE LIKE 'APPLICANT'), true, 'en'),
        ('Мария', 'Петрова', 40, 'maria.petrova@employer.com', '$2a$10$kRfHTF5z3jRzjlQ2wQzSxu0WfThwcnfK9pO2pZs/.fDojiH9hRHcS
 ', '987-654-3210', 'maria_avatar.jpg',
-        (SELECT id FROM account_type WHERE TYPE LIKE 'EMPLOYEE'), true);
+        (SELECT id FROM account_type WHERE TYPE LIKE 'EMPLOYEE'), true, 'en');
 
 INSERT INTO category (name)
 VALUES ('Старший Бэкенд-разработчик'),

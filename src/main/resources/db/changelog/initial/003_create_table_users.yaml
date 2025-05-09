@@ -37,6 +37,9 @@ databaseChangeLog:
               - column:
                   name: accountType
                   type: varchar(255)
+              - column:
+                  name: language
+                  type: varchar(40)
         - addColumn:
             tableName: users
             columns:

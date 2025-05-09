@@ -1,9 +1,9 @@
 <#import "../layout.ftlh" as main>
 <#import "../page.ftlh" as p>
 
-<@main.layout>
+<@main.layout ; spring>
 
-    <title>Список компаний</title>
+    <title><@spring.message "company.title" /></title>
 
     <style>
         body {
@@ -90,7 +90,7 @@
     </style>
 
     <section class="container py-5">
-        <h2 class="mb-5 fw-bold">Список всех компаний</h2>
+        <h2 class="mb-5 fw-bold"><@spring.message "company.all" /></h2>
 
         <div class="d-flex flex-column gap-4">
             <#list page.content as company>
@@ -106,7 +106,7 @@
                         </div>
                         <div class="align-self-center">
                             <a href="/company/info/${company.id}" class="btn btn-outline-primary">
-                                <i class="bi bi-eye me-1"></i> Посмотреть
+                                <i class="bi bi-eye me-1"></i> <@spring.message "company.view" />
                             </a>
                         </div>
                     </div>
