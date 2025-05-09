@@ -32,6 +32,7 @@ public class RegisterController {
     @PostMapping
     @ResponseStatus(HttpStatus.SEE_OTHER)
     public String register(@RequestParam(required = false) Long accountType,
+                           @CookieValue(value = "lang", defaultValue = "en") String lang,
                            Locale locale,
                            @Valid UserDto userDto,
                            BindingResult bindingResult,
@@ -53,6 +54,7 @@ public class RegisterController {
         }
         userDto.setLanguage(locale.getLanguage());
 
+        userDto.setLanguage(lang);
         userService.registerUser(userDto, accountType);
 
         return "redirect:/auth/login";

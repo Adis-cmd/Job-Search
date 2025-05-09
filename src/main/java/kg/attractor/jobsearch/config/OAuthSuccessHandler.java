@@ -24,7 +24,7 @@ public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
-                                        Authentication authentication) throws IOException, ServletException {
+                                        Authentication authentication) throws IOException {
         var oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
 
         authUserDetailsService.processOAuthPostLogin(

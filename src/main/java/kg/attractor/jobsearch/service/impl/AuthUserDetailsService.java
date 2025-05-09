@@ -58,12 +58,12 @@ public class AuthUserDetailsService implements UserDetailsService {
                 var users = new User();
                 users.setEmail(email);
                 users.setPassword(passwordEncoder.encode("qwe"));
-                users.setAccountType(accountTypeService.findById(3L));
+                users.setAccountType(accountTypeService.findById(2L));
                 users.setEnabled(true);
                 users.setName(name);
                 users.setSurname(surname);
                 users.setPhoneNumber("+996 500 000 000");
-                users.setAge(null);
+                users.setAge(18);
                 users.setAvatar(avatar);
                 userRepository.saveAndFlush(users);
             }
