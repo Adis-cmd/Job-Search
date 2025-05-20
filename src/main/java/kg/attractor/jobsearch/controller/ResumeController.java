@@ -2,6 +2,7 @@ package kg.attractor.jobsearch.controller;
 
 import jakarta.validation.Valid;
 import kg.attractor.jobsearch.dto.ResumeDto;
+import kg.attractor.jobsearch.dto.UserDto;
 import kg.attractor.jobsearch.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.security.Principal;
 
 @Controller
 @RequiredArgsConstructor
@@ -42,8 +45,12 @@ public class ResumeController {
 
     @GetMapping("add")
     public String getAddResume(Model model) {
+        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserDto user = userService.getUserEmail(currentUserEmail);
+
         model.addAttribute("category", categoryService.getAllCategory());
         model.addAttribute("resumeDto", new ResumeDto());
+        model.addAttribute("user" , user.getAge());
         return "resume/addResume";
     }
 
@@ -51,23 +58,28 @@ public class ResumeController {
     public String addResume(@Valid ResumeDto resumeDto, BindingResult bindingResult, Model model) {
         String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         String currentUser = String.valueOf(userService.getUserId(currentUserEmail));
+        UserDto user = userService.getUserEmail(currentUserEmail);
 
         if (!bindingResult.hasErrors()) {
-            resumeService.createResumes(resumeDto, currentUser);
-
-            return "redirect:/profile";
+            try {
+                resumeService.createResumes(resumeDto, currentUser);
+                return "redirect:/profile";
+            } catch (IllegalArgumentException e) {
+                model.addAttribute("errorMessage", e.getMessage());
+            }
         }
 
         model.addAttribute("category", categoryService.getAllCategory());
         model.addAttribute("resumeDto", resumeDto);
+        model.addAttribute("user" , user.getAge());
         return "resume/addResume";
 
     }
 
     @GetMapping("edit/{resumeId}")
-    public String getEditResume(@PathVariable("resumeId") String resumeId, Model model) {
+    public String getEditResume(@PathVariable("resumeId") String resumeId, Model model, Principal p) {
         model.addAttribute("category", categoryService.getAllCategory());
-        model.addAttribute("resumeDto", resumeService.getResumeById(resumeId));
+        model.addAttribute("resumeDto", resumeService.getResumeById(resumeId, p));
         return "resume/editResume";
     }
 
@@ -88,8 +100,8 @@ public class ResumeController {
     }
 
     @GetMapping("info/{resumeId}")
-    public String getResumeInfo(@PathVariable("resumeId") Long resumeId, Model model, @PageableDefault(page = 0, size = 3) Pageable pageable) {
-        ResumeDto resumeDto = resumeService.getResumeById(String.valueOf(resumeId));
+    public String getResumeInfo(@PathVariable("resumeId") Long resumeId, Model model, @PageableDefault(page = 0, size = 3) Pageable pageable, Principal p) {
+        ResumeDto resumeDto = resumeService.getResumeById(String.valueOf(resumeId), p);
         model.addAttribute("category", categoryService.findCategoryById(resumeDto.getCategoryId()));
         model.addAttribute("resumeDto", resumeDto);
         model.addAttribute("applicant", userService.getUserById(resumeDto.getApplicantId()));

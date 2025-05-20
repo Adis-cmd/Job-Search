@@ -45,9 +45,9 @@ public class ResumeControllerApi {
     }
 
 
-    @GetMapping
-    public ResumeDto getResumesById(@RequestParam(name = "id") String id) {
-        return resumesService.getResumeById(id);
-    }
+//    @GetMapping
+//    public ResumeDto getResumesById(@RequestParam(name = "id") String id) {
+//        return resumesService.getResumeById(id);
+//    }
 
 }

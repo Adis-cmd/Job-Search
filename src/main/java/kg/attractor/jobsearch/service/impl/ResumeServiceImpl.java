@@ -1,20 +1,30 @@
 package kg.attractor.jobsearch.service.impl;
 
+import kg.attractor.jobsearch.dto.EducationInfoDto;
 import kg.attractor.jobsearch.dto.ResumeDto;
+import kg.attractor.jobsearch.dto.WorkExperienceInfoDto;
 import kg.attractor.jobsearch.exception.NumberFormatException.ResumeServiceException;
+import kg.attractor.jobsearch.exception.NumberFormatException.UserServiceException;
+import kg.attractor.jobsearch.model.EducationInfo;
 import kg.attractor.jobsearch.model.Resume;
+import kg.attractor.jobsearch.model.User;
+import kg.attractor.jobsearch.model.WorkExperienceInfo;
 import kg.attractor.jobsearch.repos.ResumeRepository;
 import kg.attractor.jobsearch.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -29,6 +39,7 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
     private final CategoryService categoryService;
     private final ContactInfoService contactInfoService;
     private final ModelMapper modelMapper = new ModelMapper();
+    private final MessageSource messageSource;
 
     @Override
     public List<ResumeDto> getAllResumes() {
@@ -43,6 +54,54 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
     public void createResumes(ResumeDto resumesDto, String userId) {
         log.info("Создание резюме для пользователя с ID: {}", userId);
         Long userParse = parseId(userId);
+
+        if (hasValidWorkExperiences(resumesDto)) {
+            for (WorkExperienceInfoDto workExperienceInfoDto : resumesDto.getWorkExperiences()) {
+                int currentYear = LocalDate.now().getYear();
+                Integer workYear = workExperienceInfoDto.getYears();
+                if (workYear == null || workYear < 0 || workYear > currentYear || workYear < (currentYear - (userService.findById(userParse).getAge() - 18))) {
+                    throw new
+                            IllegalArgumentException(
+                                    String.format("Некорректный год работы: %d. Убедитесь, что это не раньше достижения 18 лет, не в будущем и не отрицательное.",
+                                            workYear)
+                    );
+                }
+            }
+        }
+
+
+        if (hasValidEducationInfos(resumesDto)) {
+            int currentYear = LocalDate.now().getYear();
+
+            for (EducationInfoDto e : resumesDto.getEducationInfos()) {
+                if (e.getStartDate() == null || e.getEndDate() == null) {
+                    throw new IllegalArgumentException("Дата начала и окончания обучения обязательны");
+                }
+
+                int startYear = e.getStartDate().getYear();
+                int endYear = e.getEndDate().getYear();
+
+                if (startYear < 0) {
+                    throw new IllegalArgumentException("Год начала обучения не может быть отрицательным");
+                }
+                if (endYear < 0) {
+                    throw new IllegalArgumentException("Год окончания обучения не может быть отрицательным");
+                }
+                if (startYear < 1900) {
+                    throw new IllegalArgumentException("Год начала обучения не может быть раньше 1900");
+                }
+                if (startYear > currentYear) {
+                    throw new IllegalArgumentException("Год начала обучения не может быть в будущем");
+                }
+                if (endYear < startYear) {
+                    throw new IllegalArgumentException("Год окончания обучения не может быть раньше года начала");
+                }
+                if (endYear > currentYear) {
+                    throw new IllegalArgumentException("Год окончания обучения не может быть в будущем");
+                }
+            }
+        }
+
 
         Resume resume = Resume.builder()
                 .name(resumesDto.getName())
@@ -59,12 +118,22 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
         log.info("Резюме успешно создано с ID: {}", savedResume.getId());
 
         if (hasValidEducationInfos(resumesDto)) {
-            educationInfoService.saveEducationInfos(resumesDto, savedResume);
+            List<EducationInfoDto> educationInfos = resumesDto.getEducationInfos();
+            for (EducationInfoDto educationInfoDto : educationInfos) {
+                EducationInfo educationInfo = modelMapper.map(educationInfoDto, EducationInfo.class);
+                educationInfo.setResumeId(savedResume);
+                educationInfoService.saveEducationInfos(resumesDto, savedResume);            }
         }
 
         if (hasValidWorkExperiences(resumesDto)) {
-            workExperienceInfoService.saveWorkExperiences(resumesDto, savedResume);
+            List<WorkExperienceInfoDto> workExperiences = resumesDto.getWorkExperiences();
+            for (WorkExperienceInfoDto workExperienceInfoDto : workExperiences) {
+                WorkExperienceInfo workExperience = modelMapper.map(workExperienceInfoDto, WorkExperienceInfo.class);
+                workExperience.setResumeId(savedResume);
+                workExperienceInfoService.saveWorkExperiences(resumesDto, savedResume, userService.findById(userParse));
+            }
         }
+
 
         if (hasValidContactInfos(resumesDto)) {
             contactInfoService.saveContactInfos(resumesDto, savedResume);
@@ -89,10 +158,6 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
                 .anyMatch(info -> info.getValue() != null && !info.getValue().isBlank());
     }
 
-
-
-
-
     @Override
     public void deleteResumes(String resumeId) {
         Long parseResumeId = parseId(resumeId);
@@ -103,13 +168,30 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
 
 
     @Override
-    public ResumeDto getResumeById(String resumeId) {
+    public ResumeDto getResumeById(String resumeId, Principal p) {
+
+        if (p == null) {
+            throw new UserServiceException("Вам запрещен доступ для этой страницы");
+        }
+
+        User user = userService.getUserByEmail(p.getName());
         Long parseResumeId = parseId(resumeId);
+
         log.info("Поиск резюме с ID: {}", parseResumeId);
-        Resume resumes = getEntityOrThrow(resumeRepository.findById(parseResumeId),
-                new ResumeServiceException("{resume.service.notFoundById}"));
-        return resumeDtos(resumes);
-        //TODO метод для поиска резюме по его id
+
+        Resume resume = resumeRepository.findById(parseResumeId)
+                .orElseThrow(() -> new ResumeServiceException(
+                        messageSource.getMessage("resume.service.notFoundById", null, Locale.getDefault())
+                ));
+
+        if (!user.getAccountType().getType().equals("EMPLOYEE") &&
+                !user.getId().equals(resume.getApplicant().getId())) {
+            throw new ResumeServiceException(
+                    messageSource.getMessage("resume.info.view.valid", null, Locale.getDefault())
+            );
+        }
+
+        return resumeDtos(resume);
     }
 
     @Override

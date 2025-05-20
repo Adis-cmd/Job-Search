@@ -5,6 +5,7 @@ import kg.attractor.jobsearch.model.Resume;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,7 +16,7 @@ public interface ResumeService {
 
     void deleteResumes(String resumeId);
 
-    ResumeDto getResumeById(String resumeId);
+    ResumeDto getResumeById(String resumeId, Principal principal);
 
     Optional<Resume> findResumeById(Long resumeId);
 
