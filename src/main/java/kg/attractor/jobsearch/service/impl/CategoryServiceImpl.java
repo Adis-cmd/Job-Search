@@ -8,6 +8,7 @@ import kg.attractor.jobsearch.model.Category;
 import kg.attractor.jobsearch.model.Vacancy;
 import kg.attractor.jobsearch.repos.CategoryRepository;
 import kg.attractor.jobsearch.service.CategoryService;
+import kg.attractor.jobsearch.service.VacancyQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

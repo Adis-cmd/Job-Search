@@ -12,11 +12,13 @@ import kg.attractor.jobsearch.service.ResumeService;
 import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
@@ -24,15 +26,24 @@ public class RespondedApplicantServiceImpl extends MethodClass implements Respon
     private final RespondedApplicantRepository repository;
     private final VacancyService vacancyService;
     private final ResumeService resumeService;
+    private final MessageSource messageSource;
     private final ModelMapper modelMapper = new ModelMapper();
 
     @Override
     public Boolean responseVacancies(Long vacancyId, Long resumeId) {
-        Vacancy vacancy = getEntityOrThrow(vacancyService.findVacancyById(vacancyId),
-                new VacancyServiceException("{vacancy.service.notFound}"));
+        Vacancy vacancy = getEntityOrThrow(
+                vacancyService.findVacancyById(vacancyId),
+                new VacancyServiceException(
+                        messageSource.getMessage("vacancy.service.notFound", null, Locale.getDefault())
+                )
+        );
 
-        Resume resume = getEntityOrThrow(resumeService.findResumeById(resumeId),
-                new ResumeServiceException("{resume.service.notFound}"));
+        Resume resume = getEntityOrThrow(
+                resumeService.findResumeById(resumeId),
+                new ResumeServiceException(
+                        messageSource.getMessage("resume.service.notFound", null, Locale.getDefault())
+                )
+        );
 
         if (repository.existsByVacancyIdAndResumeId(vacancy, resume)) {
             return false;

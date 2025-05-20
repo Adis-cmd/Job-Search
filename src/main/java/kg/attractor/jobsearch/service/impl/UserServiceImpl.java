@@ -13,6 +13,7 @@ import kg.attractor.jobsearch.util.CommonUtilities;
 import kg.attractor.jobsearch.util.FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -34,6 +35,7 @@ public class UserServiceImpl extends MethodClass implements UserService {
     private final UserRepository userRepository;
     private final AccountTypeService accountTypeService;
     private final EmailServiceImpl emailService;
+    private final MessageSource messageSource;
 
     @Override
     public void save(User user) {
@@ -64,7 +66,8 @@ public class UserServiceImpl extends MethodClass implements UserService {
 
     @Override
     public String userLanguage(String email) {
-        User user = getEntityOrThrow(userRepository.findByEmail(email), new UserServiceException("{user.service.notFound}"));
+        String message = messageSource.getMessage("user.service.notFound", null, Locale.getDefault());
+        User user = getEntityOrThrow(userRepository.findByEmail(email), new UserServiceException(message));
         return user.getLanguage();
     }
 
@@ -86,8 +89,8 @@ public class UserServiceImpl extends MethodClass implements UserService {
     @Override
     public void editUser(UserDto userDto, Long userId, String avatar) {
         log.info("Редактирование профиля пользователя с ID: {}", userId);
-        User user = getEntityOrThrow(userRepository.findById(userId),
-                new UserServiceException("{user.service.notFound}"));
+        String message = messageSource.getMessage("user.service.notFound", null, Locale.getDefault());
+        User user = getEntityOrThrow(userRepository.findById(userId), new UserServiceException(message));
         user.setName(userDto.getName());
         user.setSurname(userDto.getSurname());
         user.setAge(userDto.getAge());
@@ -100,11 +103,12 @@ public class UserServiceImpl extends MethodClass implements UserService {
         User user = new User();
 
         if (userRepository.existsByPhoneNumber(userDto.getEmail())) {
-            throw new UserServiceException("{user.service.phoneNumber}");
-        }
+            String message = messageSource.getMessage("user.service.phoneNumber", null, Locale.getDefault());
+            throw new UserServiceException(message);        }
 
         if (userRepository.existsByEmail(userDto.getEmail())) {
-            throw new UserServiceException("{user.service.email}");
+            String message = messageSource.getMessage("user.service.email", null, Locale.getDefault());
+            throw new UserServiceException(message);
         }
 
         user.setName(userDto.getName());
@@ -127,8 +131,8 @@ public class UserServiceImpl extends MethodClass implements UserService {
 
     @Override
     public void registerGoogleUser(UserDto userDto, Long accountTypeId, String email) {
-        User user = getEntityOrThrow(userRepository.findByEmail(email),
-                new UserServiceException("{user.service.notFound}"));
+        String message = messageSource.getMessage("user.service.notFound", null, Locale.getDefault());
+        User user = getEntityOrThrow(userRepository.findByEmail(email), new UserServiceException(message));
         user.setName(userDto.getName());
         user.setSurname(userDto.getSurname());
         user.setAge(userDto.getAge());
@@ -153,23 +157,23 @@ public class UserServiceImpl extends MethodClass implements UserService {
     @Override
     public UserDto getUserEmail(String email) {
         log.info("Поиск пользователя с email: {}", email);
-        User user = getEntityOrThrow(userRepository.findByEmail(email),
-                new UserServiceException("{user.service.emailNotFound}"));
+        String message = messageSource.getMessage("user.service.emailNotFound", new Object[]{email}, Locale.getDefault());
+        User user = getEntityOrThrow(userRepository.findByEmail(email), new UserServiceException(message));
         return userDtos(user);
         //TODO Логика для поиска пользователя по его email
     }
 
     @Override
     public User getUserByEmail(String email) {
-        return getEntityOrThrow(userRepository.findByEmail(email),
-                new UserServiceException("{user.service.emailNotFound}"));
+        String message = messageSource.getMessage("user.service.emailNotFound", new Object[]{email}, Locale.getDefault());
+        return getEntityOrThrow(userRepository.findByEmail(email), new UserServiceException(message));
     }
 
     @Override
     public UserDto getUserById(Long id) {
         log.info("Поиск пользователя с id: {}", id);
-        User user = getEntityOrThrow(userRepository.findById(id),
-                new UserServiceException("{user.service.idNotFound}"));
+        String message = messageSource.getMessage("user.service.idNotFound", new Object[]{id}, Locale.getDefault());
+        User user = getEntityOrThrow(userRepository.findById(id), new UserServiceException(message));
         return userDtos(user);
         //TODO Логика для поиска пользователя по его email
     }
@@ -178,8 +182,8 @@ public class UserServiceImpl extends MethodClass implements UserService {
     public Long getUserId(String email) {
         Long userId = userRepository.findUSerByEmail(email);
         if (userId == null || userId == 0) {
-            throw new UserServiceException("{user.service.emailNotFound}");
-        }
+            String message = messageSource.getMessage("user.service.emailNotFound", new Object[]{email}, Locale.getDefault());
+            throw new UserServiceException(message);        }
         return userId;
     }
 
@@ -188,24 +192,24 @@ public class UserServiceImpl extends MethodClass implements UserService {
         Page<User> users = userRepository.findAllUserEmployee(pageable);
 
         if (users == null) {
-            throw new UserServiceException("{user.service.notFound}");
-        }
+            String message = messageSource.getMessage("user.service.notFound", null, Locale.getDefault());
+            throw new UserServiceException(message);        }
         return users.map(this::userDtos);
     }
 
     @Override
     public UserDto findUserEmployeeById(Long id) {
-        User users = getEntityOrThrow(userRepository.findUserById(id), new UserServiceException("User not found"));
-
-        return userDtos(users);
+        String message = messageSource.getMessage("user.service.notFound", null, Locale.getDefault());
+        User user = getEntityOrThrow(userRepository.findUserById(id), new UserServiceException(message));
+        return userDtos(user);
     }
 
 
     @Override
     public UserDto getUserPhone(String phone) {
         log.info("Поиск пользователя с номером телефона: {}", phone);
-        User user = getEntityOrThrow(userRepository.findUserByPhoneNumber(phone),
-                new UserServiceException("{user.service.phoneNumberNotFound}"));
+        String message = messageSource.getMessage("user.service.phoneNumberNotFound", new Object[]{phone}, Locale.getDefault());
+        User user = getEntityOrThrow(userRepository.findUserByPhoneNumber(phone), new UserServiceException(message));
         return userDtos(user);
         //TODO Логика для поиска пользователя по его телефону
     }
@@ -260,12 +264,12 @@ public class UserServiceImpl extends MethodClass implements UserService {
 
     @Override
     public User findById(Long id) {
-        return getEntityOrThrow(userRepository.findById(id), new UserServiceException("User not found"));
-    }
+        String message = messageSource.getMessage("user.service.notFound", null, Locale.getDefault());
+        return getEntityOrThrow(userRepository.findById(id), new UserServiceException(message));    }
 
     private void updateResetPasswordToken(String token, String email) {
-        User user = getEntityOrThrow(userRepository.findByEmail(email),
-                new UserServiceException("{user.service.notFound}"));
+        String message = messageSource.getMessage("user.service.notFound", null, Locale.getDefault());
+        User user = getEntityOrThrow(userRepository.findByEmail(email), new UserServiceException(message));
         user.setResetPasswordToken(token);
         userRepository.saveAndFlush(user);
     }
@@ -282,8 +286,8 @@ public class UserServiceImpl extends MethodClass implements UserService {
 
     @Override
     public User getUserByResetPasswordToken(String token) {
-        return getEntityOrThrow(userRepository.findUserByResetPasswordToken(token),
-                new UserServiceException("{user.service.notFound}"));
+        String message = messageSource.getMessage("user.service.notFound", null, Locale.getDefault());
+        return getEntityOrThrow(userRepository.findUserByResetPasswordToken(token), new UserServiceException(message));
     }
 
     @Override

@@ -106,7 +106,8 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
 
         Long count = vacancyRepository.countOwnedVacancy(id, authorId);
         if (count <= 0) {
-            throw new VacancyNotFoundException("{vacancy.service.countOwned}");
+            String message = messageSource.getMessage("vacancy.service.countOwned", null, Locale.getDefault());
+            throw new VacancyNotFoundException(message);
         }
 
         return vacancyRepository.findById(id)
@@ -120,15 +121,17 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
         }
 
         if (dto.getExpFrom() == null || dto.getExpFrom() < 0) {
-            throw new VacancyServiceException("{experience.valid.from}.");
+            String message = messageSource.getMessage("experience.valid.from", null, Locale.getDefault());
+            throw new VacancyServiceException(message);
         }
 
         if (dto.getExpTo() == null || dto.getExpTo() < 0) {
-            throw new VacancyServiceException("{experience.valid.toNegative}.");
+            String message = messageSource.getMessage("experience.valid.toNegative", null, Locale.getDefault());
+            throw new VacancyServiceException(message);
         }
-
         if (dto.getExpFrom() > dto.getExpTo()) {
-            throw new VacancyServiceException("{experience.valid.fromAndTo}.");
+            String message = messageSource.getMessage("experience.valid.fromAndTo", null, Locale.getDefault());
+            throw new VacancyServiceException(message);
         }
     }
 
@@ -209,7 +212,8 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
         Long authorId = getEntityOrThrow(vacancyRepository.findUserIdByEmail(email), new UserNotFoundException());
 
         if (vacancyRepository.countOwnedVacancy(parceLong, authorId) <= 0) {
-            throw new VacancyNotFoundException("{vacancy.service.countOwned}");
+            String message = messageSource.getMessage("vacancy.service.countOwned", null, Locale.getDefault());
+            throw new VacancyNotFoundException(message);
         }
 
         vacancyRepository.deleteById(parceLong);

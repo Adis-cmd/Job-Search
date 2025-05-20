@@ -60,10 +60,8 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
                 int currentYear = LocalDate.now().getYear();
                 Integer workYear = workExperienceInfoDto.getYears();
                 if (workYear == null || workYear < 0 || workYear > currentYear || workYear < (currentYear - (userService.findById(userParse).getAge() - 18))) {
-                    throw new
-                            IllegalArgumentException(
-                                    String.format("Некорректный год работы: %d. Убедитесь, что это не раньше достижения 18 лет, не в будущем и не отрицательное.",
-                                            workYear)
+                    throw new IllegalArgumentException(
+                            messageSource.getMessage("workExperience.invalidYear", new Object[]{workYear}, Locale.getDefault())
                     );
                 }
             }
@@ -75,30 +73,36 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
 
             for (EducationInfoDto e : resumesDto.getEducationInfos()) {
                 if (e.getStartDate() == null || e.getEndDate() == null) {
-                    throw new IllegalArgumentException("Дата начала и окончания обучения обязательны");
+                    throw new IllegalArgumentException(messageSource.getMessage("education.year.null", new Object[]{}, Locale.getDefault()));
                 }
 
                 int startYear = e.getStartDate().getYear();
                 int endYear = e.getEndDate().getYear();
 
                 if (startYear < 0) {
-                    throw new IllegalArgumentException("Год начала обучения не может быть отрицательным");
-                }
+                    throw new IllegalArgumentException(
+                            messageSource.getMessage("education.startYear.negative", null, Locale.getDefault())
+                    );                }
                 if (endYear < 0) {
-                    throw new IllegalArgumentException("Год окончания обучения не может быть отрицательным");
-                }
+                    throw new IllegalArgumentException(
+                            messageSource.getMessage("education.endYear.negative", null, Locale.getDefault())
+                    );                }
                 if (startYear < 1900) {
-                    throw new IllegalArgumentException("Год начала обучения не может быть раньше 1900");
-                }
+                    throw new IllegalArgumentException(
+                            messageSource.getMessage("education.startYear.tooEarly", null, Locale.getDefault())
+                    );                }
                 if (startYear > currentYear) {
-                    throw new IllegalArgumentException("Год начала обучения не может быть в будущем");
-                }
+                    throw new IllegalArgumentException(
+                            messageSource.getMessage("education.startYear.future", null, Locale.getDefault())
+                    );                }
                 if (endYear < startYear) {
-                    throw new IllegalArgumentException("Год окончания обучения не может быть раньше года начала");
-                }
+                    throw new IllegalArgumentException(
+                            messageSource.getMessage("education.endYear.beforeStart", null, Locale.getDefault())
+                    );                }
                 if (endYear > currentYear) {
-                    throw new IllegalArgumentException("Год окончания обучения не может быть в будущем");
-                }
+                    throw new IllegalArgumentException(
+                            messageSource.getMessage("education.endYear.future", null, Locale.getDefault())
+                    );                }
             }
         }
 
@@ -171,7 +175,7 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
     public ResumeDto getResumeById(String resumeId, Principal p) {
 
         if (p == null) {
-            throw new UserServiceException("Вам запрещен доступ для этой страницы");
+            throw new UserServiceException(messageSource.getMessage("resume.service.forbitten", null, Locale.getDefault()));
         }
 
         User user = userService.getUserByEmail(p.getName());
@@ -197,7 +201,9 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
     @Override
     public Optional<Resume> findResumeById(Long resumeId) {
         Resume resumes = getEntityOrThrow(resumeRepository.findById(resumeId),
-                new ResumeServiceException("{resume.service.notFoundById}"));
+                new ResumeServiceException(
+                        messageSource.getMessage("resume.service.notFoundById", null, Locale.getDefault())
+                ));
         return Optional.of(resumes);
     }
 
@@ -208,8 +214,12 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
         Long parsedResumeId = parseId(resumeId);
         log.info("Редактирование резюме с ID: {}", parsedResumeId);
 
-        Resume existingResume = getEntityOrThrow(resumeRepository.findById(parsedResumeId),
-                new ResumeServiceException("{resume.service.notFoundById}"));
+        Resume existingResume = getEntityOrThrow(
+                resumeRepository.findById(parsedResumeId),
+                new ResumeServiceException(
+                        messageSource.getMessage("resume.service.notFoundById", null, Locale.getDefault())
+                )
+        );
 
         existingResume.setName(resumesDto.getName());
         existingResume.setCategory(categoryService.findById(resumesDto.getCategoryId()));

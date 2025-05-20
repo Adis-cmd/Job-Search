@@ -1,4 +1,4 @@
-package kg.attractor.jobsearch.service.impl;
+package kg.attractor.jobsearch.service;
 
 import kg.attractor.jobsearch.model.Category;
 import kg.attractor.jobsearch.model.Vacancy;
