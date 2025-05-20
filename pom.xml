@@ -79,6 +79,11 @@
             <version>2.1.214</version> <!-- Обновите на последнюю доступную версию -->
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+
         <!-- Зависимость JDBC -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
