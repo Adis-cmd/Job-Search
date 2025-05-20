@@ -76,6 +76,14 @@
             height: 2rem;
         }
     </style>
+
+    <#if message??>
+        <div class="alert alert-warning d-flex align-items-center gap-2 p-3 rounded-3 mt-4">
+            <i class="bi bi-exclamation-triangle-fill text-dark fs-5"></i>
+            <span>${message}</span>
+        </div>
+    </#if>
+
     <section class="container py-5">
         <h2 class="mb-4 text-center fw-bold" style="color: #f5c518;"><@sping.message "index.h2.header" /></h2>
 

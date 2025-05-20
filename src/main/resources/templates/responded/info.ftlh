@@ -1,84 +1,166 @@
 <#import "../layout.ftlh" as main>
 <#import "../page.ftlh" as p>
+
 <@main.layout ; spring>
+
+    <#if SPRING_SECURITY_CONTEXT?? && SPRING_SECURITY_CONTEXT.authentication??>
+        <#assign user = SPRING_SECURITY_CONTEXT.authentication.principal>
+        <#if user??>
+            <#assign roles = user.authorities?map(it -> it.authority)>
+        </#if>
+    </#if>
+
     <style>
         .responded-container {
             max-width: 1000px;
             margin: 3rem auto;
-            padding: 2rem;
-            background: rgba(33, 37, 41, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 0 20px rgba(245, 197, 24, 0.15);
         }
-
-        .responded-card {
-            display: flex;
-            align-items: center;
+        .vacancy-card {
+            background-color: #212529;
+            border: 1px solid rgba(245, 197, 24, 0.15);
+            border-radius: 1rem;
+            padding: 1.5rem 2rem;
             margin-bottom: 2rem;
-            gap: 2rem;
-            background-color: #1f1f1f;
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: 0 0 20px rgba(245, 197, 24, 0.15);
+            box-shadow: 0 0 15px rgba(245, 197, 24, 0.08);
+            animation: fadeIn 0.5s ease-in-out;
         }
-
-        .responded-vacancy {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .responded-vacancy h3 {
-            font-size: 1.5rem;
+        .vacancy-title {
+            font-size: 1.8rem;
+            font-weight: 700;
             color: #f5c518;
             margin-bottom: 0.5rem;
         }
-
-        .muted-text {
+        .vacancy-subtitle {
+            font-size: 1rem;
             color: #ced4da;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
-
-        .btn {
+        .status-badge {
+            font-size: 0.9rem;
             padding: 0.5rem 1rem;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: 0.3s;
-            display: inline-block;
-            margin-top: 0.5rem;
+            border-radius: 50px;
         }
-
-        .btn.outline {
+        .btn-outline-gold {
             border: 2px solid #f5c518;
-            background-color: transparent;
             color: #f5c518;
         }
-
-
-
+        .btn-outline-gold:hover {
+            background-color: #f5c518;
+            color: #1f1f1f;
+        }
+        .btn-outline-cyan {
+            border: 2px solid #0dcaf0;
+            color: #0dcaf0;
+        }
+        .btn-outline-cyan:hover {
+            background-color: #0dcaf0;
+            color: #1f1f1f;
+        }
+        .empty-card {
+            background-color: #212529;
+            border: 1px solid rgba(245, 197, 24, 0.15);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 0 15px rgba(245, 197, 24, 0.08);
+            text-align: center;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .empty-card i {
+            font-size: 3rem;
+            color: #f5c518;
+        }
+        .empty-card p {
+            color: #ced4da;
+            font-size: 1.2rem;
+            margin-top: 1rem;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 
     <div class="responded-container">
-        <#if page.hasContent()>
-            <#list page.content as respondedApplicant>
-                <div class="responded-card">
-                    <div class="responded-vacancy">
-                        <h3>   <@spring.message "responded.info.vacancy"/>: ${respondedApplicant.vacancyId.name}</h3>
-                        <p class="muted-text">   <@spring.message "responded.info.resume"/>: ${respondedApplicant.resumeId.name}</p>
-                        <p class="muted-text">   <@spring.message "responded.info.status"/>:
-                            <#if respondedApplicant.confirmation>
-                                <@spring.message "responded.info.confirmed"/>
-                            <#else>
-                                <@spring.message "responded.info.noConfirmed"/>                            </#if>
-                        </p>
-                        <a href="/vacancy/info/${respondedApplicant.vacancyId.id}" class="btn outline"><@spring.message "responded.info.button"/></a>
+
+        <#if roles?seq_contains("APPLICANT")>
+            <#if page.hasContent()>
+                <#list page.content as respondedApplicant>
+                    <div class="vacancy-card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <div class="vacancy-title">${respondedApplicant.vacancyId.name}</div>
+                                <div class="vacancy-subtitle">Откликнутое резюме: ${respondedApplicant.resumeId.name}</div>
+                            </div>
+                            <div>
+                                <#if respondedApplicant.confirmation>
+                                    <span class="badge bg-success status-badge">
+                                        <i class="bi bi-check-circle"></i> <@spring.message "responded.info.confirmed"/>
+                                    </span>
+                                <#else>
+                                    <span class="badge bg-secondary status-badge">
+                                        <i class="bi bi-hourglass-split"></i> <@spring.message "responded.info.noConfirmed"/>
+                                    </span>
+                                </#if>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-3">
+                            <a href="/vacancy/info/${respondedApplicant.vacancyId.id}" class="btn btn-outline-gold">
+                                <i class="bi bi-eye"></i> <@spring.message "responded.info.button"/>
+                            </a>
+                            <a href="/chat/${respondedApplicant.id}" class="btn btn-outline-cyan">
+                                <i class="bi bi-chat-dots"></i> <@spring.message "chat.write"/>
+                            </a>
+                        </div>
                     </div>
+                </#list>
+                <@p.pager url=url currentPage=page />
+            <#else>
+                <div class="empty-card">
+                    <i class="bi bi-file-earmark-x"></i>
+                    <p><@spring.message "responded.notRespond"/>.</p>
                 </div>
-            </#list>
-        <#else>
-            <p><@spring.message "responded.info.noResponded" />.</p>
+            </#if>
+
+        <#elseif roles?seq_contains("EMPLOYEE")>
+            <#if employee.hasContent()>
+                <#list employee.content as respondedApplicant>
+                    <div class="vacancy-card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <div class="vacancy-title">${respondedApplicant.resumeId.name}</div>
+                                <div class="vacancy-subtitle">Отклик на вакансию: ${respondedApplicant.vacancyId.name}</div>
+                            </div>
+                            <div>
+                                <#if respondedApplicant.confirmation>
+                                    <span class="badge bg-success status-badge">
+                                        <i class="bi bi-check-circle"></i> <@spring.message "responded.info.confirmed"/>
+                                    </span>
+                                <#else>
+                                    <span class="badge bg-secondary status-badge">
+                                        <i class="bi bi-hourglass-split"></i> <@spring.message "responded.info.noConfirmed"/>
+                                    </span>
+                                </#if>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-3">
+                            <a href="/resume/info/${respondedApplicant.resumeId.id}" class="btn btn-outline-gold">
+                                <i class="bi bi-eye"></i> Посмотреть резюме
+                            </a>
+                            <a href="/chat/${respondedApplicant.id}" class="btn btn-outline-cyan">
+                                <i class="bi bi-chat-dots"></i> Написать в чат
+                            </a>
+                        </div>
+                    </div>
+                </#list>
+                <@p.pager url=url currentPage=employee />
+            <#else>
+                <div class="empty-card">
+                    <i class="bi bi-file-earmark-x"></i>
+                    <p>Пока нет откликов на ваши вакансии.</p>
+                </div>
+            </#if>
         </#if>
+
     </div>
-    <@p.pager url=url currentPage=page />
 
 </@main.layout>

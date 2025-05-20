@@ -16,6 +16,7 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
                 integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
                 crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="../static/scripts/main.js"></script>
 
     </head>
@@ -98,7 +99,6 @@
                         <#assign user = SPRING_SECURITY_CONTEXT.authentication.principal>
                         <#if user??>
                             <#assign roles = user.authorities?map(it -> it.authority)>
-                            <#assign userName = user.getUsername()>
                             <#if !(roles?seq_contains("APPLICANT"))>
                                 <li class="nav-item">
                                     <a class="nav-link" href="/resume">

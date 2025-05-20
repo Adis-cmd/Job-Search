@@ -12,6 +12,13 @@
             letter-spacing: 1px;
         }
 
+        .alert-dark {
+            background: rgba(52, 58, 64, 0.85);
+            border: 1px solid rgba(245, 197, 24, 0.15);
+            color: #ced4da;
+            backdrop-filter: blur(6px);
+        }
+
         .glass-card {
             background: rgba(33, 37, 41, 0.95);
             backdrop-filter: blur(8px);
@@ -82,15 +89,27 @@
         <div class="card glass-card p-4 shadow-lg">
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <p><i class="bi bi-person-fill me-2 text-warning"></i><strong><@spring.message "resume.info.applicantName"/>:</strong> ${applicant.name}</p>
-                    <p><i class="bi bi-currency-dollar me-2 text-success"></i><strong><@spring.message "resume.info.salary"/>:</strong> ${resumeDto.salary}</p>
-                    <p><i class="bi bi-folder-fill me-2 text-warning"></i><strong><@spring.message "resume.info.category"/>:</strong> ${category.name}</p>
+                    <p>
+                        <i class="bi bi-person-fill me-2 text-warning"></i><strong><@spring.message "resume.info.applicantName"/>
+                            :</strong> ${applicant.name}</p>
+                    <p>
+                        <i class="bi bi-currency-dollar me-2 text-success"></i><strong><@spring.message "resume.info.salary"/>
+                            :</strong> ${resumeDto.salary}</p>
+                    <p>
+                        <i class="bi bi-folder-fill me-2 text-warning"></i><strong><@spring.message "resume.info.category"/>
+                            :</strong> ${category.name}</p>
                 </div>
 
                 <div class="col-md-6 mb-3">
-                    <p><i class="bi bi-calendar-plus me-2 text-info"></i><strong><@spring.message "resume.info.created"/>:</strong> ${resumeDto.formattedCreatedDate}</p>
-                    <p><i class="bi bi-clock-history me-2 text-info"></i><strong><@spring.message "resume.info.updated"/>:</strong> ${resumeDto.formattedUpdatedTime}</p>
-                    <p><i class="bi bi-circle-fill me-2 text-warning"></i><strong><@spring.message "resume.info.status"/>:</strong>
+                    <p>
+                        <i class="bi bi-calendar-plus me-2 text-info"></i><strong><@spring.message "resume.info.created"/>
+                            :</strong> ${resumeDto.formattedCreatedDate}</p>
+                    <p>
+                        <i class="bi bi-clock-history me-2 text-info"></i><strong><@spring.message "resume.info.updated"/>
+                            :</strong> ${resumeDto.formattedUpdatedTime}</p>
+                    <p>
+                        <i class="bi bi-circle-fill me-2 text-warning"></i><strong><@spring.message "resume.info.status"/>
+                            :</strong>
                         <span class="badge ${resumeDto.isActive?then('bg-success', 'bg-secondary')}">
                             ${resumeDto.isActive?then(springMacroRequestContext.getMessage("vacancy.info.active"),
                             springMacroRequestContext.getMessage("vacancy.info.noActive"))}
@@ -102,12 +121,15 @@
             <hr class="my-4 border-warning">
 
             <div>
-                <h4 class="text-warning"><i class="bi bi-info-circle me-2"></i><@spring.message "resume.info.workExperience"/></h4>
-                <#if workExperiences?? && (workExperiences?size > 0)>
+                <h4 class="text-warning"><i
+                            class="bi bi-info-circle me-2"></i><@spring.message "resume.info.workExperience"/></h4>
+                <#if workExperiences?? && (workExperiences.content?size > 0)>
                     <#list workExperiences.content as work>
-                        <p class="work-item"><strong><@spring.message "resume.info.workCompany"/>:</strong> ${work.companyName}</p>
+                        <p class="work-item"><strong><@spring.message "resume.info.workCompany"/>
+                                :</strong> ${work.companyName}</p>
                         <p><strong><@spring.message "resume.info.workPosition"/>:</strong> ${work.position}</p>
-                        <p><strong><@spring.message "resume.info.workResponsibilities"/>:</strong> ${work.responsibilities}</p>
+                        <p><strong><@spring.message "resume.info.workResponsibilities"/>
+                                :</strong> ${work.responsibilities}</p>
                         <p><strong><@spring.message "resume.info.workYears"/>:</strong> ${work.years}
                             <#if work.years == 1>
                                 <@spring.message "resume.info.year"/>
@@ -117,30 +139,37 @@
                         </p>
                         <hr class="border-secondary">
                     </#list>
-
-
+                    <@p.pager url=url currentPage=workExperiences />
                 <#else>
-                    <p><@spring.message "resume.info.workNotFound"/>.</p>
+                    <div class="alert alert-dark d-flex align-items-center gap-2 p-3 rounded-3">
+                        <i class="bi bi-person-workspace text-warning fs-5"></i>
+                        <span><@spring.message "resume.info.workNotFound"/>.</span>
+                    </div>
                 </#if>
-                <@p.pager url=url currentPage=workExperiences />
             </div>
 
             <hr class="my-4 border-warning">
 
             <div>
-                <h4 class="text-warning"><i class="bi bi-mortarboard-fill me-2"></i><@spring.message "resume.info.education"/></h4>
-                <#if educationInfos?? && (educationInfos?size > 0)>
+                <h4 class="text-warning"><i
+                            class="bi bi-mortarboard-fill me-2"></i><@spring.message "resume.info.education"/></h4>
+                <#if educationInfos?? && (educationInfos.content?size > 0)>
                     <#list educationInfos.content as edu>
-                        <p class="education-item"><strong><@spring.message "resume.info.educationInstitution"/>:</strong> ${edu.institution}</p>
+                        <p class="education-item"><strong><@spring.message "resume.info.educationInstitution"/>
+                                :</strong> ${edu.institution}</p>
                         <p><strong><@spring.message "resume.info.educationProgram"/>:</strong> ${edu.program}</p>
                         <p><strong><@spring.message "resume.info.educationDegree"/>:</strong> ${edu.degree}</p>
-                        <p><strong><@spring.message "resume.info.educationDate"/>:</strong> ${edu.startDate} — ${edu.endDate}</p>
+                        <p><strong><@spring.message "resume.info.educationDate"/>:</strong> ${edu.startDate}
+                            — ${edu.endDate}</p>
                         <hr class="border-secondary">
                     </#list>
+                    <@p.pager url=url currentPage=educationInfos />
                 <#else>
-                    <p><@spring.message "resume.info.educationNotFound"/>.</p>
+                    <div class="alert alert-dark d-flex align-items-center gap-2 p-3 rounded-3">
+                        <i class="bi bi-journal-x text-warning fs-5"></i>
+                        <span><@spring.message "resume.info.educationNotFound"/>.</span>
+                    </div>
                 </#if>
-                <@p.pager url=url currentPage=educationInfos />
             </div>
         </div>
 
