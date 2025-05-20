@@ -5,6 +5,7 @@ import kg.attractor.jobsearch.service.ErrorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -70,6 +71,17 @@ public class GlobalControllerAdvice {
         model.addAttribute("reason", status.getReasonPhrase());
         model.addAttribute("details", request.getRequestURI());
         model.addAttribute("message", "Файл слишком большой. Максимальный размер файла: 10MB");
+        return "errors/error";
+    }
+
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public String handleAccessDeniedException(AccessDeniedException ex, Model model, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.FORBIDDEN;
+        model.addAttribute("status", status.value());
+        model.addAttribute("reason", status.getReasonPhrase());
+        model.addAttribute("details", request.getRequestURI());
+        model.addAttribute("message", ex.getMessage());
         return "errors/error";
     }
 }
