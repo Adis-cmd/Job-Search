@@ -5,10 +5,7 @@ import kg.attractor.jobsearch.dto.EditProfileDto;
 import kg.attractor.jobsearch.dto.ResumeDto;
 import kg.attractor.jobsearch.dto.UserDto;
 import kg.attractor.jobsearch.dto.VacancyDto;
-import kg.attractor.jobsearch.service.CategoryService;
-import kg.attractor.jobsearch.service.ResumeService;
-import kg.attractor.jobsearch.service.UserService;
-import kg.attractor.jobsearch.service.VacancyService;
+import kg.attractor.jobsearch.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +29,7 @@ public class ProfileController {
     private final UserService userService;
     private final ResumeService resumeService;
     private final VacancyService vacancyService;
+    private final RespondedApplicantService respondedApplicantService;
 
     @GetMapping
     public String profile(Model model, @PageableDefault(page = 0, size = 3) Pageable pageable) {
@@ -43,6 +41,8 @@ public class ProfileController {
 
         Page<ResumeDto> resumePage = resumeService.getResumeByUserid(String.valueOf(currentUser.getId()), pageable);
         Page<VacancyDto> vacancyPage = vacancyService.getVacancyByCreatorId(String.valueOf(currentUser.getId()), pageable);
+        Long applicantCountResponse = respondedApplicantService.countRespondedApplicants(currentUser.getId());
+        Long employeeCountResponse = respondedApplicantService.countRespondedEmployee(currentUser.getId());
 
         if (resumePage.getTotalPages() > 0 && pageable.getPageNumber() >= resumePage.getTotalPages()) {
             return "redirect:/profile?page=" + (resumePage.getTotalPages() - 1) + "&size=" + pageable.getPageSize();
@@ -53,6 +53,8 @@ public class ProfileController {
         }
 
         model.addAttribute("page", currentUser);
+        model.addAttribute("countApplicant", applicantCountResponse);
+        model.addAttribute("countEmployee", employeeCountResponse);
         model.addAttribute("resumePage", resumePage);
         model.addAttribute("vacancyPage", vacancyPage);
         model.addAttribute("url", "/profile");
@@ -88,17 +90,11 @@ public class ProfileController {
         }
 
         if (user.getAccountType() == 1) {
-            List<FieldError> errorsToKeep = bindingResult.getFieldErrors().stream()
-                    .filter(error -> !error.getField().equals("surname") && !error.getField().equals("age"))
-                    .toList();
+            boolean onlyIgnoredErrors = bindingResult.getFieldErrors().stream()
+                    .allMatch(error -> error.getField().equals("surname") || error.getField().equals("age"));
 
-            if (errorsToKeep.isEmpty()) {
-            } else {
-                BindingResult finalBindingResult = new BeanPropertyBindingResult(editProfileDto, "editProfileDto");
-                for (FieldError e : errorsToKeep) {
-                    finalBindingResult.addError(e);
-                }
-                bindingResult = finalBindingResult;
+            if (onlyIgnoredErrors) {
+                bindingResult = new BeanPropertyBindingResult(user, "userDto");
             }
         }
         if (bindingResult.hasErrors()) {

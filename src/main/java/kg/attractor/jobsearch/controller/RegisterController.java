@@ -38,20 +38,24 @@ public class RegisterController {
                            BindingResult bindingResult,
                            Model model) {
 
-        if (accountType == 1) {
-            boolean onlyIgnoredErrors = bindingResult.getFieldErrors().stream()
-                    .allMatch(error -> error.getField().equals("surname") || error.getField().equals("age"));
+        if (accountType != null && accountType == 1) {
+            boolean hasOtherErrors = bindingResult.getFieldErrors().stream()
+                    .anyMatch(error -> !error.getField().equals("surname") && !error.getField().equals("age"));
 
-            if (onlyIgnoredErrors) {
-                bindingResult = new BeanPropertyBindingResult(userDto, "userDto");
+            if (hasOtherErrors) {
+                model.addAttribute("accountType", accountType);
+                model.addAttribute("userDto", userDto);
+                return "register/register";
+            }
+
+        } else {
+            if (bindingResult.hasErrors()) {
+                model.addAttribute("accountType", accountType != null ? accountType.toString() : "");
+                model.addAttribute("userDto", userDto);
+                return "register/register";
             }
         }
 
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("accountType", accountType != null ? accountType.toString() : "");
-            model.addAttribute("userDto", userDto);
-            return "register/register";
-        }
         userDto.setLanguage(locale.getLanguage());
 
         userDto.setLanguage(lang);
