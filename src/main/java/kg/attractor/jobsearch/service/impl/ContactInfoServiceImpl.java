@@ -10,6 +10,7 @@ import kg.attractor.jobsearch.repos.ContactTypeRepository;
 import kg.attractor.jobsearch.service.ContactInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +25,7 @@ public class ContactInfoServiceImpl implements ContactInfoService {
     }
 
     @Override
+    @Transactional
     public void saveContactInfos(ResumeDto dto, Resume resume) {
         if (dto.getContactInfos() == null) return;
         dto.getContactInfos().forEach(info -> {
@@ -32,7 +34,9 @@ public class ContactInfoServiceImpl implements ContactInfoService {
                     .typeId(toContactTypeEntity(info.getTypeId()))
                     .value(info.getValue())
                     .build();
+            System.out.println("Contact built: " + contact);
             contactInfoRepository.saveAndFlush(contact);
+            System.out.println("Contact saved!");
         });
     }
 }

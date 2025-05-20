@@ -8,4 +8,8 @@ public class UserNotFoundException extends NoSuchElementException {
             "User not found"
     );
   }
+
+  public UserNotFoundException(String message) {
+    super(message);
+  }
 }

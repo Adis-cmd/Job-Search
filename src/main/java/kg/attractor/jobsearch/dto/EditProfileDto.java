@@ -1,7 +1,6 @@
 package kg.attractor.jobsearch.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 @Getter
@@ -13,11 +12,15 @@ public class EditProfileDto {
 
     private Long id;
 
-    @NotBlank(message = "Поле имени не может быть пустым")
+    @NotBlank(message = "{edit.profile.name}")
     private String name;
 
+    @NotBlank(message = "{edit.profile.surname}")
     private String surname;
 
+    @NotNull(message = "{edit.profile.age}")
+    @Min(value = 18, message = "{edit.profile.ageMin}")
+    @Max(value = 100, message = "{edit.profile.ageMax}")
     private Integer age;
 
     private String avatar;

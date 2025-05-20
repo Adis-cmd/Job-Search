@@ -44,30 +44,25 @@ public class AuthUserDetailsService implements UserDetailsService {
         );
     }
 
-    public void processOAuthPostLogin(String email, String name, String surname, String avatar) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public void processOAuthPostLogin(String email, String name, String surname, String picture) {
+        var existingUser = userRepository.findByEmail(email);
 
-        if (authentication instanceof OAuth2AuthenticationToken oAuth2Token) {
-            Map<String, Object> attributes = oAuth2Token.getPrincipal().getAttributes();
-
-            AuthUserDetailsService.log.info("OAuth2 attributes: {}", attributes);
-
-            var user = userRepository.findByEmail(email);
-
-            if (user.isEmpty()) {
+            if (existingUser.isEmpty()) {
                 var users = new User();
                 users.setEmail(email);
                 users.setPassword(passwordEncoder.encode("qwe"));
-                users.setAccountType(accountTypeService.findById(2L));
+                users.setAccountType(accountTypeService.findById(1L));
                 users.setEnabled(true);
                 users.setName(name);
                 users.setSurname(surname);
                 users.setPhoneNumber("+996 500 000 000");
                 users.setAge(18);
-                users.setAvatar(avatar);
+                users.setAvatar(picture);
                 userRepository.saveAndFlush(users);
             }
-        }
-    }
 
+        UserDetails userDetails = loadUserByUsername(email);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
 }
