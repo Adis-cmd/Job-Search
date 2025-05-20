@@ -13,6 +13,7 @@ import java.time.format.DateTimeFormatter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @ExperienceRangeValid
+@ToString
 public class VacancyDto {
     private Long id;
     @NotBlank(message = "{vacancy.valid.nullName}")

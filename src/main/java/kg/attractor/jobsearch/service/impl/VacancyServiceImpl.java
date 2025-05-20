@@ -14,6 +14,7 @@ import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,8 +22,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -34,8 +37,16 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
     private final VacancyRepository vacancyRepository;
     private final UserServiceImpl userService;
     private final ModelMapper modelMapper = new ModelMapper();
+    private final MessageSource messageSource;
     @Lazy
     private final CategoryService categoryService;
+
+    @Override
+    public List<VacancyDto> searchVacancies(String query) {
+        List<Vacancy> allVacancy = vacancyRepository.findByNameContainingIgnoreCase(query);
+        log.info("Найдено " + allVacancy.size());
+        return getVacancyDto(allVacancy);
+    }
 
     @Override
     public VacancyDto getVacancyById(String vacancyId) {
@@ -43,6 +54,24 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
         Long parceLong = parseId(vacancyId);
         Vacancy vacancy = getEntityOrThrow(vacancyRepository.findVacancyById(parceLong), new VacancyNotFoundException());
         log.info("Вакансия с ID: {} найдена", vacancyId);
+        return vacancyDtos(vacancy);
+    }
+
+    @Override
+    public VacancyDto getVacancyByIdEdit(String vacancyId, Principal principal) {
+        if (principal == null) {
+            throw new UserNotFoundException(messageSource.getMessage("vacancy.edit.valid", null, Locale.getDefault()));
+        }
+        User user = userService.getUserByEmail(principal.getName());
+        Long parceLong = parseId(vacancyId);
+        Vacancy vacancy = getEntityOrThrow(vacancyRepository.findVacancyById(parceLong), new VacancyNotFoundException());
+
+        if (!vacancy.getAuthorId().getId().equals(user.getId())) {
+            throw new VacancyServiceException(
+                    messageSource.getMessage("vacancy.edit.valid", null, Locale.getDefault())
+            );
+        }
+
         return vacancyDtos(vacancy);
     }
 
@@ -262,6 +291,13 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
     @Override
     public Vacancy converToVacancy(VacancyDto vacancyDto) {
         return modelMapper.map(vacancyDto, Vacancy.class);
+    }
+
+
+    @Override
+    public List<VacancyDto> getAllVacancyByCompanyName(Long companyId) {
+        List<Vacancy> vacancies =  vacancyRepository.findAllVacancyByUserId(companyId);
+        return getVacancyDto(vacancies);
     }
 
 }

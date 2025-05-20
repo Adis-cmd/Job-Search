@@ -7,11 +7,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
 public interface VacancyService {
+    List<VacancyDto> searchVacancies(String query);
+
     VacancyDto getVacancyById(String vacancyId);
+
+    VacancyDto getVacancyByIdEdit(String vacancyId, Principal principal);
 
     Optional<Vacancy> findVacancyById(Long vacancyId);
 
@@ -35,4 +40,6 @@ public interface VacancyService {
     Page<VacancyDto> getVacancyByCreatorId(String creatorId, Pageable pageable);
 
     Vacancy converToVacancy(VacancyDto vacancyDto);
+
+    List<VacancyDto> getAllVacancyByCompanyName(Long companyId);
 }

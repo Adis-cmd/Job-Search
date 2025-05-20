@@ -17,6 +17,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("vacancy")
@@ -50,9 +53,19 @@ public class VacancyController {
         model.addAttribute("category", categoryService.findCategoryByVacancy(getAllVacancy));
         model.addAttribute("author", userService.findUserByVacancy(getAllVacancy));
         model.addAttribute("url", "/vacancy");
+
         return "vacancy/allVacancy";
     }
 
+
+    @GetMapping("search")
+    @ResponseBody
+    public List<VacancyDto> findVacanciesByVacancyName(@RequestParam String query) {
+        System.out.println("Запрос пришёл: " + query);
+        List<VacancyDto> vacancyDtos =  vacancyService.searchVacancies(query);
+        System.out.println("Нашли " + vacancyDtos);
+        return vacancyDtos;
+    }
 
     @GetMapping("add")
     public String addVacancy(Model model) {
@@ -78,9 +91,9 @@ public class VacancyController {
     }
 
     @GetMapping("edit/{vacancyId}")
-    public String editVacancy(@PathVariable String vacancyId, Model model) {
+    public String editVacancy(@PathVariable String vacancyId, Model model, Principal p) {
         model.addAttribute("category", categoryService.getAllCategory());
-        model.addAttribute("vacancyDto", vacancyService.getVacancyById(vacancyId));
+        model.addAttribute("vacancyDto", vacancyService.getVacancyByIdEdit(vacancyId, p));
         return "vacancy/editVacancy";
     }
 

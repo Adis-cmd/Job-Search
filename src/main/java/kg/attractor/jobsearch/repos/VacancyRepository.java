@@ -55,4 +55,8 @@ public interface VacancyRepository extends JpaRepository<Vacancy, Long> {
 
     Page<Vacancy> findByCategory(Category category, Pageable pageable);
 
+    List<Vacancy> findByNameContainingIgnoreCase(String name);
+
+    @Query(nativeQuery = true, value = "select * from vacancy v where v.authorId = :userId")
+    List<Vacancy> findAllVacancyByUserId(Long userId);
 }
