@@ -34,10 +34,5 @@ VALUES ((SELECT id FROM users WHERE name = 'Иван' LIMIT 1), 'Резюме И
        ((SELECT id FROM users WHERE name = 'Иван' LIMIT 1), 'Резюме Ивана Иванова (Фронтенд-разработчик)',
         (SELECT id FROM category WHERE name = 'Старший Фронтенд-разработчик' LIMIT 1), 65000.00, TRUE, NOW(), NOW());
 
-INSERT INTO responded_applicant (resumeId, vacancyId, confirmation)
-VALUES ((SELECT id FROM resume WHERE name = 'Резюме Ивана Иванова (Бэкенд-разработчик)' LIMIT 1),
-       (SELECT id FROM vacancy WHERE name = 'Старший Бэкенд-разработчик' LIMIT 1), TRUE );
 
-INSERT INTO message (respondedApplicants, content, timestamp)
-VALUES (1, 'Поздравляем! Вы были выбраны на вакансию Бэкенд-разработчика.', NOW());
 

@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: modify_table_responded
+      author: Mamasultanov Adis
+      changes:
+        - addColumn:
+            tableName: responded_applicant
+            columns:
+              - column:
+                  name: is_view
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_view_applicant
+                  type: boolean
+                  constraints:
+                    nullable: false

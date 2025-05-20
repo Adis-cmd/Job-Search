@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - changeSet:
+      id: modify_table_message
+      author: Mamasultanov Adis
+      changes:
+        - addColumn:
+            tableName: message
+            columns:
+              - column:
+                  name: user_from
+                  type: long
+              - column:
+                  name: user_to
+                  type: long
+
+        - addForeignKeyConstraint:
+            baseTableName: message
+            baseColumnNames: user_from
+            constraintName: fk_user_from
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: message
+            baseColumnNames: user_to
+            constraintName: fk_user_to
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: CASCADE
