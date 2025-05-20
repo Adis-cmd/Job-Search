@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -69,6 +70,7 @@ public class EducationInfoServiceIml extends MethodClass implements EducationInf
     }
 
     @Override
+    @Transactional
     public void saveEducationInfos(ResumeDto dto, Resume resume) {
         if (dto.getEducationInfos() == null) return;
 
