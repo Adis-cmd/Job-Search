@@ -10,11 +10,13 @@ import kg.attractor.jobsearch.service.impl.AuthUserDetailsService;
 import kg.attractor.jobsearch.service.impl.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Component
@@ -26,13 +28,13 @@ public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException {
         var oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
-
+        System.out.println(Optional.ofNullable(oAuth2User.getAttribute("email")));
         authUserDetailsService.processOAuthPostLogin(
                 oAuth2User.getAttribute("email"),
                 oAuth2User.getAttribute("given_name"),
                 oAuth2User.getAttribute("family_name"),
                 oAuth2User.getAttribute("picture")
         );
-        response.sendRedirect("/");
+        response.sendRedirect("/profile");
     }
 }
