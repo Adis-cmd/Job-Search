@@ -23,4 +23,8 @@ public class RespondedApplicant {
     private Vacancy vacancyId;
     @Column(name = "confirmation")
     private Boolean confirmation;
+    @Column(name = "IS_VIEW")
+    private Boolean isView;
+    @Column(name = "is_view_applicant")
+    private Boolean isViewApplicant;
 }

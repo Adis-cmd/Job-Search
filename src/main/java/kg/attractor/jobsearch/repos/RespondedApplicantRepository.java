@@ -22,6 +22,8 @@ public interface RespondedApplicantRepository extends JpaRepository<RespondedApp
     @Query(value = "select ra.id as respondedApplicantId, " +
             "r.id as resumeId, " +
             "v.id as vacancyId, " +
+            "ra.is_view, " +
+            "ra.is_view_applicant, " +
             "ra.confirmation " +
             "from responded_applicant ra " +
             "LEFT JOIN resume r on r.id = ra.resumeId " +
@@ -29,6 +31,33 @@ public interface RespondedApplicantRepository extends JpaRepository<RespondedApp
             "where r.applicantId = :userId",
             nativeQuery = true)
     Page<RespondedApplicant> findAllRespondedApplicants(@Param("userId") Long userId, Pageable pageable);
+
+    @Query(value = "select ra.id as respondedApplicantId, " +
+            "r.id as resumeId, " +
+            "v.id as vacancyId, " +
+            "ra.is_view, " +
+            "ra.is_view_applicant, " +
+            "ra.confirmation " +
+            "from responded_applicant ra " +
+            "LEFT JOIN resume r on r.id = ra.resumeId " +
+            "LEFT JOIN vacancy v on v.id = ra.vacancyId " +
+            "where v.authorId = :userId",
+            nativeQuery = true)
+    Page<RespondedApplicant> findAllRespondedEmployee(@Param("userId") Long userId, Pageable pageable);
+
+
+    @Query(value = "SELECT COUNT(*) FROM responded_applicant ra " +
+            "LEFT JOIN vacancy v ON v.id = ra.vacancyId " +
+            "WHERE v.authorId = :userId AND ra.is_view = false",
+            nativeQuery = true)
+    Long countUnviewedResponsesByEmployeeId(@Param("userId") Long userId);
+
+
+    @Query(value = "SELECT COUNT(*) FROM responded_applicant ra " +
+            "LEFT JOIN resume r ON r.id = ra.resumeId " +
+            "WHERE r.applicantid = :userId AND ra.is_view_applicant = false",
+            nativeQuery = true)
+    Long countUnviewedResponsesByApplicantId(@Param("userId") Long userId);
 
 
 }

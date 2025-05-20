@@ -42,6 +42,9 @@ public class RespondedApplicantServiceImpl extends MethodClass implements Respon
         respondedApplicant.setVacancyId(vacancy);
         respondedApplicant.setResumeId(resume);
         respondedApplicant.setConfirmation(false);
+        respondedApplicant.setIsView(false);
+        respondedApplicant.setIsViewApplicant(true);
+
 
         repository.saveAndFlush(respondedApplicant);
         return true;
@@ -55,6 +58,24 @@ public class RespondedApplicantServiceImpl extends MethodClass implements Respon
     @Override
     public Page<RespondedApplicantDto> getAllRespondedApplicants(Long userId, Pageable pageable) {
         Page<RespondedApplicant> respondedApplicants = repository.findAllRespondedApplicants(userId, pageable);
+        respondedApplicants.forEach(applicant -> {
+            if (!applicant.getIsView()) {
+                applicant.setIsViewApplicant(true);
+                repository.save(applicant);
+            }
+        });
+        return respondedApplicants.map(this::convertEntityToDto);
+    }
+
+    @Override
+    public Page<RespondedApplicantDto> getAllRespondedEmployee(Long userId, Pageable pageable) {
+        Page<RespondedApplicant> respondedApplicants = repository.findAllRespondedEmployee(userId, pageable);
+        respondedApplicants.forEach(applicant -> {
+            if (!applicant.getIsView()) {
+                applicant.setIsView(true);
+                repository.save(applicant);
+            }
+        });
         return respondedApplicants.map(this::convertEntityToDto);
     }
 
@@ -63,4 +84,19 @@ public class RespondedApplicantServiceImpl extends MethodClass implements Respon
         return modelMapper.map(entity, RespondedApplicantDto.class);
     }
 
+    @Override
+    public RespondedApplicant findById(Long id) {
+        return getEntityOrThrow(repository.findById(id), new RuntimeException("Not found"));
+    }
+
+
+    @Override
+    public Long countRespondedEmployee(Long userId) {
+        return repository.countUnviewedResponsesByEmployeeId(userId);
+    }
+
+    @Override
+    public Long countRespondedApplicants(Long userId) {
+        return repository.countUnviewedResponsesByApplicantId(userId);
+    }
 }

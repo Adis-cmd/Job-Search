@@ -3,6 +3,7 @@ package kg.attractor.jobsearch.controller;
 import kg.attractor.jobsearch.dto.RespondedApplicantDto;
 import kg.attractor.jobsearch.dto.ResumeDto;
 import kg.attractor.jobsearch.dto.UserDto;
+import kg.attractor.jobsearch.dto.VacancyDto;
 import kg.attractor.jobsearch.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -77,11 +78,15 @@ public class RespondedApplicantController {
         Page<RespondedApplicantDto> respondedApplicantDto =
                 respondedApplicantService.getAllRespondedApplicants(currentUser.getId(), pageable);
 
+        Page<RespondedApplicantDto> respondedApplicantDtos  =
+                respondedApplicantService.getAllRespondedEmployee(currentUser.getId(), pageable);
+
         if (respondedApplicantDto.getTotalPages() > 0 && pageable.getPageNumber() >= respondedApplicantDto.getTotalPages()) {
             return "redirect:/responded/info?page=0&size=" + pageable.getPageSize();
         }
 
 
+        model.addAttribute("employee", respondedApplicantDtos);
         model.addAttribute("page", respondedApplicantDto);
         model.addAttribute("url", "info");
 
