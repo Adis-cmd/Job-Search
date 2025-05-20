@@ -18,36 +18,39 @@
                 </div>
             </div>
 
-            <#if userDto.surname?? && userDto.surname?has_content>
-                <div class="form-group mb-3">
-                    <label for="surname"><@spring.message "profile.edit.surname"/></label>
-                    <@spring.formInput "userDto.surname", 'class="form-control form-control-lg"' />
-                    <div class="text-danger">
-                        <@spring.showErrors "userDto.surname" "<br>" />
-                    </div>
-                </div>
+            <#if SPRING_SECURITY_CONTEXT?? && SPRING_SECURITY_CONTEXT.authentication??>
+                <#assign user = SPRING_SECURITY_CONTEXT.authentication.principal>
+                <#if user??>
+                    <#assign roles = user.authorities?map(it -> it.authority)>
 
-                <div class="form-group mb-3">
-                    <label for="age"><@spring.message "profile.edit.age"/></label>
-                    <@spring.formInput "userDto.age", 'class="form-control form-control-lg"' />
-                    <div class="text-danger">
-                        <@spring.showErrors "userDto.age" "<br>" />
-                    </div>
-                </div>
+                    <#if roles?seq_contains("APPLICANT")>
+                        <div class="form-group mb-3">
+                            <label for="surname"><@spring.message "profile.edit.surname"/></label>
+                            <@spring.formInput "userDto.surname", 'class="form-control form-control-lg"' />
+                            <div class="text-danger">
+                                <@spring.showErrors "userDto.surname" "<br>" />
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="age"><@spring.message "profile.edit.age"/></label>
+                            <@spring.formInput "userDto.age", 'class="form-control form-control-lg"' />
+                            <div class="text-danger">
+                                <@spring.showErrors "userDto.age" "<br>" />
+                            </div>
+                        </div>
+                    </#if>
+                </#if>
             </#if>
 
             <div class="form-group mb-4">
                 <label for="avatar"><@spring.message "profile.edit.avatar"/></label>
                 <#if userDto.avatar?? && userDto.avatar?has_content>
-                    <div class="profile-avatar">
-                        <img src="<#if userDto.avatar?starts_with('http')>${userDto.avatar}<#else>users/photos/${userDto.avatar}</#if>" alt="Профильное фото">
+                    <div class="profile-avatar mb-2">
+                        <img src="<#if userDto.avatar?starts_with('http')>${userDto.avatar}<#else>users/photos/${userDto.avatar}</#if>" alt="Профильное фото" style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%;">
                     </div>
-
                 </#if>
                 <input type="file" class="form-control" id="avatar" name="file" accept=".jpg,.jpeg,.png">
-                <div class="text-danger">
-                    <@spring.showErrors "file" "<br>" />
-                </div>
             </div>
 
             <div class="d-grid">
