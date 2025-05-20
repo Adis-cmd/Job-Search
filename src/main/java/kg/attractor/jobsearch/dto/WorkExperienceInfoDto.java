@@ -11,9 +11,6 @@ import lombok.*;
 public class WorkExperienceInfoDto {
     private Long id;
     private Long resumeId;
-    @NotNull(message = "{work.info.nullYears}")
-    @Min(value = 0,  message = "{work.info.min}")
-    @Max(value = 50, message = "{work.info.max}")
     private Integer years;
     @NotBlank(message = "{work.info.company}")
     @Size(min = 5, max = 150, message = "{work.info.companySize}")

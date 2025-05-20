@@ -3,6 +3,7 @@ package kg.attractor.jobsearch.service;
 import kg.attractor.jobsearch.dto.ResumeDto;
 import kg.attractor.jobsearch.dto.WorkExperienceInfoDto;
 import kg.attractor.jobsearch.model.Resume;
+import kg.attractor.jobsearch.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -15,7 +16,7 @@ public interface WorkExperienceInfoService {
 
     void createWorkExperienceInfo(WorkExperienceInfoDto wDto);
 
-    void saveWorkExperiences(ResumeDto dto, Resume resume);
+    void saveWorkExperiences(ResumeDto dto, Resume resume, User user);
 
     Page<WorkExperienceInfoDto> getWorkExperienceInfoByResumeId(Long resumeId, Pageable pageable);
 }

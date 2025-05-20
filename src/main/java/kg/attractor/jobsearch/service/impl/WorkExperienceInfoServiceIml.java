@@ -4,6 +4,7 @@ import kg.attractor.jobsearch.dto.ResumeDto;
 import kg.attractor.jobsearch.dto.WorkExperienceInfoDto;
 import kg.attractor.jobsearch.exception.NoSuchElementException.WorkExperienceInfoException;
 import kg.attractor.jobsearch.model.Resume;
+import kg.attractor.jobsearch.model.User;
 import kg.attractor.jobsearch.model.WorkExperienceInfo;
 import kg.attractor.jobsearch.repos.WorkExperienceInfoRepository;
 import kg.attractor.jobsearch.service.WorkExperienceInfoService;
@@ -11,7 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -68,13 +71,18 @@ public class WorkExperienceInfoServiceIml extends MethodClass implements WorkExp
     }
 
     @Override
-    public void saveWorkExperiences(ResumeDto dto, Resume resume) {
+    @Transactional
+    public void saveWorkExperiences(ResumeDto dto, Resume resume, User user) {
         if (dto.getWorkExperiences() == null) return;
 
+        int currentYear = LocalDate.now().getYear();
+
         dto.getWorkExperiences().forEach(info -> {
+            int workYear = getWorkYear(user, info, currentYear);
+
             WorkExperienceInfo work = WorkExperienceInfo.builder()
                     .resumeId(resume)
-                    .years(info.getYears())
+                    .years(workYear)
                     .companyName(info.getCompanyName())
                     .position(info.getPosition())
                     .responsibilities(info.getResponsibilities())
@@ -82,6 +90,19 @@ public class WorkExperienceInfoServiceIml extends MethodClass implements WorkExp
 
             workExperienceInfoRepository.saveAndFlush(work);
         });
+    }
+
+    private static int getWorkYear(User user, WorkExperienceInfoDto info, int currentYear) {
+        int workYear = info.getYears();
+
+        if (workYear < 0
+                || workYear > currentYear
+                || workYear < (currentYear - (user.getAge() - 18))) {
+            throw new IllegalArgumentException(
+                    String.format("Некорректный год работы: %d. Убедитесь, что это не раньше достижения 18 лет, не в будущем и не отрицательное.", workYear)
+            );
+        }
+        return workYear;
     }
 
 
