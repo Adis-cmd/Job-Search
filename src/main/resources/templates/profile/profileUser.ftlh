@@ -1,5 +1,5 @@
 <#import "../layout.ftlh" as main>
-<#import "../page.ftlh" as p>
+<#import "../page/page.ftlh" as p>
 
 <#if SPRING_SECURITY_CONTEXT?? && SPRING_SECURITY_CONTEXT.authentication??>
     <#assign user = SPRING_SECURITY_CONTEXT.authentication.principal>

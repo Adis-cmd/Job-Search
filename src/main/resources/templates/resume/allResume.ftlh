@@ -1,5 +1,5 @@
 <#import "../layout.ftlh" as main>
-<#import "../page.ftlh" as p>
+<#import "../page/page.ftlh" as p>
 <@main.layout ; spring>
 
 
