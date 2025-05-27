@@ -1,5 +1,4 @@
 <#import "../layout.ftlh" as main>
-<#import "../page/page.ftlh" as p>
 <@main.layout ; spring>
     <style>
         body {
@@ -190,65 +189,215 @@
             opacity: 1;
         }
 
+
+        .filter-form {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .filter-form > * {
+            flex-shrink: 0;
+        }
+
+        /* Категория слева — займет примерно 30% ширины */
+        .filter-form select[name="categoryId"] {
+            flex-basis: 30%;
+            min-width: 200px;
+        }
+
+        /* Сортировка справа — занимает около 50% ширины */
+        .sort-by {
+            flex-basis: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+
+        /* Селект сортировки */
+        .sort-by select {
+            appearance: none;
+            background-color: #343a40;
+            border: 2px solid #f5c518;
+            border-radius: 12px;
+            color: #f5c518;
+            padding: 0.4rem 1.2rem;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3e%3cpath fill='%23f5c518' d='M0 0l5 6 5-6z'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 10px 6px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .sort-by select:hover,
+        .sort-by select:focus {
+            background-color: #2c3034;
+            border-color: #f8c71c;
+            outline: none;
+        }
+
+        .filter-form button[type="submit"] {
+            background-color: transparent;
+            border: 2px solid #f5c518;
+            border-radius: 30px;
+            color: #f5c518;
+            font-weight: 700;
+            padding: 0.5rem 1.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+            margin-left: 1rem;
+            white-space: nowrap;
+        }
+
+        .filter-form button[type="submit"]:hover {
+            background-color: #f5c518;
+            color: #212529;
+            box-shadow: 0 0 15px #f5c518cc;
+        }
+
+        @media (max-width: 720px) {
+            .filter-form {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+            }
+
+            .filter-form select[name="categoryId"],
+            .sort-by {
+                flex-basis: 100%;
+                justify-content: flex-start;
+            }
+
+            .filter-form button[type="submit"] {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .sort-by {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+        }
+
+
     </style>
 
     <section class="container py-5">
         <h2 class="mb-5 text-center fw-bold"><@spring.message "allVacancy.title" /></h2>
-
-        <div class="sort-by d-flex justify-content-end mb-4">
-            <label for="sortOptions" class="me-2 align-self-center"><@spring.message "allVacancy.sort.title" /></label>
-            <select id="sortOptions" name="sort" class="form-select w-auto bg-dark text-warning border-warning"
-                    onchange="window.location.href=this.value;">
-                <option disabled selected hidden><@spring.message "allVacancy.sort.text" /></option>
-                <option value="${url}?page=${page.number}&size=${page.size}&sort=createdDate,desc"><@spring.message "allVacancy.sort.new" />
-                </option>
-                <option value="${url}?page=${page.number}&size=${page.size}&sort=createdDate,asc"><@spring.message "allVacancy.sort.old" />
-                </option>
-                <option value="${url}?page=${page.number}&size=${page.size}&sort=salary,desc"><@spring.message "allVacancy.sort.highSalary" /></option>
-                <option value="${url}?page=${page.number}&size=${page.size}&sort=salary,asc"><@spring.message "allVacancy.sort.lowSalary" /></option>
-                <option value="${url}?page=${page.number}&size=${page.size}&sort=responseCount,asc"><@spring.message "allVacancy.sort.fewerResponses" />
-                </option>
-                <option value="${url}?page=${page.number}&size=${page.size}&sort=responseCount,desc"><@spring.message "allVacancy.sort.moreResponses" />
-                </option>
-            </select>
-        </div>
 
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="<@spring.message "vacancy.search" />" class="search-input">
             <div id="searchResults" class="search-results"></div>
         </div>
 
-        <div class="vacancies-container d-flex flex-column gap-4">
-            <#list page.content as vacancy>
-                <div class="card vacancy-card glass-card w-100 border-0 shadow-sm">
-                    <div class="card-body p-4 d-flex flex-column flex-md-row justify-content-between align-items-start gap-3">
-                        <div class="flex-grow-1">
-                            <h4 class="card-title mb-3">
-                                <i class="bi bi-briefcase-fill me-2"></i>${vacancy.name}
-                            </h4>
-                            <#assign currentAuthor = author?filter(u -> u.id == vacancy.authorId)?first>
-                            <p>
-                                <i class="bi bi-building me-1 text-warning"></i><strong><@spring.message "allVacancy.company" /></strong> ${currentAuthor.name}
-                            </p>
-                            <p>
-                                <i class="bi bi-currency-dollar me-1 text-success"></i><strong><@spring.message "allVacancy.salary" /></strong> ${vacancy.salary}
-                            </p>
-                            <#assign vacancyCategory = category?filter(c -> c.id == vacancy.categoryId)?first>
-                            <p>
-                                <i class="bi bi-folder-fill me-1 text-warning"></i><strong><@spring.message "allVacancy.category" /></strong> ${vacancyCategory.name}
-                            </p>
-                        </div>
-                        <div class="d-flex align-self-md-center">
-                            <a href="/vacancy/info/${vacancy.id}" class="btn btn-outline-primary btn-sm">
-                                <i class="bi bi-eye me-1"></i> <@spring.message "allVacancy.info" />
-                            </a>
+        <form method="get" action="/vacancy" class="filter-form">
+            <select name="categoryId">
+                <option value="">Все категории</option>
+                <#list categories as cat>
+                    <option value="${cat.id}" ${(selectedCategoryId?? && selectedCategoryId == cat.id)?then('selected', '')}>
+                        ${cat.name}
+                    </option>
+                </#list>
+            </select>
+
+            <div class="sort-by">
+                <label for="sortOptions" class="me-2 align-self-center">
+                    <@spring.message "allVacancy.sort.title" />
+                </label>
+                <select id="sortOptions" name="sort" class="form-select w-auto bg-dark text-warning border-warning">
+                    <option value="" disabled selected hidden><@spring.message "allVacancy.sort.text" /></option>
+                    <option value="createdDate,desc"><@spring.message "allVacancy.sort.new" /></option>
+                    <option value="createdDate,asc"><@spring.message "allVacancy.sort.old" /></option>
+                    <option value="salary,desc"><@spring.message "allVacancy.sort.highSalary" /></option>
+                    <option value="salary,asc"><@spring.message "allVacancy.sort.lowSalary" /></option>
+                    <option value="responseCount,asc"><@spring.message "allVacancy.sort.fewerResponses" /></option>
+                    <option value="responseCount,desc"><@spring.message "allVacancy.sort.moreResponses" /></option>
+                </select>
+
+                <button type="submit">Фильтровать</button>
+            </div>
+        </form>
+
+
+        <#if categoryId?? && (categories?filter(c -> c.id == categoryId)?size == 0)>
+            <div style="color: #dc3545; margin-top: 0.75rem; font-weight: bold; text-align: center;">
+                <@spring.message "allVacancy.categoryNotFound" />
+            </div>
+
+        <#else>
+            <div class="vacancies-container d-flex flex-column gap-4">
+                <#list page.content as vacancy>
+                    <div class="card vacancy-card glass-card w-100 border-0 shadow-sm">
+                        <div class="card-body p-4 d-flex flex-column flex-md-row justify-content-between align-items-start gap-3">
+                            <div class="flex-grow-1">
+                                <h4 class="card-title mb-3">
+                                    <i class="bi bi-briefcase-fill me-2"></i>${vacancy.name}
+                                </h4>
+                                <#assign currentAuthor = author?filter(u -> u.id == vacancy.authorId)?first>
+                                <p>
+                                    <i class="bi bi-building me-1 text-warning"></i><strong><@spring.message "allVacancy.company" /></strong> ${currentAuthor.name}
+                                </p>
+                                <p>
+                                    <i class="bi bi-currency-dollar me-1 text-success"></i><strong><@spring.message "allVacancy.salary" /></strong> ${vacancy.salary}
+                                </p>
+                                <#assign vacancyCategory = category?filter(c -> c.id == vacancy.categoryId)?first>
+                                <p>
+                                    <i class="bi bi-folder-fill me-1 text-warning"></i><strong><@spring.message "allVacancy.category" /></strong> ${vacancyCategory.name}
+                                </p>
+                            </div>
+                            <div class="d-flex align-self-md-center">
+                                <a href="/vacancy/info/${vacancy.id}" class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-eye me-1"></i> <@spring.message "allVacancy.info" />
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </#list>
-        </div>
+                </#list>
+            </div>
+        </#if>
+
     </section>
-    <@p.pager url=url currentPage=page />
+
+    <#if  page.content?has_content>
+        <nav aria-label="Page navigation example" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item <#if page.first>disabled</#if>">
+                    <a class="page-link text-warning bg-dark border-warning"
+                       href="${url}?page=${page.number - 1}&size=${page.size}&sort=${currentSort!''}<#if categoryId??>&categoryId=${categoryId}</#if>"
+                       aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+
+                <#list 0..(page.totalPages?int - 1) as i>
+                    <li class="page-item <#if page.number == i>active</#if>">
+                        <a class="page-link text-warning bg-dark border-warning"
+                           href="${url}?page=${i}&size=${page.size}&sort=${currentSort!''}<#if categoryId??>&categoryId=${categoryId}</#if>">${i + 1}</a>
+                    </li>
+                </#list>
+
+                <li class="page-item <#if page.last>disabled</#if>">
+                    <a class="page-link text-warning bg-dark border-warning"
+                       href="${url}?page=${page.number + 1}&size=${page.size}&sort=${currentSort!''}<#if categoryId??>&categoryId=${categoryId}</#if>"
+                       aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+    </#if>
+
+
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -326,7 +475,6 @@
             }
 
 
-
             document.addEventListener('click', function (e) {
                 if (!searchInput.contains(e.target) && !searchIcon.contains(e.target) && !searchResults.contains(e.target)) {
                     searchResults.style.display = 'none';
@@ -335,5 +483,37 @@
             searchInput.focus();
         });
     </script>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const sortSelect = document.getElementById('sortOptions');
+            const categorySelect = document.querySelector('form.filter-form select[name="categoryId"]');
+
+            if (params.has('sort')) {
+                sortSelect.value = params.get('sort');
+            }
+            if (params.has('categoryId')) {
+                categorySelect.value = params.get('categoryId');
+            }
+
+            const resetButton = document.createElement('button');
+            resetButton.textContent = "${springMacroRequestContext.getMessage('allVacancy.resetFilter')?js_string}";
+            resetButton.className = 'btn btn-outline-warning ms-3';
+            resetButton.type = 'button';
+
+            resetButton.addEventListener('click', () => {
+                window.location.href = window.location.origin + window.location.pathname;
+            });
+
+            const sortContainer = document.querySelector('.sort-by');
+            if (sortContainer) {
+                sortContainer.appendChild(resetButton);
+            }
+        });
+
+    </script>
+
 
 </@main.layout>
