@@ -189,6 +189,34 @@
             opacity: 1;
         }
 
+        .reset-filters {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            color: black;
+            font-size: 16px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            margin: 10px 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .reset-filters:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .reset-filters:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+
 
         .filter-form {
             display: flex;
@@ -203,13 +231,11 @@
             flex-shrink: 0;
         }
 
-        /* Категория слева — займет примерно 30% ширины */
         .filter-form select[name="categoryId"] {
             flex-basis: 30%;
             min-width: 200px;
         }
 
-        /* Сортировка справа — занимает около 50% ширины */
         .sort-by {
             flex-basis: 50%;
             display: flex;
@@ -287,6 +313,19 @@
             }
         }
 
+        .reset-filters {
+            opacity: 0;
+            animation: fadeIn 0.8s forwards;
+            animation-delay: 0.2s;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+
 
     </style>
 
@@ -325,6 +364,11 @@
                 <button type="submit">Фильтровать</button>
             </div>
         </form>
+
+        <button class="reset-filters">
+            <i class="bi bi-arrow-counterclockwise"></i> Сбросить фильтры
+        </button>
+
 
 
         <#if categoryId?? && (categories?filter(c -> c.id == categoryId)?size == 0)>
@@ -521,7 +565,21 @@
             categorySelect.form.addEventListener('submit', () => {
                 saveCurrentUrl();
             });
+
+            const resetBtn = document.getElementById('resetFiltersBtn');
+
+            resetBtn.addEventListener('click', () => {
+                localStorage.removeItem('vacancyFullUrl');
+
+                sortSelect.value = '';
+                categorySelect.value = '';
+
+                const baseUrl = window.location.origin + window.location.pathname;
+                window.location.href = baseUrl;
+            });
+
         });
+
     </script>
 
 
