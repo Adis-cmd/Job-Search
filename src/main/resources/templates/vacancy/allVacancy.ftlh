@@ -557,11 +557,6 @@
                 localStorage.setItem('vacancyFullUrl', fullUrl);
             }
 
-            sortSelect.addEventListener('change', () => {
-                saveCurrentUrl();
-                window.location.href = localStorage.getItem('vacancyFullUrl');
-            });
-
             categorySelect.form.addEventListener('submit', () => {
                 saveCurrentUrl();
             });
