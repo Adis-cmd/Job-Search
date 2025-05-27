@@ -1,12 +1,14 @@
 package kg.attractor.jobsearch.controller;
 
 import jakarta.validation.Valid;
+import kg.attractor.jobsearch.dto.UserDto;
 import kg.attractor.jobsearch.dto.VacancyDto;
 import kg.attractor.jobsearch.service.CategoryService;
 import kg.attractor.jobsearch.service.UserService;
 import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -33,7 +35,8 @@ public class VacancyController {
                                   @PageableDefault(page = 0, size = 3, sort = "id",
                                           direction = Sort.Direction.ASC)
                                   Pageable pageable,
-                                  @RequestParam(required = false) String sort) {
+                                  @RequestParam(required = false) String sort,
+                                  @RequestParam(required = false) Long categoryId) {
 
         String sortParam = "idAsc";
         if (sort != null && !sort.isEmpty()) {
@@ -42,7 +45,7 @@ public class VacancyController {
                 sortParam = sortParts[0] + (sortParts[1].equalsIgnoreCase("desc") ? "Desc" : "Asc");
             }
         }
-        Page<VacancyDto> getAllVacancy = vacancyService.getVacancies(pageable, sortParam);
+        Page<VacancyDto> getAllVacancy = vacancyService.getVacancies(pageable, sortParam, categoryId);
 
         if (getAllVacancy.getTotalPages() > 0 && pageable.getPageNumber() >= getAllVacancy.getTotalPages()) {
             return "redirect:/vacancy?page=0&size=" + pageable.getPageSize();
@@ -50,7 +53,10 @@ public class VacancyController {
 
         model.addAttribute("page", getAllVacancy);
         model.addAttribute("currentSort", sort != null ? sort : "");
+        model.addAttribute("categoryId", categoryId);
         model.addAttribute("category", categoryService.findCategoryByVacancy(getAllVacancy));
+        model.addAttribute("categories", categoryService.getAllCategory());
+        model.addAttribute("selectedCategoryId", categoryId);
         model.addAttribute("author", userService.findUserByVacancy(getAllVacancy));
         model.addAttribute("url", "/vacancy");
 
