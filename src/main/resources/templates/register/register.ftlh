@@ -88,7 +88,7 @@
                     <label for="accountType" class="form-label"><@spring.message "register.accountType" /></label>
                     <select class="form-control" id="accountType" name="accountType">
                         <option value="1" <#if accountType?string == "1">selected</#if>><@spring.message "register.accountType.employee" /></option>
-                        <option value="2" <#if accountType?string == "2">selected</#if>><@spring.message "register.accountType.applicant"></option>
+                        <option value="2" <#if accountType?string == "2">selected</#if>><@spring.message "register.accountType.applicant"/></option>
                     </select>
                 </div>
 
@@ -105,7 +105,7 @@
                 </div>
 
                 <div class="mb-3" id="ageField">
-                    <label for="age" class="form-label"><@spring.message "register.ageg" /></label>
+                    <label for="age" class="form-label"><@spring.message "register.age" /></label>
                     <@spring.formInput "userDto.age" 'type="tel" id="age" name="age" class="form-control"'/>
                     <@spring.showErrors "<br>" "error text-danger"/>
                 </div>
