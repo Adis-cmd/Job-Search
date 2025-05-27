@@ -487,32 +487,41 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const params = new URLSearchParams(window.location.search);
             const sortSelect = document.getElementById('sortOptions');
             const categorySelect = document.querySelector('form.filter-form select[name="categoryId"]');
 
-            if (params.has('sort')) {
-                sortSelect.value = params.get('sort');
-            }
-            if (params.has('categoryId')) {
-                categorySelect.value = params.get('categoryId');
+            const savedUrl = localStorage.getItem('vacancyFullUrl');
+
+            if (savedUrl && savedUrl !== window.location.href) {
+                window.location.href = savedUrl;
+                return;
             }
 
-            const resetButton = document.createElement('button');
-            resetButton.textContent = "${springMacroRequestContext.getMessage('allVacancy.resetFilter')?js_string}";
-            resetButton.className = 'btn btn-outline-warning ms-3';
-            resetButton.type = 'button';
+            function saveCurrentUrl() {
+                const params = new URLSearchParams(window.location.search);
+                params.set('sort', sortSelect.value);
+                if (categorySelect.value) {
+                    params.set('categoryId', categorySelect.value);
+                } else {
+                    params.delete('categoryId');
+                }
+                params.set('page', 0);
 
-            resetButton.addEventListener('click', () => {
-                window.location.href = window.location.origin + window.location.pathname;
+                const baseUrl = window.location.origin + window.location.pathname;
+                const fullUrl = baseUrl + '?' + params.toString();
+
+                localStorage.setItem('vacancyFullUrl', fullUrl);
+            }
+
+            sortSelect.addEventListener('change', () => {
+                saveCurrentUrl();
+                window.location.href = localStorage.getItem('vacancyFullUrl');
             });
 
-            const sortContainer = document.querySelector('.sort-by');
-            if (sortContainer) {
-                sortContainer.appendChild(resetButton);
-            }
+            categorySelect.form.addEventListener('submit', () => {
+                saveCurrentUrl();
+            });
         });
-
     </script>
 
 
