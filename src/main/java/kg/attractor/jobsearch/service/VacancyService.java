@@ -26,7 +26,7 @@ public interface VacancyService {
 
     void createVacancies(VacancyDto vacanciesDto, Authentication authorId);
 
-    Page<VacancyDto> getVacancies(Pageable pageable, String sort);
+    Page<VacancyDto> getVacancies(Pageable pageable, String sort, Long categoryId);
 
     void deleteVacancies(String vacancyId, Authentication email);
 

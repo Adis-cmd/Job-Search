@@ -1,5 +1,6 @@
 <#import "../layout.ftlh" as main>
 <@main.layout ; spring>
+
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -9,7 +10,7 @@
         }
         .card {
             background: #fff;
-            padding: 30px;
+            padding: 35px;
             border-radius: 15px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.1);
             max-width: 500px;
@@ -31,6 +32,7 @@
             color: #555;
             font-size: 18px;
             margin-bottom: 30px;
+            word-break: break-word;
         }
         a.button {
             display: inline-block;
@@ -46,18 +48,22 @@
         }
     </style>
 
-    <div class="card" id="messageCard">
-        <h2><@spring.message "message.email.title"/>!</h2>
-        <p class="text-warning"><@spring.message message/></p>
-        <a href="/auth/login" class="button"><@spring.message "auth.reset.password.login" /></a>
-    </div>
+<div class="card" id="tokenCard">
+    <h2>Ваш токен для сброса пароля:</h2>
+    <p>${token}</p>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const card = document.getElementById("messageCard");
-            setTimeout(() => {
-                card.classList.add("show");
-            }, 300);
-        });
-    </script>
+    <a href="/auth/reset_password?token=${token}" class="button"><@spring.message "auth.reset.password"/></a>
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const card = document.getElementById("tokenCard");
+        setTimeout(() => {
+            card.classList.add("show");
+        }, 300);
+    });
+</script>
+
+
 </@main.layout>

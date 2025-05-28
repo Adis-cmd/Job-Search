@@ -188,18 +188,29 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
     }
 
     @Override
-    public Page<VacancyDto> getVacancies(Pageable pageable, String sort) {
+    public Page<VacancyDto> getVacancies(Pageable pageable, String sort, Long categoryId) {
         log.info("Запрос всех вакансий");
-        Page<Object[]> result = vacancyRepository.findAllActiveVacanciesSorted(sort, pageable);
-        if (result == null) {
-            throw new VacancyNotFoundException();
+
+        if (categoryId == null) {
+            Page<Object[]> result = vacancyRepository.findAllActiveVacanciesSorted(sort, pageable);
+            if (result == null) {
+                throw new VacancyNotFoundException();
+            }
+            log.info("Получено {} вакансий", result.getTotalElements());
+            return result.map(row -> {
+                Vacancy vacancy = (Vacancy) row[0];
+                Long responseCount = ((Number) row[1]).longValue();
+                return vacancyDtos(vacancy, responseCount);
+            });
+        } else {
+            Page<Object[]> result = vacancyRepository.findAllActiveVacanciesSortedByCategoryId(sort, categoryId, pageable);
+
+            return result.map(row -> {
+                Vacancy vacancy = (Vacancy) row[0];
+                Long responseCount = ((Number) row[1]).longValue();
+                return vacancyDtos(vacancy, responseCount);
+            });
         }
-        log.info("Получено {} вакансий", result.getTotalElements());
-        return result.map(row -> {
-            Vacancy vacancy = (Vacancy) row[0];
-            Long responseCount = ((Number) row[1]).longValue();
-            return vacancyDtos(vacancy, responseCount);
-        });
     }
 
 
@@ -300,7 +311,7 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
 
     @Override
     public List<VacancyDto> getAllVacancyByCompanyName(Long companyId) {
-        List<Vacancy> vacancies =  vacancyRepository.findAllVacancyByUserId(companyId);
+        List<Vacancy> vacancies = vacancyRepository.findAllVacancyByUserId(companyId);
         return getVacancyDto(vacancies);
     }
 

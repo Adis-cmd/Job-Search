@@ -1,5 +1,5 @@
 <#import "../layout.ftlh" as main>
-<#import "../page.ftlh" as p>
+<#import "../page/page.ftlh" as p>
 <@main.layout ; spring>
     <style>
         body {
@@ -173,10 +173,5 @@
             </div>
         </div>
 
-        <div class="mt-4 d-flex justify-content-center gap-3">
-            <a href="/chat/start/${resumeDto.applicantId}" class="btn btn-outline-primary">
-                <i class="bi bi-chat-dots-fill me-2"></i> <@spring.message "resume.info.startChat"/>
-            </a>
-        </div>
     </section>
 </@main.layout>

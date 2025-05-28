@@ -34,12 +34,14 @@ public class AuthController {
     @PostMapping("/forgot_password")
     public String processForgotPassword(HttpServletRequest request, Model model) {
         try {
-            userService.makeResetPasswordToken(request);
-            model.addAttribute("message", "We have sent a reset password link to your email. Please check.");
+            String token = userService.makeResetPasswordToken(request);
+            model.addAttribute("token", token);
+            model.addAttribute("message", "auth.reset.password.send.email");
+            return "auth/display_token";
         } catch (UsernameNotFoundException | UnsupportedEncodingException ex) {
             model.addAttribute("error", ex.getMessage());
         } catch (MessagingException ex) {
-            model.addAttribute("error", "Error while sending email");
+            model.addAttribute("error", "auth.reset.password.send.email.error");
         }
         return "auth/forgot_password_form";
     }
@@ -56,7 +58,7 @@ public class AuthController {
             userService.getUserByResetPasswordToken(token);
             model.addAttribute("token", token);
         } catch (UsernameNotFoundException ex) {
-            model.addAttribute("error", "Invalid token");
+            model.addAttribute("error", "auth.reset.password.invalid.token");
         }
         return "auth/reset_password_form";
     }
@@ -68,9 +70,9 @@ public class AuthController {
         try {
             User user = userService.getUserByResetPasswordToken(token);
             userService.updatePassword(user, password);
-            model.addAttribute("message", "You have successfully changed your password.");
+            model.addAttribute("message", "auth.reset.password.successfully.password");
         } catch (UsernameNotFoundException ex) {
-            model.addAttribute("message", "Invalid Token");
+            model.addAttribute("message", "auth.reset.password.invalid.token");
         }
         return "auth/message";
     }
