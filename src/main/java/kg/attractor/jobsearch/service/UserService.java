@@ -61,7 +61,7 @@ public interface UserService {
 
     User findById(Long id);
 
-    void makeResetPasswordToken(HttpServletRequest request) throws MessagingException, UnsupportedEncodingException;
+    String makeResetPasswordToken(HttpServletRequest request) throws MessagingException, UnsupportedEncodingException;
 
     User getUserByResetPasswordToken(String token);
 

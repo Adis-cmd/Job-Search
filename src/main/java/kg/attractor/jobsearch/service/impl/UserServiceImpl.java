@@ -275,12 +275,11 @@ public class UserServiceImpl extends MethodClass implements UserService {
     }
 
     @Override
-    public void makeResetPasswordToken(HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
+    public String makeResetPasswordToken(HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
         String email = request.getParameter("email");
         String token = UUID.randomUUID().toString();
         updateResetPasswordToken(token, email);
-        String resetPasswordLink = CommonUtilities.getSiteURL(request) + "/auth/reset_password?token=" + token;
-        emailService.sendEmail(email, resetPasswordLink);
+        return token;
     }
 
 
