@@ -18,19 +18,6 @@ spring:
   liquibase:
     change-log: classpath:/db/changelog/master.yaml
 
-  mail:
-    host: smtp.gmail.com
-    username: piv4484@gmail.com
-    password: "tjek oisw kwxv jhty"
-    port: 587
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-            required: true
-
   #  ========== OAuth2.0 Config
 
   security:
