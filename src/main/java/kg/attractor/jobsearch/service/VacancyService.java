@@ -32,6 +32,8 @@ public interface VacancyService {
 
     List<VacancyDto> getAllVacanciesCategory(String categoryId);
 
+    VacancyDto updateTime(Long vacancyId);
+
     List<VacancyDto> getAllVacancyByResponded();
 
 

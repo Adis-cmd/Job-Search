@@ -1,6 +1,7 @@
 package kg.attractor.jobsearch.controller;
 
 import jakarta.validation.Valid;
+import kg.attractor.jobsearch.dto.ResumeDto;
 import kg.attractor.jobsearch.dto.UserDto;
 import kg.attractor.jobsearch.dto.VacancyDto;
 import kg.attractor.jobsearch.service.CategoryService;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.List;
@@ -127,6 +129,18 @@ public class VacancyController {
         model.addAttribute("category", categoryService.findCategoryById(vacancyDto.getCategoryId()));
         model.addAttribute("author", userService.getUserById(vacancyDto.getAuthorId()));
         return "vacancy/info";
+    }
+
+
+    @PostMapping("/time/{resumeId}")
+    public String updateTimeResume(@PathVariable Long resumeId, RedirectAttributes redirectAttributes) {
+        try {
+            VacancyDto vacancyDto = vacancyService.updateTime(resumeId);
+            redirectAttributes.addFlashAttribute("successMessage", "Время резюме успешно обновлено");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Ошибка при обновлении времени резюме");
+        }
+        return "redirect:/profile";
     }
 
 }

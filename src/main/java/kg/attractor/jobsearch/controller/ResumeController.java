@@ -13,10 +13,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 
@@ -109,6 +107,18 @@ public class ResumeController {
         model.addAttribute("educationInfos", educationInfoService.getEducationInfoById(resumeDto.getId(), pageable));
         model.addAttribute("url", "/resume/info/" + resumeDto.getId());
         return "resume/info";
+    }
+
+
+    @PostMapping("/time/{resumeId}")
+    public String updateTimeResume(@PathVariable Long resumeId, RedirectAttributes redirectAttributes) {
+        try {
+            ResumeDto resumeDto = resumeService.updateTime(resumeId);
+            redirectAttributes.addFlashAttribute("successMessage", "Время резюме успешно обновлено");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Ошибка при обновлении времени резюме");
+        }
+        return "redirect:/profile";
     }
 
 }

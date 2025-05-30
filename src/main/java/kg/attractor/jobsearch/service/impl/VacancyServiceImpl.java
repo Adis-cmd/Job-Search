@@ -242,6 +242,15 @@ public class VacancyServiceImpl extends MethodClass implements VacancyService {
     }
 
     @Override
+    public VacancyDto updateTime(Long vacancyId) {
+        Vacancy resume = getEntityOrThrow(vacancyRepository.findById(vacancyId), new VacancyNotFoundException("Vacancy Not Found"));
+        LocalDateTime now = LocalDateTime.now();
+        resume.setUpdatedTime(now);
+        vacancyRepository.saveAndFlush(resume);
+        return vacancyDtos(resume);
+    }
+
+    @Override
     public List<VacancyDto> getAllVacancyByResponded() {
         List<Vacancy> vacancies = vacancyRepository.findAllVacancyByApplicant();
         return getVacancyDto(vacancies);

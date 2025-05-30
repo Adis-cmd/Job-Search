@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -195,6 +196,16 @@ public class ResumeServiceImpl extends MethodClass implements ResumeService {
             );
         }
 
+        return resumeDtos(resume);
+    }
+
+
+    @Override
+    public ResumeDto updateTime(Long resumeId) {
+        Resume resume = getEntityOrThrow(resumeRepository.findById(resumeId), new ResumeServiceException("Resume not Found"));
+        LocalDateTime now = LocalDateTime.now();
+        resume.setUpdateTime(now);
+        resumeRepository.saveAndFlush(resume);
         return resumeDtos(resume);
     }
 

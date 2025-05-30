@@ -18,6 +18,8 @@ public interface ResumeService {
 
     ResumeDto getResumeById(String resumeId, Principal principal);
 
+    ResumeDto updateTime(Long resumeId);
+
     Optional<Resume> findResumeById(Long resumeId);
 
     void editResume(ResumeDto resumesDto, String resumeId);
