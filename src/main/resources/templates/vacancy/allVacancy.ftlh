@@ -533,48 +533,82 @@
         document.addEventListener('DOMContentLoaded', () => {
             const sortSelect = document.getElementById('sortOptions');
             const categorySelect = document.querySelector('form.filter-form select[name="categoryId"]');
+            const resetBtn = document.querySelector('.reset-filters');
+            const paginationLinks = document.querySelectorAll('.pagination a');
 
-            const savedUrl = localStorage.getItem('vacancyFullUrl');
+            function isCleanUrl() {
+                const params = new URLSearchParams(window.location.search);
+                return !params.has('sort') && !params.has('categoryId') && !params.has('page');
+            }
 
-            if (savedUrl && savedUrl !== window.location.href) {
-                window.location.href = savedUrl;
+            function isPaginationUrl() {
+                const params = new URLSearchParams(window.location.search);
+                return params.has('page') && params.get('page') !== '0';
+            }
+
+            const savedFilters = JSON.parse(localStorage.getItem('vacancyFilters') || '{}');
+
+            if (isCleanUrl() && Object.keys(savedFilters).length > 0) {
+                const params = new URLSearchParams();
+
+                if (savedFilters.sort) params.set('sort', savedFilters.sort);
+                if (savedFilters.categoryId) params.set('categoryId', savedFilters.categoryId);
+                params.set('page', '0');
+
+                window.location.href = window.location.pathname + '?' + params.toString();
                 return;
             }
 
-            function saveCurrentUrl() {
-                const params = new URLSearchParams(window.location.search);
-                params.set('sort', sortSelect.value);
-                if (categorySelect.value) {
-                    params.set('categoryId', categorySelect.value);
-                } else {
-                    params.delete('categoryId');
-                }
-                params.set('page', 0);
-
-                const baseUrl = window.location.origin + window.location.pathname;
-                const fullUrl = baseUrl + '?' + params.toString();
-
-                localStorage.setItem('vacancyFullUrl', fullUrl);
+            if (isPaginationUrl()) {
+                if (savedFilters.sort) sortSelect.value = savedFilters.sort;
+                if (savedFilters.categoryId) categorySelect.value = savedFilters.categoryId;
+                return;
             }
 
-            categorySelect.form.addEventListener('submit', () => {
-                saveCurrentUrl();
+            function saveFilters() {
+                const params = new URLSearchParams(window.location.search);
+                const filters = {
+                    sort: params.get('sort') || '',
+                    categoryId: params.get('categoryId') || ''
+                };
+                localStorage.setItem('vacancyFilters', JSON.stringify(filters));
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('sort')) sortSelect.value = urlParams.get('sort');
+            if (urlParams.get('categoryId')) categorySelect.value = urlParams.get('categoryId');
+
+            categorySelect.addEventListener('change', function() {
+                const form = this.closest('form');
+                form.submit();
             });
 
-            const resetBtn = document.getElementById('resetFiltersBtn');
-
-            resetBtn.addEventListener('click', () => {
-                localStorage.removeItem('vacancyFullUrl');
-
-                sortSelect.value = '';
-                categorySelect.value = '';
-
-                const baseUrl = window.location.origin + window.location.pathname;
-                window.location.href = baseUrl;
+            sortSelect.addEventListener('change', function() {
+                const form = this.closest('form');
+                form.submit();
             });
 
+            document.querySelector('form.filter-form').addEventListener('submit', function(e) {
+                saveFilters();
+            });
+
+            resetBtn.addEventListener('click', function() {
+                localStorage.removeItem('vacancyFilters');
+                window.location.href = window.location.pathname;
+            });
+
+            paginationLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    const form = document.querySelector('form.filter-form');
+                    const submitHandler = form.onSubmit;
+                    form.onsubmit = null;
+
+                    setTimeout(() => {
+                        form.onsubmit = submitHandler;
+                    }, 100);
+                });
+            });
         });
-
     </script>
 
 
