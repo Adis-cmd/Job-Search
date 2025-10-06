@@ -8,14 +8,14 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: long
+                  type: BIGINT
                   autoIncrement: true
                   constraints:
                     primaryKey: true
                     nullable: false
               - column:
                   name: applicantId
-                  type: long
+                  type: BIGINT
                   constraints:
                     nullable: false
               - column:
@@ -25,7 +25,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: categoryId
-                  type: long
+                  type: BIGINT
                   constraints:
                     nullable: false
               - column:

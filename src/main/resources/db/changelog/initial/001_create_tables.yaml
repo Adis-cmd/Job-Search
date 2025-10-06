@@ -8,7 +8,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: long
+                  type: BIGINT
                   autoIncrement: true
                   constraints:
                     nullable: false
@@ -29,7 +29,7 @@ databaseChangeLog:
                   name: password
                   type: varchar(120)
               - column:
-                  name: phoneNumber
+                  name: phonenumber
                   type: varchar(50)
               - column:
                   name: avatar
@@ -46,7 +46,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: long
+                  type: BIGINT
                   autoIncrement: true
                   constraints:
                     nullable: false
@@ -58,7 +58,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: parentId
-                  type: long
+                  type: BIGINT
                   constraints:
                     nullable: true
 
@@ -78,7 +78,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: long
+                  type: BIGINT
                   autoIncrement: true
                   constraints:
                     primaryKey: true
@@ -95,7 +95,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: categoryId
-                  type: long
+                  type: BIGINT
                   constraints:
                     nullable: false
               - column:
@@ -120,7 +120,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: authorId
-                  type: long
+                  type: BIGINT
                   constraints:
                     nullable: false
               - column:
@@ -157,7 +157,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: long
+                  type: BIGINT
                   autoIncrement: true
                   constraints:
                     nullable: false
@@ -176,14 +176,14 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: long
+                  type: BIGINT
                   autoIncrement: true
                   constraints:
                     primaryKey: true
                     nullable: false
               - column:
                   name: applicantId
-                  type: long
+                  type: BIGINT
                   constraints:
                     nullable: false
               - column:
@@ -193,7 +193,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: categoryId
-                  type: long
+                  type: BIGINT
                   constraints:
                     nullable: false
               - column:
@@ -241,19 +241,19 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: long
+                  type: BIGINT
                   autoIncrement: true
                   constraints:
                     primaryKey: true
                     nullable: false
               - column:
                   name: typeId
-                  type: long
+                  type: BIGINT
                   constraints:
                     nullable: false
               - column:
                   name: resumeId
-                  type: long
+                  type: BIGINT
                   constraints:
                     nullable: false
               - column:
@@ -286,14 +286,14 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: long
+                  type: BIGINT
                   autoIncrement: true
                   constraints:
                     primaryKey: true
                     nullable: false
               - column:
                   name: resumeId
-                  type: long
+                  type: BIGINT
                   constraints:
                     nullable: false
               - column:

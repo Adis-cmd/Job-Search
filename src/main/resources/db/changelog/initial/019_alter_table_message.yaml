@@ -8,10 +8,10 @@ databaseChangeLog:
             columns:
               - column:
                   name: user_from
-                  type: long
+                  type: BIGINT
               - column:
                   name: user_to
-                  type: long
+                  type: BIGINT
 
         - addForeignKeyConstraint:
             baseTableName: message

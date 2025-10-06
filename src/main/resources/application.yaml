@@ -11,17 +11,18 @@ spring:
   freemarker:
     expose-session-attributes: true
   datasource:
-    url: jdbc:h2:./db/JobSearch;AUTO_SERVER=TRUE
-    username: adis
-    password: asdf
-    driver-class-name: org.h2.Driver
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
   liquibase:
     change-log: classpath:/db/changelog/master.yaml
 
   mail:
     host: smtp.gmail.com
-    username: piv4484@gmail.com
-    password: "tjek oisw kwxv jhty"
+    username: ${GOOGLE_EMAIL}
+    password: ${GOOGLE_PASSWORD}
     port: 587
     properties:
       mail:
@@ -38,8 +39,8 @@ spring:
       client:
         registration:
           google:
-            client-id: 242080879398-ecem0tdelqf2l5fdb1c2aggdnudrnlqa.apps.googleusercontent.com
-            client-secret: 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
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
             scope:
               - email
               - profile
