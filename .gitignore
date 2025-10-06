@@ -34,3 +34,5 @@ build/
 /JobSearch.lock.db/
 /db/
 /logs/
+
+/.env
