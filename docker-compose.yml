@@ -1,0 +1,41 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    container_name: job-search-database
+    restart: on-failure
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: job-search
+      POSTGRES_PASSWORD: job-search-password
+      POSTGRES_DB: jobsearch
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U job-search -d jobsearch" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - job_search_network
+
+  app:
+    build: .
+    container_name: job-search-app
+    depends_on:
+      - db
+    ports:
+      - "8099:8099"
+    networks:
+      - job_search_network
+    env_file:
+      - .env
+
+volumes:
+  db_data:
+
+networks:
+  job_search_network:
+    driver: bridge
